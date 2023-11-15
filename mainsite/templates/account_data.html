@@ -1,0 +1,142 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+    <div id="toolbar" class="btn-group">
+        <button class="btn btn-primary m-r-5" id="btnUpdate">
+            <i class="mdi mdi-restart"></i>
+            刷新
+        </button>
+
+
+    </div>
+    <!--页面主要内容-->
+
+    <main class="lyear-layout-content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-toolbar clearfix">
+
+                    <table id="table"></table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            load('/account/data/get/');
+            bindBtnUpdateEvent();
+
+        });
+
+
+        function load(url) {
+            $('#table').bootstrapTable({
+                url: url,  // 请求数据源的路由
+                dataType: "json",
+                method: 'get',
+                pagination: true, //前端处理分页
+                singleSelect: false,//是否只能单选
+                toolbar: '#toolbar', //工具按钮用哪个容器
+                striped: true, //是否显示行间隔色
+                cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pageNumber: 1, //初始化加载第10页，默认第一页
+                pageSize: 10, //每页的记录行数（*）
+                pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+                showColumns: false, //显示内容列下拉框
+                showRefresh: false, //显示刷新按钮
+                minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
+                // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
+                uniqueId: "id", //每一行的唯一标识，一般为主键列
+                showToggle: false, //是否显示详细视图和列表视图的切换按钮
+                cardView: false, //是否显示详细视图
+                sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+                queryParamsType: "limit",//设置为 ‘limit’ 则会发送符合 RESTFul 格式的参数.
+                search: true, //******开启搜索框****//
+                searchOnEnterKey: false, //******回车后执行搜索****//
+                strictSearch: true,  //******完全匹配****//
+                trimOnSearch: true, //去除关键词空格//
+                searchAlign: "right",
+                responseHandler: function (res) {
+                    //如果后台返回的json格式不是{rows:[{...},{...}],total:100},可以在这块处理成这样的格式
+                    return res;
+                },
+                columns: [
+                    /*
+                    {  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price 跟后端的字段名id  name price是完全一样的.
+                    checkbox: true,
+                    visible: true
+                    },
+                    */
+                    {
+                        field: 'id',
+                        title: '序号'
+                    },
+                    {
+                        field: 'nickname',
+                        title: '昵称'
+                    }, {
+                        field: 'title',
+                        title: '标题',
+                        sortable: true
+                    }, {
+                        field: 'digg_count',
+                        title: '点赞数',
+                        sortable: true
+                    }, {
+                        field: 'comment_count',
+                        title: '评论数',
+                        sortable: true
+                    }, {
+                        field: 'download_count',
+                        title: '下载数',
+                        sortable: true
+                    }, {
+                        field: 'play_count',
+                        title: '播放数',
+                        sortable: true
+                    }, {
+                        field: 'forward_count',
+                        title: '转发数',
+                        sortable: true
+                    }, {
+                        field: 'share_count',
+                        title: '分享数',
+                        sortable: true
+                    }, {
+                        field: 'share_url',
+                        title: '查看',
+                        align: 'center',
+                        formatter: function (url) {
+                            return `<a href="${url}">查看</a>`;
+                        }
+                    }
+                ],
+            });
+        }
+
+
+        // 更新数据
+        function bindBtnUpdateEvent() {
+            $("#btnUpdate").click(function () {
+                $.ajax({
+                    url: "/account/data/update/",
+                    type: "get",
+                    success: function (res) {
+                        if (res.status) {
+                            location.href = "/account/data/"
+                        } else {
+                            alert("数据刷新失败")
+                        }
+                    }
+                })
+
+            })
+        }
+    </script>
+{% endblock %}
