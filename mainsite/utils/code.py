@@ -1,8 +1,12 @@
 import random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from GrowthVision.settings import STATIC_ROOT
+import os
+
+font_file = os.path.join(STATIC_ROOT, "fonts/code.ttf")
 
 
-def check_code(width=120, height=30, char_length=5, font_file='Monaco.ttf', font_size=28):
+def check_code(width=120, height=30, char_length=5, font_file=font_file, font_size=28):
 	code = []
 	img = Image.new(mode='RGB', size=(width, height), color=(255, 255, 255))
 	draw = ImageDraw.Draw(img, mode='RGB')
@@ -13,8 +17,8 @@ def check_code(width=120, height=30, char_length=5, font_file='Monaco.ttf', font
 		:return:
 		"""
 		return str(random.randint(0, 9))  # 数字
-		# return chr(random.randint(65, 90)) # 英文
 
+	# return chr(random.randint(65, 90)) # 英文
 
 	def rndColor():
 		"""

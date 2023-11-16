@@ -124,9 +124,11 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
 	os.path.join(BASE_DIR, 'mainsite/static')
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 收集的到feng_static目录
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 收集的到static目录
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+print(STATIC_ROOT)
