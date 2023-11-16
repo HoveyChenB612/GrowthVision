@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-)bta7(pi9mu3j)@1@c!h8fyf@vsm(9wwh=3i^cvhko@*tj!=jn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -86,9 +86,6 @@ DATABASES = {
 		'PASSWORD': 'chenhao',
 		'HOST': '127.0.0.1',  # 那台机器安装了MySQL
 		'PORT': 3306,
-		'OPTIONS': {
-			'charset': 'utf8mb4',
-			'use_unicode': True, },
 	}
 }
 
