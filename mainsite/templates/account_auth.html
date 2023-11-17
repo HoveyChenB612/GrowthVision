@@ -24,7 +24,10 @@
                                 </div>
                             </form>
                             <div class="toolbar-btn-action">
-                                <a class="btn btn-primary m-r-5" href="#!"><i class="mdi mdi-plus"></i> 新增抖音授权</a>
+                                <a class="btn btn-primary m-r-5"
+                                   href="{{ get_accredit_url }}"
+                                   target="_blank"
+                                   id="btnDump"><i class="mdi mdi-plus"></i> 新增抖音授权</a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -98,6 +101,29 @@
 
     </main>
     <!--End 页面主要内容-->
+
+    <!-- 模态框 -->
+    <!-- 抖音授权模态框 -->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="myModal">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form id="myFromDouYin" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <sapn>传入回调地址：</sapn>
+                        <input class="form-control" type="text" placeholder="https://www.baidu.com/?code=XXXXXXXX"
+                               name="redict_parse">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <input type="submit" class="btn btn-primary" value="保存">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--End 模态框-->
 {% endblock %}
 
 
@@ -110,6 +136,7 @@
                 $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
             });
             bindBtnDeleteEvent();
+            binBtnDumpEvent();
         });
 
         // 删除行
@@ -126,6 +153,13 @@
             })
         }
 
+        // 开启模态框
+        function binBtnDumpEvent() {
+            $("#btnDump").click(function () {
+                $(this).find("input").empty()
+                $("#myModal").modal("show")
+            })
+        }
 
     </script>
 {% endblock %}

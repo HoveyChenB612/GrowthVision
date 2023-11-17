@@ -1,5 +1,7 @@
 import json
+from urllib import parse
 
+import requests
 from django.shortcuts import render, HttpResponse, redirect
 from mainsite import models
 from django.utils import timezone
@@ -7,7 +9,7 @@ from django.http import JsonResponse
 from mainsite.models import DataDouYin, User, PlatFormDouYin
 from mainsite.utils.pagination import Pagination
 from mainsite.utils.get_douyin_data import get_douyin_data
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def account_auth(request):
@@ -15,6 +17,76 @@ def account_auth(request):
 
 	# 获取当前登陆的用户uid
 	data_dict = {"uid": request.session.get("info").get("uid")}
+
+	# 获取用户授权信息
+	if request.method == "POST":
+		# 获取扫码后重定向的query参数
+		redict_parse = request.POST.get("redict_parse")
+		url = parse.urlparse(redict_parse)
+		query_dict = parse.parse_qs(url.query)
+		code = query_dict.get("code")[0]
+		if code:
+			# 获取(access_token, open_id, refresh_token)
+			access_token_url = "https://open.douyin.com/oauth/access_token/"
+			access_token_json = {"grant_type": "authorization_code",
+			                     "client_key": "awpswfd65m22r59e",
+			                     "client_secret": "f801426192c924f33d6f67d702ba0099",
+			                     "code": code}
+			access_token_header = {"Content-Type": "application/json"}
+			access_token_responses = requests.post(url=access_token_url, json=access_token_json,
+			                                       headers=access_token_header)
+			access_token_responses_responses_data = access_token_responses.json()
+
+			access_token = access_token_responses_responses_data["data"]["access_token"]
+			open_id = access_token_responses_responses_data["data"]["open_id"]
+			refresh_token = access_token_responses_responses_data["data"]["refresh_token"]
+			expires_in = access_token_responses_responses_data["data"]["expires_in"]
+
+			# 获取用户基本信息()
+			user_open_info_url = "https://open.douyin.com/oauth/userinfo/"
+			user_open_info_json = {
+				"access_token": access_token,
+				"open_id": open_id
+			}
+			user_open_info_header = {"Content-Type": "application/x-www-form-urlencoded"}
+			user_open_info_responses = requests.post(url=user_open_info_url, data=user_open_info_json,
+			                                         headers=user_open_info_header)
+			user_open_info_responses_data = user_open_info_responses.json()
+
+			nickname = user_open_info_responses_data["data"]["nickname"]
+			avatar = user_open_info_responses_data["data"]["avatar"]
+			e_account_role = user_open_info_responses_data["data"]["e_account_role"]
+
+			# 用户基本参数
+			# 将时间转成datetime类型
+			expires_time = datetime.now() + timedelta(seconds=expires_in)
+			expires_time = datetime.strftime(expires_time, "%Y-%m-%d %H:%M:%S")
+			e_account_role_identify = e_account_role if e_account_role else "None"
+			user_info_dict = {
+				"uid_id": data_dict.get("uid"),
+				"nickname": nickname,
+				"access_token": access_token,
+				"refresh_token": refresh_token,
+				"avatar": avatar,
+				"e_account_role": e_account_role_identify,
+				"expires_in": expires_time
+			}
+
+			# 判断账号是否存在
+			exists = models.PlatFormDouYin.objects.filter(open_id=open_id).exists()
+			if exists:
+				models.PlatFormDouYin.objects.filter(open_id=open_id).update(**user_info_dict)
+			else:
+				user_info_dict["open_id"] = open_id
+				models.PlatFormDouYin.objects.create(**user_info_dict)
+
+	# 抖音授权
+	client_key = "awpswfd65m22r59e"  # 应用唯一标识
+	response_type = "code"  # 默认值 code
+	scope = "user_info,data.external.user,video.list.bind,video.data.bind,renew_refresh_token,data.external.item,"  # 应用授权作用域
+	# optionalScope = "user_info,1,data.external.user,1"  # 应用授权可选作用域&optionalScope={optionalScope}
+	redirect_uri = "https://www.baidu.com"  # 授权成功后的回调地址
+	get_accredit_url = f"https://open.douyin.com/platform/oauth/connect?client_key={client_key}&response_type={response_type}&scope={scope}&redirect_uri={redirect_uri}"
 
 	# 搜索
 	search_data = request.GET.get("keyword", "")
@@ -31,7 +103,9 @@ def account_auth(request):
 		"page_string": page_object.html(),  # 生成页码
 		"now": timezone.now(),  # 当前时间
 		"search_data": search_data,  # 搜索参数
+		"get_accredit_url": get_accredit_url  # 抖音授权地址
 	}
+
 
 	return render(request, "account_auth.html", context)
 
@@ -54,9 +128,9 @@ def account_data_get(request):
 	"""获取表格数据"""
 
 	# 获取当前登陆的用户uid
-	data_dict = {"uid": request.session.get("info").get("uid")}
+	uid = request.session.get("info").get("uid")
 
-	queryset = models.DataDouYin.objects.select_related('open_id').values(
+	queryset = models.DataDouYin.objects.filter(uid=uid).select_related('open_id').values(
 		'open_id__nickname',
 		'open_id__avatar',
 		'item_id',

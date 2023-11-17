@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)bta7(pi9mu3j)@1@c!h8fyf@vsm(9wwh=3i^cvhko@*tj!=jn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -120,15 +120,15 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+# 项目上线静态文件整合
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-	os.path.join(BASE_DIR, 'mainsite/static')
-]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 收集的到static目录
+# STATICFILES_DIRS = [
+# 	os.path.join(BASE_DIR, 'mainsite/static')
+# ]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 收集的到static目录
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-print(STATIC_ROOT)
