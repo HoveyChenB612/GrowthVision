@@ -1,0 +1,273 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+    <div id="toolbar" class="btn-group">
+        <div>
+            <a class="btn btn-danger btn-round m-r-5"
+               href="{{ get_accredit_url }}"
+               target="_blank"
+               id="btnDouYinAuth">新增抖音授权</a>
+            <a class="btn btn-info btn-round m-r-5"
+               id="btnZhihuAuth">新增知乎授权</a>
+        </div>
+    </div>
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-toolbar clearfix">
+                    <table id="table"></table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!--End 页面主要内容-->
+
+    <!-- 模态框 -->
+    <!-- 抖音授权模态框 -->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="myDouYinModal">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form id="myFromDouYin" method="post" action="/account/auth/douyin/">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <span>传入回调地址：</span>
+                        <input class="form-control" type="text" placeholder="https://www.baidu.com/?code=XXXXXXXX"
+                               name="redict_parse">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <input type="submit" class="btn btn-primary" value="保存">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 知乎授权模态框 -->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="myZhiHuModal">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form id="myFromZhiHu" method="post" action="/account/auth/zhihu/">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <span>传入z_c0值：</span>
+                        <input class="form-control" type="text" placeholder="2|1:0|10:1700558819|4:z_c0|92:XXXXX"
+                               name="z_c0">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <input type="submit" class="btn btn-primary" value="保存">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--End 模态框-->
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('.search-bar .dropdown-menu a').click(function () {
+                var field = $(this).data('field') || '';
+                $('#search-field').val(field);
+                $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+            });
+
+            load('/account/auth/get/')
+            bindBtnDouYinAuthEvent();
+            bindBtnZhiHuAuthEvent();
+            $(".alert").hide();
+        });
+
+        // 警告框样式
+        function bindAlertEvent(newClass, stats, tips) {
+            $(".lyear-layout-content").prepend('<div class="alert"></div>')
+            var alertElement = $(".alert")
+            alertElement.addClass(newClass)
+            alertElement.html(
+                `<button type='button' class='close' data-dismiss='alert'
+                aria-label='Close'><spanaria-hidden='true'>&times;</span></button>
+                   <strong>${stats}: </strong>${tips}`
+            )
+
+        }
+
+        // 开启抖音模态框
+        function bindBtnDouYinAuthEvent() {
+            $("#btnDouYinAuth").click(function () {
+                $(this).find("input").empty()
+                $("#myDouYinModal").modal("show")
+            })
+        }
+
+        // 开启知乎模态框
+        function bindBtnZhiHuAuthEvent() {
+            $("#btnZhihuAuth").click(function () {
+                $(this).find("input").empty()
+                $("#myZhiHuModal").modal("show")
+            })
+        }
+
+        // 表格
+        function load(url) {
+            $('#table').bootstrapTable({
+                url: url,  // 请求数据源的路由
+                dataType: "json",
+                method: 'get',
+                pagination: true, //前端处理分页
+                singleSelect: false,//是否只能单选
+                toolbar: '#toolbar', //工具按钮用哪个容器
+                striped: true, //是否显示行间隔色
+                cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pageNumber: 1, //初始化加载第10页，默认第一页
+                pageSize: 10, //每页的记录行数（*）
+                pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+                showColumns: true, //显示内容列下拉框
+                showRefresh: false, //显示刷新按钮
+                minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
+                // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
+                uniqueId: "id", //每一行的唯一标识，一般为主键列
+                showToggle: false, //是否显示详细视图和列表视图的切换按钮
+                cardView: false, //是否显示详细视图
+                sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+                queryParamsType: "limit",//设置为 ‘limit’ 则会发送符合 RESTFul 格式的参数.
+                search: true, //******开启搜索框****//
+                searchOnEnterKey: false, //******回车后执行搜索****//
+                strictSearch: true,  //******完全匹配****//
+                trimOnSearch: true, //去除关键词空格//
+                searchAlign: "right",
+                responseHandler: function (res) {
+                    //如果后台返回的json格式不是{rows:[{...},{...}],total:100},可以在这块处理成这样的格式
+                    return res;
+                },
+                columns: [
+                    /*
+                    {  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price 跟后端的字段名id  name price是完全一样的.
+                    checkbox: true,
+                    visible: true
+                    },
+                    */
+                    {
+                        field: 'id',
+                        title: '序号',
+                        sortable: true
+                    }, {
+                        field: 'platform',
+                        title: '平台',
+                        sortable: true
+                    }, {
+                        field: 'nickname',
+                        title: '昵称',
+                        sortable: true
+                    }, {
+                        field: 'avatar',
+                        title: '头像',
+                        formatter: function (url) {
+                            return `<img src="${url}" style="height: 50px;width: 50px">`;
+                        }
+                    }, {
+                        field: 'auth_time',
+                        title: '授权时间',
+                        sortable: true,
+                        formatter: function (time) {
+                            return time.replace("T", " ")
+                        }
+                    }, {
+                        field: 'expires_time',
+                        title: '过期时间',
+                        sortable: true,
+                        formatter: function (time) {
+                            return time.replace("T", " ")
+                        }
+                    }, {
+                        field: 'status',
+                        title: '状态',
+                        sortable: true,
+                        formatter: function (stat) {
+                            if (stat) {
+                                return "<a style='color: green'>有效</a>"
+                            } else {
+                                return "<a style='color: red'>无效</a>"
+                            }
+                        }
+                    }, {
+                        field: 'option',
+                        title: '操作',
+                        formatter: actionFormatter,
+                    }
+                ],
+                onLoadSuccess: function () {
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                }
+            });
+
+            //操作栏的格式化
+            function actionFormatter(value, row) {
+                var getPrimary = row.zh_uid ? row.zh_uid : row.open_id;
+                var result = "";
+
+                // 在按钮字符串中插入 getPrimary 变量到 id 属性
+                result += "<a class='btn btn-cyan btn-sm' onclick='bindBtnRefreshEvent(this)' id='" + getPrimary + "'>刷新</a>";
+                result += "<span style='padding-right: 10px'></span>";
+                result += "<a class='btn btn-danger btn-sm' onclick='bindBtnDeleteEvent(this)' id='" + getPrimary + "'>删除</a>";
+                return result;
+            }
+        }
+
+        // 删除行
+        function bindBtnDeleteEvent(ele) {
+            // 获取点击的元素的 ID
+            var delete_id = $(ele).attr("id");
+
+            $.ajax({
+                url: "/account/delete/",
+                type: "get",
+                data: {
+                    delete_id: delete_id
+                },
+                success: function (res) {
+                    if (res) {
+                        alert("删除成功")
+                        location.href = "/account/auth/list/"
+                    } else {
+                        alert("账号不存在")
+                    }
+                }
+            })
+
+        }
+
+        // 刷新行
+        function bindBtnRefreshEvent(ele) {
+                var refresh_id = $(ele).attr("id")
+                $.ajax({
+                    url: "/account/refresh/",
+                    type: "get",
+                    data: {
+                        refresh_id: refresh_id
+                    },
+                    success: function (res) {
+                        var stats = res.data.stats
+                        var tips = res.data.tips
+                        if (res.status) {
+                            var newClass = "alert-success"
+                            bindAlertEvent(newClass, stats, tips)
+                        } else {
+                            newClass = "alert-danger"
+                            bindAlertEvent(newClass, stats, tips)
+                        }
+                    }
+                })
+        }
+    </script>
+{% endblock %}
+

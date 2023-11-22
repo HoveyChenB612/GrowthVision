@@ -25,6 +25,7 @@ class PlatFormDouYin(models.Model):
 
 	open_id = models.CharField(verbose_name="open_id", max_length=255, primary_key=True)
 	expires_in = models.DateTimeField(verbose_name="过期时间")
+	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
 	e_account_role = models.CharField(verbose_name="企业号类型", null=True, max_length=255)
 	nickname = models.CharField(verbose_name="昵称", max_length=64)
 	avatar = models.CharField(verbose_name="头像", max_length=255)
@@ -57,4 +58,15 @@ class DataDouYin(models.Model):
 	forward_count = models.IntegerField(verbose_name="收藏数", default=0)
 	play_count = models.IntegerField(verbose_name="播放数", default=0)
 	share_count = models.IntegerField(verbose_name="分享数", default=0)
+
+
+class PlatFormZhiHu(models.Model):
+	"""知乎账号授权表"""
+	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
+	nickname = models.CharField(verbose_name="昵称", max_length=26)
+	avatar = models.CharField(verbose_name="头像", max_length=255)
+	expires_time = models.DateTimeField(verbose_name="过期时间")
+	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
+	zh_uid = models.CharField(verbose_name="知乎用户ID",primary_key=True,max_length=255)
+	z_c0 = models.CharField(verbose_name="cookies", max_length=500)
 
