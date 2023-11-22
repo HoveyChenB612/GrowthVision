@@ -43,7 +43,7 @@ def login(request):
 
 		# 修改用户登陆时间
 		models.User.objects.filter(**form.cleaned_data).update(last_login_time=timezone.now())
-		return redirect("/index/main/")
+		return redirect("/index/")
 
 	return render(request, 'user_login.html', {'form': form})
 

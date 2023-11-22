@@ -4,11 +4,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-    <title>登录页面 - 光年(Light Year Admin)后台管理系统模板</title>
-    <link rel="icon" href="favicon.ico" type="image/ico">
-    <meta name="keywords" content="LightYear,光年,后台模板,后台管理系统,光年HTML模板">
-    <meta name="description" content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。">
-    <meta name="author" content="yinqi">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/materialdesignicons.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
@@ -117,17 +112,12 @@
 
 <body>
 <div class="lyear-login-box">
-    <div class="lyear-login-left" style="background-image: url({% static 'images/login-bg-4.jpg' %})">
-        <div class="lyear-overlay"></div>
-        <div class="lyear-featured">
-            <h4>愿你有好运气，如果没有，愿你在不幸中学会慈悲；愿你被很多人爱，如果没有，愿你在寂寞中学会宽容。<small> -
-                刘瑜《愿你慢慢长大》</small></h4>
-        </div>
+    <div class="lyear-login-left" style="background-image: url({% static 'images/background.jpg' %})">
     </div>
     <div class="lyear-login-right" style="padding-top: 100px !important;">
 
-        <div class=" text-center">
-            <h1>GROWTH VISION</h1>
+        <div class=" text-center" style="padding-bottom: 30px">
+            <img src="{% static 'images/logo.svg' %}" style="height: 60%;width: 60%;padding-bottom: 10px">
             <h2>注册</h2>
         </div>
         <form method="post" id="formRegister" novalidate onsubmit="return false">

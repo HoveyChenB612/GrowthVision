@@ -15,6 +15,13 @@ from datetime import datetime, timedelta
 def account_auth(request):
 	"""账号授权"""
 
+	# 前端选中标签与头部标签
+	active_account_auth = ""
+	header_label = ""
+	if request.path == "/account/auth/":
+		active_account_auth = "active"
+		header_label = "授权管理"
+
 	# 获取当前登陆的用户uid
 	data_dict = {"uid": request.session.get("info").get("uid")}
 
@@ -83,7 +90,7 @@ def account_auth(request):
 	# 抖音授权
 	client_key = "awpswfd65m22r59e"  # 应用唯一标识
 	response_type = "code"  # 默认值 code
-	scope = "user_info,data.external.user,video.list.bind,video.data.bind,renew_refresh_token,data.external.item,"  # 应用授权作用域
+	scope = "user_info,data.external.user,video.list.bind,video.data.bind,renew_refresh_token,data.external.item,data.external.billboard_hot_video"  # 应用授权作用域
 	# optionalScope = "user_info,1,data.external.user,1"  # 应用授权可选作用域&optionalScope={optionalScope}
 	redirect_uri = "https://www.baidu.com"  # 授权成功后的回调地址
 	get_accredit_url = f"https://open.douyin.com/platform/oauth/connect?client_key={client_key}&response_type={response_type}&scope={scope}&redirect_uri={redirect_uri}"
@@ -103,17 +110,18 @@ def account_auth(request):
 		"page_string": page_object.html(),  # 生成页码
 		"now": timezone.now(),  # 当前时间
 		"search_data": search_data,  # 搜索参数
-		"get_accredit_url": get_accredit_url  # 抖音授权地址
+		"get_accredit_url": get_accredit_url,  # 抖音授权地址
+		"active_account_auth": active_account_auth,
+		"header_label": header_label
 	}
-
 
 	return render(request, "account_auth.html", context)
 
 
-def account_delete(request, oid):
+def account_delete(request, open_id):
 	"""删除账号"""
 
-	models.PlatFormDouYin.objects.filter(open_id=oid).delete()
+	models.PlatFormDouYin.objects.filter(open_id=open_id).delete()
 
 	return redirect(f"/account/auth/")
 
@@ -121,7 +129,18 @@ def account_delete(request, oid):
 def account_data(request):
 	"""数据展示"""
 
-	return render(request, "account_data.html")
+	# 前端选中标签
+	active_account_data = ""
+	header_label = ""
+	if request.path == "/account/data/":
+		active_account_data = "active"
+		header_label = "数据展示"
+
+	context = {
+		"active_account_data": active_account_data,
+		"header_label": header_label
+	}
+	return render(request, "account_data.html", context)
 
 
 def account_data_get(request):
@@ -180,6 +199,7 @@ def account_data_update(request):
 	# 获取当前用户ID
 	uid = request.session.get("info").get("uid")
 	platform_queryset = models.PlatFormDouYin.objects.filter(uid=uid)
+
 	for queryset in platform_queryset:
 		open_id = queryset.open_id
 		access_token = queryset.access_token
@@ -204,8 +224,6 @@ def account_data_update(request):
 					"share_url": item["share_url"],
 					"comment_count": item["statistics"]["comment_count"],
 					"digg_count": item["statistics"]["digg_count"],
-					"download_count": item["statistics"]["download_count"],
-					"forward_count": item["statistics"]["forward_count"],
 					"play_count": item["statistics"]["play_count"],
 					"share_count": item["statistics"]["share_count"]
 				}
@@ -224,14 +242,65 @@ def account_data_update(request):
 					"share_url": item["share_url"],
 					"comment_count": item["statistics"]["comment_count"],
 					"digg_count": item["statistics"]["digg_count"],
-					"download_count": item["statistics"]["download_count"],
-					"forward_count": item["statistics"]["forward_count"],
 					"play_count": item["statistics"]["play_count"],
 					"share_count": item["statistics"]["share_count"]
 				}
 
 				models.DataDouYin.objects.create(**create_data)
 
-		return JsonResponse({"status": True})
+	return JsonResponse({"status": True})
 
-	return JsonResponse({"status": False})
+
+def account_auth_refresh(request):
+	""" 刷新refresh_token """
+
+	open_id = request.GET.get("open_id")
+	row_object = models.PlatFormDouYin.objects.filter(open_id=open_id).first()
+
+	rft_data = {
+		"refresh_token": row_object.refresh_token,
+		"client_key": "awpswfd65m22r59e"
+	}
+	rft_response = requests.post('https://open.douyin.com/oauth/renew_refresh_token/', data=rft_data)
+	rft_response_data = rft_response.json().get("data", "")
+	rft_response_message = rft_response.json().get("message", "")
+
+	if rft_response_message == 'success':
+		models.PlatFormDouYin.objects.filter(open_id=open_id).update(
+			refresh_token=rft_response_data.get("refresh_token"))
+		act_data = {
+			'client_key': "awpswfd65m22r59e",
+			'grant_type': "refresh_token",
+			'refresh_token': rft_response_data.get("refresh_token"),
+		}
+		act_response = requests.post('https://open.douyin.com/oauth/refresh_token/', data=act_data)
+		act_response_data = act_response.json().get("data", "")
+		act_response_message = act_response.json().get("message")
+
+		if act_response_message:
+			access_token = act_response_data["access_token"]
+			expires_in = act_response_data["expires_in"]
+			expires_time = datetime.now() + timedelta(seconds=expires_in)
+			expires_time = datetime.strftime(expires_time, "%Y-%m-%d %H:%M:%S")
+
+			models.PlatFormDouYin.objects.filter(open_id=open_id).update(access_token=access_token,
+			                                                             expires_in=expires_time)
+			nickname = models.PlatFormDouYin.objects.filter(open_id=open_id).first().nickname
+			print(nickname)
+			data = {
+				"status": True,
+				"data": {
+					"stats": "刷新成功",
+					"tips": f"{nickname}将在{expires_time}后过期"
+				}
+			}
+			return JsonResponse(data)
+
+	data = {
+		"status": False,
+		"data": {
+			"stats": "刷新失败",
+			"tips": "refresh_token过期，请删除授权账号重新授权"
+		}
+	}
+	return JsonResponse(data)

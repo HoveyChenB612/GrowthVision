@@ -38,7 +38,4 @@ def get_douyin_data(open_id: str, access_token: str) -> dict:
 
 	data = {"VideoList": [i for k in video_list for i in k]}
 
-	with open("/Users/chen/PycharmProjects/GrowthVision/data.json", "w", encoding="utf-8") as f:
-		f.write(json.dumps(data, ensure_ascii=False))
-
 	return data

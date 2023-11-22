@@ -5,6 +5,7 @@
     <!--页面主要内容-->
     <main class="lyear-layout-content">
 
+
         <div class="container-fluid">
 
             <div class="row">
@@ -69,14 +70,20 @@
                                                     有效{% else %}
                                                     失效{% endif %}</font>
                                             </td>
-                                            <td>{{ field.expires_in|date:"Y-m-d H:i:s" }}</td>
+                                            <td>{{ field.expires_in }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button type="button">
+                                                    <button type="button" class="btnRefresh btn btn-primary btn-sm"
+                                                            style="padding-right: 5px"
+                                                            value="{{ field.open_id }}">
                                                         <i class="mdi mdi-update"></i>
                                                         刷新
                                                     </button>
-                                                    <button type="button" class="BtnDelete" value="{{ field.open_id }}">
+                                                </div>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btnDelete btn btn-danger btn-sm"
+                                                            style="padding-left: 5px"
+                                                            value="{{ field.open_id }}">
                                                         <i class="mdi mdi-window-close"></i>
                                                         删除
                                                     </button>
@@ -110,7 +117,7 @@
                 <form id="myFromDouYin" method="post">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <sapn>传入回调地址：</sapn>
+                        <span>传入回调地址：</span>
                         <input class="form-control" type="text" placeholder="https://www.baidu.com/?code=XXXXXXXX"
                                name="redict_parse">
                     </div>
@@ -124,27 +131,36 @@
         </div>
     </div>
     <!--End 模态框-->
+
+    <!-- 提示弹出框 -->
+
 {% endblock %}
 
 
 {% block js %}
     <script type="text/javascript">
+
         $(function () {
+
             $('.search-bar .dropdown-menu a').click(function () {
                 var field = $(this).data('field') || '';
                 $('#search-field').val(field);
                 $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
             });
+
             bindBtnDeleteEvent();
-            binBtnDumpEvent();
+            bindBtnDumpEvent();
+            bindBtnRefreshEvent();
+            $(".alert").hide();
+
         });
 
         // 删除行
         function bindBtnDeleteEvent() {
-            $(".BtnDelete").click(function () {
-                var openid = $(this).val()
+            $(".btnDelete").click(function () {
+                var open_id = $(this).val()
                 $.ajax({
-                    url: "/account/" + openid + "/delete/",
+                    url: "/account/" + open_id + "/delete/",
                     type: "get"
                 })
                 // location.reload()
@@ -153,12 +169,52 @@
             })
         }
 
+        // 刷新行
+        function bindBtnRefreshEvent() {
+
+            $(".btnRefresh").click(function () {
+                var open_id = $(this).val()
+                $.ajax({
+                    url: "/account/refresh/",
+                    type: "get",
+                    data: {
+                        open_id: open_id
+                    },
+                    success: function (res) {
+                        var stats = res.data.stats
+                        var tips = res.data.tips
+                        if (res.status) {
+                            var newClass = "alert-success"
+                            bindAlertEvent(newClass, stats, tips)
+                        } else {
+                            newClass = "alert-danger"
+                            bindAlertEvent(newClass, stats, tips)
+                        }
+                    }
+                })
+            })
+        }
+
+
         // 开启模态框
-        function binBtnDumpEvent() {
+        function bindBtnDumpEvent() {
             $("#btnDump").click(function () {
                 $(this).find("input").empty()
                 $("#myModal").modal("show")
             })
+        }
+
+        // 警告框样式
+        function bindAlertEvent(newClass, stats, tips) {
+            $(".lyear-layout-content").prepend('<div class="alert"></div>')
+            var alertElement = $(".alert")
+            alertElement.addClass(newClass)
+            alertElement.html(
+                `<button type='button' class='close' data-dismiss='alert'
+                aria-label='Close'><spanaria-hidden='true'>&times;</span></button>
+                   <strong>${stats}: </strong>${tips}`
+            )
+
         }
 
     </script>

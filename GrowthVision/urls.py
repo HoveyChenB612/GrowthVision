@@ -16,25 +16,29 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path
-from mainsite.views import index, account, user
+from mainsite.views import index, account, user, hot
 
 urlpatterns = [
 	# path('admin/', admin.site.urls),
 
 	# 主页
-	path("index/main/", index.index_main),
+	path("index/", index.index),
 
 	# 平台账号
-	path("account/auth/", account.account_auth),  # list, search
-	path("account/<str:oid>/delete/", account.account_delete),
+	path("account/auth/", account.account_auth),
+	path("account/<str:open_id>/delete/", account.account_delete),
 	path("account/data/", account.account_data),
 	path("account/data/get/", account.account_data_get),
 	path("account/data/update/", account.account_data_update),
+	path("account/refresh/", account.account_auth_refresh),
 
 	# 用户账号
 	path("login/", user.login),
 	path("image/code/", user.image_code),
 	path("logout/", user.logout),
 	path("register/", user.register),
-	path("edit_pwd/", user.edit_pwd)
+	path("edit_pwd/", user.edit_pwd),
+
+	# 热词搜索
+	path("hot/list/", hot.hot_list)
 ]
