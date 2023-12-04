@@ -1,14 +1,17 @@
+import asyncio
+import time
 from datetime import datetime, timedelta
 from urllib import parse
 
 import requests
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.utils import timezone
 from django.db.models import Q
+from asgiref.sync import sync_to_async, async_to_sync
 
 from mainsite import models
-from mainsite.utils.get_douyin_data import get_douyin_data
+from mainsite.utils.get_data import GetData
 
 
 def account_auth_list(request):
@@ -58,7 +61,7 @@ def account_auth_zhihu(request):
 		auth_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		expires_time = (datetime.now() + timedelta(days=180)).strftime("%Y-%m-%d %H:%M:%S")
 		zh_uid = user_info.get("id")
-
+		print(user_info)
 		user_info_dict = {
 			"uid_id": uid,
 			"nickname": nickname,
@@ -152,6 +155,53 @@ def account_auth_douyin(request):
 	return redirect("/account/auth/list/")
 
 
+def account_auth_baijiahao(request):
+	"""账号授权百家号"""
+
+	# 获取当前登陆的用户uid
+	uid = request.session.get("info").get("uid")
+
+	if request.method == "POST":
+		bduss = request.POST.get("bduss")
+		token = request.POST.get("token")
+		bjhstoken = request.POST.get("bjhstoken")
+		cookies = {"BDUSS": bduss}
+		headers = {
+			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+			'token': token,
+		}
+		response = requests.get("https://baijiahao.baidu.com/builder/app/appinfo", cookies=cookies, headers=headers)
+		result = response.json()
+		print(result)
+		errno = result.get("errno")
+		if errno != 0:
+			return HttpResponse("BDUSS 或 token 错误")
+		nickname = result["data"]["user"]["name"]
+		avatar = result["data"]["user"]["avatar"].replace("//", "https://")
+		auth_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		expires_time = (datetime.now() + timedelta(days=60)).strftime("%Y-%m-%d %H:%M:%S")
+		app_id = result["data"]["user"]["app_id"]
+
+		user_info_dict = {
+			"nickname": nickname,
+			"avatar": avatar,
+			"expires_time": expires_time,
+			"auth_time": auth_time,
+			"uid_id": uid,
+			"bduss": bduss,
+			"token": token,
+			"bjhstoken": bjhstoken
+		}
+		exists = models.PlatFormBaiJiaHao.objects.filter(app_id=app_id).exists()
+		if exists:
+			models.PlatFormBaiJiaHao.objects.filter(app_id=app_id).update(**user_info_dict)
+		else:
+			user_info_dict["app_id"] = app_id
+			models.PlatFormBaiJiaHao.objects.create(**user_info_dict)
+
+		return redirect("/account/auth/list/")
+
+
 def account_auth_get(request):
 	"""获取授权账号表格数据"""
 
@@ -199,6 +249,24 @@ def account_auth_get(request):
 
 		data["rows"].append(content)
 
+	queryset_bjh = models.PlatFormBaiJiaHao.objects.filter(uid=uid)
+	for index, item in enumerate(queryset_bjh):
+		data["total"] += index
+		row_id += 1
+
+		content = {
+			"id": row_id,
+			"platform": "百家号",
+			"nickname": item.nickname,
+			"avatar": item.avatar,
+			"auth_time": item.auth_time,
+			"expires_time": item.expires_time,
+			"status": item.expires_time > datetime.now(),
+			"app_id": item.app_id
+		}
+
+		data["rows"].append(content)
+
 	return JsonResponse(data)
 
 
@@ -209,16 +277,21 @@ def account_delete(request):
 
 	dy_query = Q(open_id=delete_id)
 	zh_query = Q(zh_uid=delete_id)
+	bjh_query = Q(app_id=delete_id)
 
 	# 利用 Q 对象，可以在一个查询中检查多个条件
 	exists_dy = models.PlatFormDouYin.objects.filter(dy_query).exists()
 	exists_zh = models.PlatFormZhiHu.objects.filter(zh_query).exists()
+	exists_bjh = models.PlatFormBaiJiaHao.objects.filter(bjh_query).exists()
 
 	if exists_dy:
 		models.PlatFormDouYin.objects.filter(dy_query).delete()
 		return JsonResponse({"status": True})
 	elif exists_zh:
 		models.PlatFormZhiHu.objects.filter(zh_query).delete()
+		return JsonResponse({"status": True})
+	elif exists_bjh:
+		models.PlatFormBaiJiaHao.objects.filter(bjh_query).delete()
 		return JsonResponse({"status": True})
 
 	return JsonResponse({"status": False})
@@ -247,43 +320,32 @@ def account_data_get(request):
 	# 获取当前登陆的用户uid
 	uid = request.session.get("info").get("uid")
 
+	row_id = 0
 	data = {
 		"total": 0,
 		"rows": []
 	}
 
-	queryset_dy = models.DataDouYin.objects.filter(uid=uid).select_related('open_id').values(
-		'open_id__nickname',
-		'open_id__avatar',
-		'item_id',
-		'title',
-		'video_status',
-		'create_time',
-		'media_type',
-		'cover',
-		'is_top',
-		'share_url',
-		'comment_count',
-		'digg_count',
-		'download_count',
-		'forward_count',
-		'play_count',
-		'share_count'
-	)
-
-	for index, item in enumerate(queryset_dy):
+	# 抖音数据发送到前端
+	queryset = models.PlatFormData.objects.filter(uid=uid)
+	for index, item in enumerate(queryset):
+		row_id += 1
 		data["total"] += index
 		content = {
-			"id": index + 1,
-			"nickname": item["open_id__nickname"],
-			"title": item["title"],
-			"digg_count": item["digg_count"],
-			"comment_count": item["comment_count"],
-			"download_count": item["download_count"],
-			"play_count": item["play_count"],
-			"forward_count": item["forward_count"],
-			"share_count": item["share_count"],
-			"share_url": item["share_url"]
+			"id": row_id,
+			"platform": item.platform,
+			"nickname": item.nickname,
+			"type": item.type,
+			"create_time": item.create_time,
+			"title": item.title,
+			"update_time": item.update_time,
+			"like_count": item.like_count,
+			"comment_count": item.comment_count,
+			"play_count": item.play_count,
+			"download_rec_count": item.download_rec_count,
+			"share_vote_count": item.share_vote_count,
+			"forward_collect_count": item.forward_collect_count,
+			"share_url": item.share_url
 		}
 		data["rows"].append(content)
 
@@ -291,60 +353,77 @@ def account_data_get(request):
 
 
 def account_data_update(request):
-	"""更新数据"""
-	# 通过Ajax更新列表，上传到数据库中，将时间格式改一下
+	"""更新数据到数据库"""
 
 	# 获取当前用户ID
 	uid = request.session.get("info").get("uid")
-	platform_queryset = models.PlatFormDouYin.objects.filter(uid=uid)
 
-	for queryset in platform_queryset:
-		open_id = queryset.open_id
-		access_token = queryset.access_token
-		data = get_douyin_data(open_id, access_token)
-		sql_item_id_list: list[tuple] = list(
-			models.DataDouYin.objects.values_list("item_id"))  # [("item_id",),("item_id",)]
-		sql_item_id_list = [i[0] for i in sql_item_id_list]  # ["item_id"]
+	gd = GetData()
 
-		for item in data["VideoList"]:
-			# 不公开的作品取不到media_type的值，默认指定4
-			media_type = item.get("media_type", 4)
-			# 格式化时间
-			create_time = datetime.fromtimestamp(int(item["create_time"]))
-			if item["item_id"] in sql_item_id_list:
-				update_data = {
-					"title": item["title"],
-					"video_status": item["video_status"],
-					"create_time": create_time,
-					"media_type": media_type,
-					"cover": item["cover"],
-					"is_top": item["is_top"],
-					"share_url": item["share_url"],
-					"comment_count": item["statistics"]["comment_count"],
-					"digg_count": item["statistics"]["digg_count"],
-					"play_count": item["statistics"]["play_count"],
-					"share_count": item["statistics"]["share_count"]
-				}
-				models.DataDouYin.objects.filter(item_id=item["item_id"]).update(**update_data)
-			else:
-				create_data = {
-					"item_id": item["item_id"],
-					"open_id": models.PlatFormDouYin.objects.get(open_id=open_id),
-					"uid": models.User.objects.get(uid=uid),
-					"title": item["title"],
-					"video_status": item["video_status"],
-					"create_time": create_time,
-					"media_type": media_type,
-					"cover": item["cover"],
-					"is_top": item["is_top"],
-					"share_url": item["share_url"],
-					"comment_count": item["statistics"]["comment_count"],
-					"digg_count": item["statistics"]["digg_count"],
-					"play_count": item["statistics"]["play_count"],
-					"share_count": item["statistics"]["share_count"]
-				}
+	dy_param = []
+	dy_queryset = models.PlatFormDouYin.objects.filter(uid=uid)
+	for item in dy_queryset:
+		open_id = item.open_id
+		access_token = item.access_token
+		nickname = item.nickname
+		dy_param.append({"nickname": nickname, "open_id": open_id, "access_token": access_token})
 
-				models.DataDouYin.objects.create(**create_data)
+	zh_param = []
+	zh_queryset = models.PlatFormZhiHu.objects.filter(uid=uid)
+	for item in zh_queryset:
+		z_c0 = item.z_c0
+		zh_uid = item.zh_uid
+		nickname = item.nickname
+		zh_param.append({"nickname": nickname, "z_c0": z_c0, "zh_uid": zh_uid})
+
+	bjh_param = []
+	bjh_queryset = models.PlatFormBaiJiaHao.objects.filter(uid=uid)
+	for item in bjh_queryset:
+		bjhstoken = item.bjhstoken
+		bduss = item.bduss
+		token = item.token
+		app_id = item.app_id
+		nickname = item.nickname
+		bjh_param.append(
+			{"nickname": nickname, "bjhstoken": bjhstoken, "bduss": bduss, "token": token, "app_id": app_id}
+		)
+
+	for param in dy_param:
+		gd.get_douyin_data(
+			param["nickname"], param["open_id"], param["access_token"]
+		)
+	for param in zh_param:
+		gd.get_zhihu_data(
+			param["nickname"], param["z_c0"], param["zh_uid"]
+		)
+	for param in bjh_param:
+		gd.get_baijiahao_data(
+			param["nickname"], param["bjhstoken"],
+			param["bduss"], param["token"], param["app_id"]
+		)
+
+	# 创建或更新数据
+	for item in gd.works_list:
+		item["uid_id"] = uid
+		exists = models.PlatFormData.objects.filter(item_id=item["item_id"]).exists()
+		if exists:
+			models.PlatFormData.objects.filter(item_id=item["item_id"]).update(**item)
+		else:
+			models.PlatFormData.objects.create(**item)
+
+	# 判断抖音原始数据有没有删除
+	sql_item_id_list: list[tuple] = list(
+		models.PlatFormData.objects.values_list("item_id")
+	)  # [("item_id",),("item_id",)]
+	sql_item_id_list = [i[0] for i in sql_item_id_list]  # ["item_id"]
+	source_item_id_list = []
+	for item in gd.works_list:
+		source_item_id_list.append(item["item_id"])
+	sql_item_id_set = set(sql_item_id_list)
+	source_item_id_set = set(source_item_id_list)
+	difference_id = sql_item_id_set - source_item_id_set
+	for item_id in difference_id:
+		models.DataDouYin.objects.filter(item_id=item_id).delete()
 
 	return JsonResponse({"status": True})
 
@@ -354,6 +433,7 @@ def account_auth_refresh(request):
 
 	refresh_id = request.GET.get("refresh_id")
 
+	print(refresh_id)
 	exists_zh = models.PlatFormZhiHu.objects.filter(zh_uid=refresh_id).exists()
 	if exists_zh:
 		data = {
@@ -361,6 +441,17 @@ def account_auth_refresh(request):
 			"data": {
 				"stats": "刷新失败",
 				"tips": "知乎账号刷新无效，如已过期，请删除后重新授权"
+			}
+		}
+		return JsonResponse(data)
+
+	exists_bjh = models.PlatFormBaiJiaHao.objects.filter(app_id=refresh_id).exists()
+	if exists_bjh:
+		data = {
+			"status": False,
+			"data": {
+				"stats": "刷新失败",
+				"tips": "百家号账号刷新无效，如已过期，请删除后重新授权"
 			}
 		}
 		return JsonResponse(data)

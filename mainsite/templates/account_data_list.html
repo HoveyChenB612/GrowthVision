@@ -3,12 +3,10 @@
 
 {% block content %}
     <div id="toolbar" class="btn-group">
-        <button class="btn btn-primary m-r-5" id="btnUpdate">
+        <button class="btn btn-primary m-r-5 btn-round" id="btnUpdate">
             <i class="mdi mdi-restart"></i>
-            刷新
+            更新
         </button>
-
-
     </div>
     <!--页面主要内容-->
 
@@ -16,7 +14,6 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-toolbar clearfix">
-
                     <table id="table"></table>
                 </div>
             </div>
@@ -76,8 +73,24 @@
                     {
                         field: 'id',
                         title: '序号'
-                    },
-                    {
+                    }, {
+                        field: 'platform',
+                        title: "平台",
+                        sortable: true,
+                        formatter: function (platform) {
+                            if (platform === 1) {
+                                return "抖音"
+                            } else if (platform === 2) {
+                                return "知乎"
+                            } else if (platform === 3) {
+                                return "百家号"
+                            }
+                        }
+                    }, {
+                        field: "type",
+                        title: "类型",
+                        sortable: true,
+                    }, {
                         field: 'nickname',
                         title: '昵称'
                     }, {
@@ -85,7 +98,21 @@
                         title: '标题',
                         sortable: true
                     }, {
-                        field: 'digg_count',
+                        field: 'create_time',
+                        title: '创建时间',
+                        sortable: true,
+                        formatter: function (time) {
+                            return time.replace("T", " ")
+                        }
+                    }, {
+                        field: 'update_time',
+                        title: '更新时间',
+                        sortable: true,
+                        formatter: function (time) {
+                            return time.replace("T", " ")
+                        }
+                    }, {
+                        field: 'like_count',
                         title: '点赞数',
                         sortable: true
                     }, {
@@ -96,16 +123,24 @@
                         field: 'play_count',
                         title: '播放数',
                         sortable: true
-                    },  {
-                        field: 'share_count',
-                        title: '分享数',
+                    }, {
+                        field: 'download_rec_count',
+                        title: '下载/推荐',
+                        sortable: true
+                    }, {
+                        field: 'share_vote_count',
+                        title: '分享/赞同',
+                        sortable: true
+                    }, {
+                        field: 'forward_collect_count',
+                        title: '转发/收藏',
                         sortable: true
                     }, {
                         field: 'share_url',
                         title: '查看',
                         align: 'center',
                         formatter: function (url) {
-                            return `<a href="${url}">查看</a>`;
+                            return `<a href="${url}" target="_blank">查看</a>`;
                         }
                     }
                 ],
@@ -116,11 +151,14 @@
         // 更新数据
         function bindBtnUpdateEvent() {
             $("#btnUpdate").click(function () {
+                NProgress.start();
                 $.ajax({
                     url: "/account/data/update/",
                     type: "get",
                     success: function (res) {
                         if (res.status) {
+                            NProgress.done()
+                            alert("数据刷新成功")
                             location.href = "/account/data/list/"
                         } else {
                             alert("数据刷新失败")

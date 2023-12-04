@@ -28,6 +28,7 @@ urlpatterns = [
 	path("account/auth/list/", account.account_auth_list),
 	path("account/auth/douyin/", account.account_auth_douyin),
 	path("account/auth/zhihu/", account.account_auth_zhihu),
+	path("account/auth/baijiahao/",account.account_auth_baijiahao),
 	path("account/auth/get/", account.account_auth_get),
 	path("account/delete/", account.account_delete),
 	path("account/data/list/", account.account_data_list),

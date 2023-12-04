@@ -1,0 +1,184 @@
+import requests
+from datetime import datetime
+
+
+class GetData:
+	works_list = []
+
+	def get_douyin_data(self, nickname: str, open_id: str, access_token: str):
+		"""（抖音开放平台）获取抖音视频数据"""
+
+		# 获取用户视频数据
+		has_more = True
+		cursor = 0
+		while has_more:
+			headers = {
+				'access-token': access_token,
+			}
+			params = {
+				'open_id': open_id,
+				'cursor': cursor,
+				'count': '10',
+			}
+			response = requests.get('https://open.douyin.com/api/douyin/v1/video/video_list/', params=params,
+			                        headers=headers)
+			result = response.json()
+			cursor = result["data"]["cursor"]
+			has_more = result["data"]["has_more"]
+			for item in result["data"]["list"]:
+				itme_type = "视频" if item["media_type"] == 4 else "文图"
+				works_dict = {
+					"platform": 1,
+					"nickname": nickname,
+					"platform_uid": open_id,
+					"item_id": item["item_id"],
+					"title": item["title"],
+					"type": itme_type,
+					"create_time": datetime.fromtimestamp(item["create_time"]).strftime("%Y-%m-%d %H:%M:%S"),
+					"update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+					"share_url": item["share_url"],
+					"like_count": item["statistics"]["digg_count"],
+					"comment_count": item["statistics"]["comment_count"],
+					"play_count": item["statistics"]["play_count"],
+					"download_rec_count": item["statistics"]["download_count"],
+					"share_vote_count": item["statistics"]["share_count"],
+					"forward_collect_count": item["statistics"]["forward_count"],
+				}
+				self.works_list.append(works_dict)
+
+	def get_zhihu_data(self, nickname: str, z_c0: str, zh_uid: str):
+		"""获取知乎授权账号的作品数据"""
+
+		cookies = {"z_c0": z_c0}
+		headers = {
+			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'}
+
+		url = "https://www.zhihu.com/api/v4/creators/creations/v2/all?end=0&limit=20&need_co_creation=1&offset=0&sort_type=created&start=0"
+		is_end = False
+
+		while not is_end:
+			response = requests.get(url, cookies=cookies, headers=headers)
+			result = response.json()
+			url = result["paging"]["next"]
+			is_end = result["paging"]["is_end"]
+			for item in result["data"]:
+				if item["type"] == "pin":
+					continue
+				if item["type"] == "article":
+					works_dict = {
+						"platform": 2,
+						"platform_uid": zh_uid,
+						"nickname": nickname,
+						"item_id": item["data"]["id"],
+						"title": item["data"]["title"],
+						"type": "文章",
+						"create_time": datetime.fromtimestamp(item["data"]["created_time"]).strftime("%Y-%m-%d %H:%M:%S"),
+						"update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+						"share_url": f"https://zhuanlan.zhihu.com/p/{item['data']['id']}",
+						"like_count": item["reaction"]["like_count"],
+						"comment_count": item["reaction"]["comment_count"],
+						"play_count": item["reaction"]["read_count"],
+						"download_rec_count": item["reaction"]["reviewing_comment_count"],
+						"share_vote_count": item["reaction"]["vote_up_count"],
+						"forward_collect_count": item["reaction"]["collect_count"],
+					}
+					self.works_list.append(works_dict)
+				if item["type"] == "zvideo":
+					works_dict = {
+						"platform": 2,
+						"platform_uid": zh_uid,
+						"nickname": nickname,
+						"item_id": item["data"]["id"],
+						"title": item["data"]["title"],
+						"type": "视频",
+						"create_time": datetime.fromtimestamp(item["data"]["created_time"]).strftime("%Y-%m-%d %H:%M:%S"),
+						"update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+						"share_url": f"https://zhuanlan.zhihu.com/p/{item['data']['id']}",
+						"like_count": item["reaction"]["like_count"],
+						"comment_count": item["reaction"]["comment_count"],
+						"play_count": item["reaction"]["play_count"],
+						"download_rec_count": item["reaction"]["reviewing_comment_count"],
+						"share_vote_count": item["reaction"]["vote_up_count"],
+						"forward_collect_count": item["reaction"]["collect_count"],
+					}
+					self.works_list.append(works_dict)
+
+	def get_baijiahao_data(self, nickname: str, bjhstoken: str, bduss: str, token: str, app_id: str):
+		"""获取百家号授权账号的作品数据"""
+		cookies = {'bjhStoken': bjhstoken, 'BDUSS': bduss}
+		headers = {
+			"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+			"token": token,
+			"Referer": "https://baijiahao.baidu.com/builder/rc/content?currentPage=1&search=&pageSize=10&type=&collection=",
+			"Accept": "application/json, text/plain, */*"
+		}
+
+		params = {
+			'currentPage': '1',
+			'pageSize': '10',
+			'search': '',
+			'type': '',
+			'collection': '',
+			'app_id': app_id,
+		}
+
+		response = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
+		                        headers=headers)
+		result = response.json()
+		totalPage = result["data"]["page"]["totalPage"]
+		for i in range(totalPage):
+			params = {
+				'currentPage': i + 1,
+				'pageSize': '10',
+				'search': '',
+				'type': '',
+				'collection': '',
+				'app_id': app_id,
+			}
+			# if params["currentPage"] > 10:
+			# 	break
+			result = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
+			                      headers=headers).json()
+			data_list = result["data"]["list"]
+			for item in data_list:
+				works_dict = {
+					"platform": 3,
+					"nickname": nickname,
+					"platform_uid": app_id,
+					"item_id": item["id"],
+					"title": item["title"],
+					"type": item["type"],
+					"create_time": item["publish_time"],
+					"update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+					"share_url": item["url"],
+					"like_count": item["like_amount"],
+					"comment_count": item["comment_amount"],
+					"play_count": item["read_amount"],
+					"download_rec_count": item.get("rec_amount", 0),
+					"share_vote_count": item["share_amount"],
+					"forward_collect_count": item["collection_amount"],
+				}
+
+				self.works_list.append(works_dict)
+
+
+if __name__ == '__main__':
+	gd = GetData()
+	open_id = "_0004KdgRfrPtVLR8nN2WKq_hQp5sQT6orgn"
+	access_token = "act.3.XA3TRzjQyBGa2nn8ntS0hu32E630_Pcj0t5ltUOdOYLRxSYGaZQjMdgBQH6wsSnXTIvurbqwcWptsPAqbbrUmkiSuFk-dOJCFqEurbEL7o_a2zvXXfS8ZX18CT4eJ8uWLxfyGTGDZVhj0IaYp7hKO8qQjRd9UAu0PinGVIk-mvLOvczcKHs-Lpzp0zM="
+	gd.get_douyin_data("123", open_id, access_token)
+	print("抖音完成")
+	z_c0 = "2|1:0|10:1700625594|4:z_c0|92:Mi4xZV9oV1NnQUFBQUFCd05HUjhqaTRGeVlBQUFCZ0FsVk51TXBLWmdCWmdDZ0loX3FjSF9raVk1V3l6MnliWlA3VGFB|5a7fa50c76250f3ad96ea2d53ebc71ae5303a2137331e799dd53cca0b2f4a177"
+	zh_uid = "1fdef83551b8a7f4190a7fc9c5f9aa6e"
+	gd.get_zhihu_data("123", z_c0, zh_uid)
+	print("知乎完成")
+	bjhStoken = "28cf132b30584c155a19150166fe3236872e822c081dac367603da878126a2b5"
+	bduss = "HkyOVdvZm5RajVUZkg2N2lHcjNKZzJyblgxOXZMWUdSU0xHUlFOeEp2ZjJ2b3RsRUFBQUFBJCQAAAAAAQAAAAEAAADCNR4PyMu1xMP8yve1xNOwOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPYxZGX2MWRlO"
+	token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYWlqaWFoYW8uYmFpZHUuY29tIiwiYXVkIjoiaHR0cDpcL1wvYmFpamlhaGFvLmJhaWR1LmNvbSIsImlhdCI6MTcwMTA3NTUwNCwibmJmIjoxNzAxMDMyMzA5LCJleHAiOjE3MDExMTg3MDl9.Ip9Kt8jf-x16wi6Xeb8gXgOrlZRMJtqBl1y6CiVVlo4'
+	app_id = "1734231139480701"
+	gd.get_baijiahao_data("123", bjhStoken, bduss, token, app_id)
+	print("百家号完成")
+	with open("../../temp/integration.json", "w", encoding="utf-8") as f:
+		import json
+
+		f.write(json.dumps(gd.works_list, ensure_ascii=False))

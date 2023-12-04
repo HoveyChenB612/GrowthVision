@@ -10,6 +10,8 @@
                id="btnDouYinAuth">新增抖音授权</a>
             <a class="btn btn-info btn-round m-r-5"
                id="btnZhihuAuth">新增知乎授权</a>
+            <a class="btn btn-yellow btn-round m-r-5"
+               id="btnBaiJiaHaoAuth">新增百家号授权</a>
         </div>
     </div>
     <!--页面主要内容-->
@@ -53,7 +55,7 @@
                     {% csrf_token %}
                     <div class="modal-body">
                         <span>传入z_c0值：</span>
-                        <input class="form-control" type="text" placeholder="2|1:0|10:1700558819|4:z_c0|92:XXXXX"
+                        <input class="form-control" type="text" placeholder="2|1:0|10:1700558819......."
                                name="z_c0">
                     </div>
                     <div class="modal-footer">
@@ -65,7 +67,39 @@
             </div>
         </div>
     </div>
-    <!--End 模态框-->
+    <!-- 百家号授权模态框 -->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="myBaiJiaHaoModal">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form id="myFromZhiHu" method="post" action="/account/auth/baijiahao/">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <span>传入cookies中BDUSS值:</span>
+                        <input class="form-control" type="text" placeholder="NMYkg5d1pyUkVpN......"
+                               name="bduss">
+                    </div>
+                    <div class="modal-body">
+                        <span>传入cookies中bjhStoken值:</span>
+                        <input class="form-control" type="text" placeholder="28cf132b305......"
+                               name="bjhstoken">
+                    </div>
+                    <div class="modal-body">
+                        <span>传入token值:</span>
+                        <input class="form-control" type="token"
+                               placeholder="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9......."
+                               name="token">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <input type="submit" class="btn btn-primary" value="保存">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}
 
 
@@ -83,6 +117,7 @@
             load('/account/auth/get/')
             bindBtnDouYinAuthEvent();
             bindBtnZhiHuAuthEvent();
+            bindBtnBaiJiaHaoAuthEvent();
             $(".alert").hide();
         });
 
@@ -112,6 +147,14 @@
             $("#btnZhihuAuth").click(function () {
                 $(this).find("input").empty()
                 $("#myZhiHuModal").modal("show")
+            })
+        }
+
+        // 开启百家号模态框
+        function bindBtnBaiJiaHaoAuthEvent() {
+            $("#btnBaiJiaHaoAuth").click(function () {
+                $(this).find("input").empty()
+                $("#myBaiJiaHaoModal").modal("show")
             })
         }
 
@@ -170,7 +213,7 @@
                         field: 'avatar',
                         title: '头像',
                         formatter: function (url) {
-                            return `<img src="${url}" style="height: 50px;width: 50px">`;
+                            return `<img src="${url}" style="height: 50px;width: 50px" alt="">`;
                         }
                     }, {
                         field: 'auth_time',
@@ -212,7 +255,14 @@
 
             //操作栏的格式化
             function actionFormatter(value, row) {
-                var getPrimary = row.zh_uid ? row.zh_uid : row.open_id;
+                var getPrimary;
+                if (row.zh_uid) {
+                    getPrimary = row.zh_uid
+                } else if (row.open_id) {
+                    getPrimary = row.open_id
+                } else if (row.app_id) {
+                    getPrimary = row.app_id
+                }
                 var result = "";
 
                 // 在按钮字符串中插入 getPrimary 变量到 id 属性
@@ -248,25 +298,25 @@
 
         // 刷新行
         function bindBtnRefreshEvent(ele) {
-                var refresh_id = $(ele).attr("id")
-                $.ajax({
-                    url: "/account/refresh/",
-                    type: "get",
-                    data: {
-                        refresh_id: refresh_id
-                    },
-                    success: function (res) {
-                        var stats = res.data.stats
-                        var tips = res.data.tips
-                        if (res.status) {
-                            var newClass = "alert-success"
-                            bindAlertEvent(newClass, stats, tips)
-                        } else {
-                            newClass = "alert-danger"
-                            bindAlertEvent(newClass, stats, tips)
-                        }
+            var refresh_id = $(ele).attr("id")
+            $.ajax({
+                url: "/account/refresh/",
+                type: "get",
+                data: {
+                    refresh_id: refresh_id
+                },
+                success: function (res) {
+                    var stats = res.data.stats
+                    var tips = res.data.tips
+                    if (res.status) {
+                        var newClass = "alert-success"
+                        bindAlertEvent(newClass, stats, tips)
+                    } else {
+                        newClass = "alert-danger"
+                        bindAlertEvent(newClass, stats, tips)
                     }
-                })
+                }
+            })
         }
     </script>
 {% endblock %}
