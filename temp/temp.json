@@ -1,0 +1,811 @@
+{
+  'sug_list': [
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6585246268556055821',
+        'words_position': 0,
+        'words_content': '代理ip',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.492620',
+        'ecom_ctr': 0.0012673735618591309,
+        'ecom_cvr': 1.8311715393792838e-05,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 1,
+        'ecom_rel_product_score': 0.18566407918,
+        'ecpm_score': 0.023945484310388565,
+        'exemptions': {
+          'nlp_filter': 'high_pv'
+        },
+        'is_useful_query': '1',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.4926196336746216,
+        'predict_order': 0,
+        'predict_utility_score': 34.709835052490234,
+        'ranking_labels': {
+          '0': [
+            '14',
+            '3',
+            '26071',
+            '10'
+          ],
+          '7': [
+            '代理ip'
+          ],
+          '8': [
+            '代理ip'
+          ]
+        },
+        'ranking_rule_score': 34.709835052490234,
+        'reason': 'aweme_qse_recall:0 aweme_sug_real_perfix_long_term_90d_recall:0 aweme_word:0 aweme_pinyin:0 aweme_viking_recall:0 aweme_orion_word:0 aweme_orion_pinyin:0 aweme_sug_real_perfix_short_term_14d_recall:0',
+        'recall_position': {
+          'aweme_orion_pinyin': 0,
+          'aweme_orion_word': 0,
+          'aweme_pinyin': 0,
+          'aweme_qse_recall': 0,
+          'aweme_sug_real_perfix_long_term_90d_recall': 0,
+          'aweme_sug_real_perfix_short_term_14d_recall': 0,
+          'aweme_viking_recall': 0,
+          'aweme_word': 0
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '11.787495',
+          'aweme_orion_word': '11.787495',
+          'aweme_pinyin': '11.792383',
+          'aweme_qse_recall': '1.024240',
+          'aweme_sug_real_perfix_long_term_90d_recall': '0.368693',
+          'aweme_sug_real_perfix_short_term_14d_recall': '0.367521',
+          'aweme_viking_recall': '0.998444',
+          'aweme_word': '11.792383'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 96,
+        'roughsort_score': 0.06580314040184021,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip软件推荐',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6720879751491327235',
+        'words_position': 1,
+        'words_content': '代理ip软件推荐',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.140567',
+        'ecom_ctr': 0.0006941854953765869,
+        'ecom_cvr': 7.376737812592182e-06,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0477125,
+        'ecpm_score': 0.04777252674102783,
+        'exemptions': {
+          'nlp_filter': 'high_pv'
+        },
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.14056691527366638,
+        'predict_order': 1,
+        'predict_utility_score': 1.1621389389038086,
+        'query_assessment_tag': '[poi_pinyin,poi_word]',
+        'ranking_labels': {
+          '0': [
+            '14',
+            '3'
+          ],
+          '20764': [
+            '代理ip软件推荐_代理ip软件',
+            '代理ip软件推荐_代理ip软件推荐国外',
+            '代理ip软件推荐_代理ip软件哪个好'
+          ],
+          '5': [
+            '代理ip软件推荐_代理ip软件',
+            '代理ip软件推荐_代理ip软件推荐国外',
+            '代理ip软件推荐_代理ip软件哪个好'
+          ],
+          '7': [
+            '代理ip软件推荐'
+          ],
+          '8': [
+            '代理ip软件推荐'
+          ]
+        },
+        'ranking_rule_score': 1.1621389389038086,
+        'reason': 'aweme_qse_recall:7 aweme_orion_pinyin:2 poi_pinyin:0 aweme_sug_real_perfix_short_term_14d_recall:1 aweme_sug_real_perfix_long_term_90d_recall:1 aweme_pinyin:2 aweme_word:2 poi_word:0 aweme_orion_word:2',
+        'recall_position': {
+          'aweme_orion_pinyin': 2,
+          'aweme_orion_word': 2,
+          'aweme_pinyin': 2,
+          'aweme_qse_recall': 7,
+          'aweme_sug_real_perfix_long_term_90d_recall': 1,
+          'aweme_sug_real_perfix_short_term_14d_recall': 1,
+          'aweme_word': 2,
+          'poi_pinyin': 0,
+          'poi_word': 0
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '9.392318',
+          'aweme_orion_word': '9.392318',
+          'aweme_pinyin': '9.372865',
+          'aweme_qse_recall': '1.009814',
+          'aweme_sug_real_perfix_long_term_90d_recall': '0.221216',
+          'aweme_sug_real_perfix_short_term_14d_recall': '0.239316',
+          'aweme_word': '9.372865',
+          'poi_pinyin': '9.372865',
+          'poi_word': '9.372865'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 0,
+        'roughsort_score': 0.7962051630020142,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip软件推荐',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip怎么搭建',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6661478697834386699',
+        'words_position': 2,
+        'words_content': '代理ip怎么搭建',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.027957',
+        'ecom_ctr': 0.0005060732364654541,
+        'ecom_cvr': 4.584734597301576e-06,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0,
+        'ecpm_score': 0.09724459797143936,
+        'exemptions': {},
+        'is_useful_query': '1',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.027956726029515266,
+        'predict_order': 2,
+        'predict_utility_score': 0.016934718936681747,
+        'ranking_labels': {
+          '0': [
+            '26071',
+            '3',
+            '14'
+          ],
+          '7': [
+            '代理ip怎么搭建'
+          ],
+          '8': [
+            '代理ip怎么搭建'
+          ]
+        },
+        'ranking_rule_score': 0.016934718936681747,
+        'reason': 'aweme_orion_pinyin:54 aweme_orion_word:54 aweme_sug_real_perfix_short_term_14d_recall:7 aweme_pinyin:21 aweme_word:21',
+        'recall_position': {
+          'aweme_orion_pinyin': 54,
+          'aweme_orion_word': 54,
+          'aweme_pinyin': 21,
+          'aweme_sug_real_perfix_short_term_14d_recall': 7,
+          'aweme_word': 21
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '2.807355',
+          'aweme_orion_word': '2.807355',
+          'aweme_pinyin': '3.000000',
+          'aweme_sug_real_perfix_short_term_14d_recall': '0.025641',
+          'aweme_word': '3.000000'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 81,
+        'roughsort_score': 0.09694734215736389,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip怎么搭建',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip哪个平台最靠谱',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6818787664729232647',
+        'words_position': 3,
+        'words_content': '代理ip哪个平台最靠谱',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.026789',
+        'ecom_ctr': 8.359551429748535e-05,
+        'ecom_cvr': 4.6416661803050374e-07,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 1,
+        'ecom_rel_product_score': 0.1396591815,
+        'ecpm_score': 0.04399483650922775,
+        'exemptions': {
+          'nlp_filter': 'high_pv'
+        },
+        'is_useful_query': '1',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.026789488270878792,
+        'predict_order': 3,
+        'predict_utility_score': 0.01501413807272911,
+        'ranking_labels': {
+          '0': [
+            '26071',
+            '3',
+            '14'
+          ],
+          '5': [
+            '代理ip哪个平台最靠谱_代理ip有哪些平台'
+          ],
+          '7': [
+            '代理ip哪个平台最靠谱'
+          ],
+          '8': [
+            '代理ip哪个平台最靠谱'
+          ]
+        },
+        'ranking_rule_score': 0.01501413807272911,
+        'reason': 'aweme_qse_recall:3 aweme_orion_word:1 aweme_word:1 aweme_pinyin:1 aweme_sug_real_perfix_long_term_90d_recall:2 aweme_orion_pinyin:1 aweme_sug_real_perfix_short_term_14d_recall:2',
+        'recall_position': {
+          'aweme_orion_pinyin': 1,
+          'aweme_orion_word': 1,
+          'aweme_pinyin': 1,
+          'aweme_qse_recall': 3,
+          'aweme_sug_real_perfix_long_term_90d_recall': 2,
+          'aweme_sug_real_perfix_short_term_14d_recall': 2,
+          'aweme_word': 1
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '10.109831',
+          'aweme_orion_word': '10.109831',
+          'aweme_pinyin': '10.117643',
+          'aweme_qse_recall': '0.999246',
+          'aweme_sug_real_perfix_long_term_90d_recall': '0.147477',
+          'aweme_sug_real_perfix_short_term_14d_recall': '0.136752',
+          'aweme_word': '10.117643'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 2,
+        'roughsort_score': 0.7399835586547852,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip哪个平台最靠谱',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip什么意思',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6662487143245436164',
+        'words_position': 4,
+        'words_content': '代理ip什么意思',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.021600',
+        'ecom_ctr': 0.0001289844512939453,
+        'ecom_cvr': 8.607565860074828e-07,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0,
+        'ecpm_score': 0.003585422644391656,
+        'exemptions': {},
+        'is_useful_query': '1',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.021600186824798584,
+        'predict_order': 4,
+        'predict_utility_score': 0.008493316359817982,
+        'ranking_labels': {
+          '0': [
+            '26071',
+            '3',
+            '14'
+          ],
+          '20764': [
+            '代理ip什么意思_代理ip有什么用',
+            '代理ip什么意思_代理ip是什么意思',
+            '代理ip什么意思_代理ip什么用'
+          ],
+          '4': [
+            '代理ip什么意思_代理ip是什么意思'
+          ],
+          '5': [
+            '代理ip什么意思_代理ip什么用',
+            '代理ip什么意思_代理ip是什么意思'
+          ],
+          '7': [
+            '代理ip什么意思'
+          ],
+          '8': [
+            '代理ip什么意思'
+          ]
+        },
+        'ranking_rule_score': 0.008493316359817982,
+        'reason': 'aweme_qse_recall:30 aweme_orion_pinyin:4 aweme_sug_real_perfix_long_term_90d_recall:4 aweme_pinyin:4 aweme_word:4 aweme_orion_word:4',
+        'recall_position': {
+          'aweme_orion_pinyin': 4,
+          'aweme_orion_word': 4,
+          'aweme_pinyin': 4,
+          'aweme_qse_recall': 30,
+          'aweme_sug_real_perfix_long_term_90d_recall': 4,
+          'aweme_word': 4
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '7.129283',
+          'aweme_orion_word': '7.129283',
+          'aweme_pinyin': '7.139551',
+          'aweme_qse_recall': '1.009808',
+          'aweme_sug_real_perfix_long_term_90d_recall': '0.054334',
+          'aweme_word': '7.139551'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 46,
+        'roughsort_score': 0.1958196461200714,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip什么意思',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip防封号吗',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6823409037694997764',
+        'words_position': 5,
+        'words_content': '代理ip防封号吗',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.016536',
+        'ecom_ctr': 0.0014728009700775146,
+        'ecom_cvr': 2.121281977451872e-05,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0,
+        'ecpm_score': 0.03991987556219101,
+        'exemptions': {},
+        'is_useful_query': '1',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.016536030918359756,
+        'predict_order': 5,
+        'predict_utility_score': 0.0043379501439630985,
+        'ranking_labels': {
+          '0': [
+            '26071',
+            '3',
+            '14'
+          ],
+          '7': [
+            '代理ip防封号吗'
+          ],
+          '8': [
+            '代理ip防封号吗'
+          ]
+        },
+        'ranking_rule_score': 0.0043379501439630985,
+        'reason': 'aweme_orion_pinyin:25 aweme_orion_word:25 aweme_word:12 aweme_pinyin:12',
+        'recall_position': {
+          'aweme_orion_pinyin': 25,
+          'aweme_orion_word': 25,
+          'aweme_pinyin': 12,
+          'aweme_word': 12
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '4.000000',
+          'aweme_orion_word': '4.000000',
+          'aweme_pinyin': '4.000000',
+          'aweme_word': '4.000000'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 83,
+        'roughsort_score': 0.08932223916053772,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip防封号吗',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip犯法吗',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6736810383706690824',
+        'words_position': 6,
+        'words_content': '代理ip犯法吗',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.014016',
+        'ecom_ctr': 0.0001138150691986084,
+        'ecom_cvr': 1.2842477872254676e-06,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0,
+        'ecpm_score': 0.007278270088136196,
+        'exemptions': {
+          'nlp_filter': 'high_pv'
+        },
+        'is_useful_query': '1',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.014016089029610157,
+        'predict_order': 6,
+        'predict_utility_score': 0.0027025777380913496,
+        'ranking_labels': {
+          '0': [
+            '26071',
+            '3',
+            '14'
+          ],
+          '4': [
+            '代理ip违法吗_代理ip犯法吗'
+          ],
+          '7': [
+            '代理ip犯法吗'
+          ],
+          '8': [
+            '代理ip犯法吗'
+          ]
+        },
+        'ranking_rule_score': 0.0027025777380913496,
+        'reason': 'aweme_orion_pinyin:9 aweme_orion_word:9 aweme_sug_real_perfix_short_term_14d_recall:3 aweme_sug_real_perfix_long_term_90d_recall:8 aweme_pinyin:8 aweme_word:8',
+        'recall_position': {
+          'aweme_orion_pinyin': 9,
+          'aweme_orion_word': 9,
+          'aweme_pinyin': 8,
+          'aweme_sug_real_perfix_long_term_90d_recall': 8,
+          'aweme_sug_real_perfix_short_term_14d_recall': 3,
+          'aweme_word': 8
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '6.044394',
+          'aweme_orion_word': '6.044394',
+          'aweme_pinyin': '6.066089',
+          'aweme_sug_real_perfix_long_term_90d_recall': '0.020699',
+          'aweme_sug_real_perfix_short_term_14d_recall': '0.059829',
+          'aweme_word': '6.066089'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 92,
+        'roughsort_score': 0.07347679138183594,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip犯法吗',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip多少钱一个',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6797582591563142408',
+        'words_position': 7,
+        'words_content': '代理ip多少钱一个',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.013593',
+        'ecom_ctr': 0.00013145804405212402,
+        'ecom_cvr': 1.070796884050651e-06,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0,
+        'ecpm_score': 0.042713064700365067,
+        'exemptions': {
+          'nlp_filter': 'high_pv'
+        },
+        'is_useful_query': '1',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.013592842034995556,
+        'predict_order': 7,
+        'predict_utility_score': 0.002490757266059518,
+        'ranking_labels': {
+          '0': [
+            '26071',
+            '3',
+            '14'
+          ],
+          '7': [
+            '代理ip多少钱一个'
+          ],
+          '8': [
+            '代理ip多少钱一个'
+          ]
+        },
+        'ranking_rule_score': 0.002490757266059518,
+        'reason': 'aweme_qse_recall:43 aweme_orion_word:5 aweme_word:5 aweme_pinyin:5 aweme_sug_real_perfix_long_term_90d_recall:6 aweme_orion_pinyin:5 aweme_sug_real_perfix_short_term_14d_recall:6',
+        'recall_position': {
+          'aweme_orion_pinyin': 5,
+          'aweme_orion_word': 5,
+          'aweme_pinyin': 5,
+          'aweme_qse_recall': 43,
+          'aweme_sug_real_perfix_long_term_90d_recall': 6,
+          'aweme_sug_real_perfix_short_term_14d_recall': 6,
+          'aweme_word': 5
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '6.894818',
+          'aweme_orion_word': '6.894818',
+          'aweme_pinyin': '6.894818',
+          'aweme_qse_recall': '1.006263',
+          'aweme_sug_real_perfix_long_term_90d_recall': '0.033635',
+          'aweme_sug_real_perfix_short_term_14d_recall': '0.034188',
+          'aweme_word': '6.894818'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 84,
+        'roughsort_score': 0.08839836716651917,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip多少钱一个',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip推荐',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '6710740448907891971',
+        'words_position': 8,
+        'words_content': '代理ip推荐',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.012705',
+        'ecom_ctr': 0.0002110600471496582,
+        'ecom_cvr': 2.0861111806880217e-06,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0,
+        'ecpm_score': 0.03326426073908806,
+        'exemptions': {},
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.012704608961939812,
+        'predict_order': 8,
+        'predict_utility_score': 0.0019744255114346743,
+        'ranking_labels': {
+          '0': [
+            '14',
+            '3'
+          ],
+          '20764': [
+            '代理ip推荐_代理ip哪个好'
+          ],
+          '7': [
+            '代理ip推荐'
+          ],
+          '8': [
+            '代理ip推荐'
+          ]
+        },
+        'ranking_rule_score': 0.0019744255114346743,
+        'reason': 'aweme_orion_pinyin:22 aweme_orion_word:22 aweme_word:11 aweme_pinyin:11',
+        'recall_position': {
+          'aweme_orion_pinyin': 22,
+          'aweme_orion_word': 22,
+          'aweme_pinyin': 11,
+          'aweme_word': 11
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '4.247928',
+          'aweme_orion_word': '4.247928',
+          'aweme_pinyin': '4.247928',
+          'aweme_word': '4.247928'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 28,
+        'roughsort_score': 0.29681137204170227,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip推荐',
+        'src_query_is_prefix': 2,
+        'sug_enter_type': '3'
+      }
+    },
+    {
+      'pos': [
+        {
+          'begin': 0,
+          'end': 3
+        }
+      ],
+      'content': '代理ip游戏工作室',
+      'sug_type': '',
+      'word_record': {
+        'group_id': '7015114815321167119',
+        'words_position': 9,
+        'words_content': '代理ip游戏工作室',
+        'words_source': 'sug'
+      },
+      'extra_info': {
+        'client_server_extra': '{"suggest_words_config":"{}"}',
+        'ctr_score': '0.011345',
+        'ecom_ctr': 3.0338764190673828e-05,
+        'ecom_cvr': 3.0232135372898483e-07,
+        'ecom_gmv': -10000.0,
+        'ecom_rel_product_count': 0,
+        'ecom_rel_product_score': 0.0,
+        'ecpm_score': 0.04220033809542656,
+        'exemptions': {},
+        'is_display_query': '1',
+        'original_query': '代理ip 游戏工作室',
+        'play_finish_rate': 0.0,
+        'poi_id': '',
+        'poi_location_recall_log_id': '20231205170047860762FD870F0D059E0C',
+        'poi_ua_recall_log_id': '20231205165912CFC11704DDD1A00576E1',
+        'predict_ctr_score': 0.011345447972416878,
+        'predict_order': 10,
+        'predict_utility_score': 0.001458347775042057,
+        'ranking_labels': {
+          '0': [
+            '3'
+          ],
+          '7': [
+            '代理ip游戏工作室'
+          ],
+          '8': [
+            '代理ip 游戏工作室'
+          ]
+        },
+        'ranking_rule_score': 0.001458347775042057,
+        'reason': 'aweme_orion_pinyin:26 aweme_orion_word:26',
+        'recall_position': {
+          'aweme_orion_pinyin': 26,
+          'aweme_orion_word': 26
+        },
+        'recall_score': {
+          'aweme_orion_pinyin': '4.000000',
+          'aweme_orion_word': '4.000000'
+        },
+        'relevance_score': -10000.0,
+        'res_click_rate': 0.0,
+        'roughsort_order': 36,
+        'roughsort_score': 0.23415285348892212,
+        'search_params': '{"sug_poi_id":""}',
+        'slot_utility_scores': [],
+        'sq': '代理ip游戏工作室',
+        'src_query_is_prefix': 1,
+        'sug_enter_type': '3'
+      }
+    }
+  ],
+  'sug_virtual_list': None,
+  'status_code': 0,
+  'status_msg': '',
+  'rid': '20231205170047860762FD870F0D059E0C',
+  'words_query_record': {
+    'info': '{}',
+    'words_source': 'sug',
+    'query_id': '6585246268556055821'
+  },
+  'extra': {
+    'now': 1701766847000,
+    'logid': '20231205170047860762FD870F0D059E0C',
+    'fatal_item_ids': [],
+    'search_request_id': ''
+  },
+  'log_pb': {
+    'impr_id': '20231205170047860762FD870F0D059E0C'
+  },
+  'time_cost': {
+    'stream_inner': '153',
+    'server_engine_cost': '132'
+  },
+  'words_lists': []
+}

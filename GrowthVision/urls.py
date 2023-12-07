@@ -16,19 +16,24 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path
-from mainsite.views import index, account, user, hot
+from mainsite.views import index, account, user, hot, task
 
 urlpatterns = [
 	# path('admin/', admin.site.urls),
 
 	# 主页
 	path("index/", index.index),
+	path("index/total/bilibili/", index.index_total_bilibili),
+	path("index/total/zhihu/", index.index_total_zhihu),
+	path("index/total/baijiahao/", index.index_total_baijiahao),
+	path("index/echarts/", index.index_echarts),
 
 	# 平台账号
 	path("account/auth/list/", account.account_auth_list),
 	path("account/auth/douyin/", account.account_auth_douyin),
+	path("account/auth/bilibili/", account.account_auth_bilibili),
 	path("account/auth/zhihu/", account.account_auth_zhihu),
-	path("account/auth/baijiahao/",account.account_auth_baijiahao),
+	path("account/auth/baijiahao/", account.account_auth_baijiahao),
 	path("account/auth/get/", account.account_auth_get),
 	path("account/delete/", account.account_delete),
 	path("account/data/list/", account.account_data_list),

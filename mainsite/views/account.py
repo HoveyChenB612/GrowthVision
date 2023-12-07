@@ -50,32 +50,33 @@ def account_auth_zhihu(request):
 
 	if request.method == "POST":
 		z_c0 = request.POST.get("z_c0")
-		cookies = {"z_c0": z_c0}
-		headers = {
-			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'}
-		url = "https://www.zhihu.com/api/v4/me"
-		response = requests.get(url, headers=headers, cookies=cookies)
-		user_info = response.json()
-		nickname = user_info.get("name")
-		avatar = user_info.get("avatar_url")
-		auth_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		expires_time = (datetime.now() + timedelta(days=180)).strftime("%Y-%m-%d %H:%M:%S")
-		zh_uid = user_info.get("id")
-		print(user_info)
-		user_info_dict = {
-			"uid_id": uid,
-			"nickname": nickname,
-			"avatar": avatar,
-			"auth_time": auth_time,
-			"expires_time": expires_time,
-			"z_c0": z_c0
-		}
-		exists = models.PlatFormZhiHu.objects.filter(zh_uid=zh_uid).exists()
-		if exists:
-			models.PlatFormZhiHu.objects.filter(zh_uid=zh_uid).update(**user_info_dict)
-		else:
-			user_info_dict["zh_uid"] = zh_uid
-			models.PlatFormZhiHu.objects.create(**user_info_dict)
+		if z_c0:
+			cookies = {"z_c0": z_c0}
+			headers = {
+				'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'}
+			url = "https://www.zhihu.com/api/v4/me"
+			response = requests.get(url, headers=headers, cookies=cookies)
+			user_info = response.json()
+			nickname = user_info.get("name")
+			avatar = user_info.get("avatar_url")
+			auth_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+			expires_time = (datetime.now() + timedelta(days=180)).strftime("%Y-%m-%d %H:%M:%S")
+			zh_uid = user_info.get("id")
+			print(user_info)
+			user_info_dict = {
+				"uid_id": uid,
+				"nickname": nickname,
+				"avatar": avatar,
+				"auth_time": auth_time,
+				"expires_time": expires_time,
+				"z_c0": z_c0
+			}
+			exists = models.PlatFormZhiHu.objects.filter(zh_uid=zh_uid).exists()
+			if exists:
+				models.PlatFormZhiHu.objects.filter(zh_uid=zh_uid).update(**user_info_dict)
+			else:
+				user_info_dict["zh_uid"] = zh_uid
+				models.PlatFormZhiHu.objects.create(**user_info_dict)
 
 	return redirect("/account/auth/list/")
 
@@ -151,6 +152,84 @@ def account_auth_douyin(request):
 				else:
 					user_info_dict["open_id"] = open_id
 					models.PlatFormDouYin.objects.create(**user_info_dict)
+
+	return redirect("/account/auth/list/")
+
+
+def account_auth_bilibili(request):
+	"""账号授权 Bilibili"""
+
+	# 获取当前登陆的用户uid
+	uid = request.session.get("info").get("uid")
+
+	# 获取用户授权信息
+	if request.method == "POST":
+		# 获取扫码后重定向的query参数
+		return_url = request.POST.get("return_url")
+		if return_url:
+			url = parse.urlparse(return_url)
+			query_dict = parse.parse_qs(url.query)
+			code = query_dict.get("code")[0]
+
+			# 获取access_token，expires_in，refresh_token
+			if code:
+				access_token_url = "https://api.bilibili.com/x/account-oauth2/v1/token"
+				access_token_json = {
+					"client_id": "302763bae0404eee",
+					"client_secret": "aef73864a09a42bcbe1bbec8130ee5ed",
+					"grant_type": "authorization_code",
+					"code": code
+				}
+				access_token_response = requests.post(url=access_token_url, json=access_token_json)
+				access_token_result = access_token_response.json()
+				print(access_token_result)
+				if access_token_result.get("code") == 0:
+					data = access_token_result.get("data")
+					access_token = data.get("access_token", "")
+					expires_in = data.get("expires_in", "")
+					refresh_token = data.get("refresh_token", "")
+
+					# 获取用户信息
+					user_info_url = "https://member.bilibili.com/arcopen/fn/user/account/info"
+					user_info_param = {
+						"client_id": "302763bae0404eee",
+						"access_token": access_token
+					}
+					user_info_response = requests.get(url=user_info_url, params=user_info_param)
+					user_info_result = user_info_response.json()
+					if user_info_result.get("code") == 0:
+						data = user_info_result.get("data")
+						nickname = data.get("name", "")
+						avatar = data.get("face", "")
+						openid = data.get("openid", "")
+
+						time_object = datetime.utcfromtimestamp(expires_in)
+						expires_time = time_object.strftime("%Y-%m-%d %H:%M:%S")
+						auth_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+						row_object = {
+							"access_token": access_token,
+							"refresh_token": refresh_token,
+							"nickname": nickname,
+							"avatar": avatar,
+							"expires_in": expires_time,
+							"auth_time": auth_time,
+							"uid_id": uid
+						}
+
+						exists = models.PlatFormBilibili.objects.filter(openid=openid).exists()
+						if exists:
+							models.PlatFormBilibili.objects.filter(openid=openid).update(**row_object)
+						else:
+							row_object["openid"] = openid
+							models.PlatFormBilibili.objects.create(**row_object)
+
+					else:
+						mes = user_info_result.get("message")
+						print(mes)
+
+				else:
+					mes = access_token_result.get("message")
+					print(mes)
 
 	return redirect("/account/auth/list/")
 
@@ -231,6 +310,23 @@ def account_auth_get(request):
 
 		data["rows"].append(content)
 
+	queryset_bz = models.PlatFormBilibili.objects.filter(uid=uid)
+	for index, item in enumerate(queryset_bz):
+		data["total"] += index
+		row_id += 1
+		content = {
+			"id": row_id,
+			"platform": "哔哩哔哩",
+			"nickname": item.nickname,
+			"avatar": item.avatar,
+			"auth_time": item.auth_time,
+			"expires_time": item.expires_in,
+			"status": item.expires_in > datetime.now(),
+			"openid": item.openid
+		}
+
+		data["rows"].append(content)
+
 	queryset_zh = models.PlatFormZhiHu.objects.filter(uid=uid)
 	for index, item in enumerate(queryset_zh):
 		data["total"] += index
@@ -278,11 +374,13 @@ def account_delete(request):
 	dy_query = Q(open_id=delete_id)
 	zh_query = Q(zh_uid=delete_id)
 	bjh_query = Q(app_id=delete_id)
+	bz_query = Q(openid=delete_id)
 
 	# 利用 Q 对象，可以在一个查询中检查多个条件
 	exists_dy = models.PlatFormDouYin.objects.filter(dy_query).exists()
 	exists_zh = models.PlatFormZhiHu.objects.filter(zh_query).exists()
 	exists_bjh = models.PlatFormBaiJiaHao.objects.filter(bjh_query).exists()
+	exists_bz = models.PlatFormBilibili.objects.filter(bz_query).exists()
 
 	if exists_dy:
 		models.PlatFormDouYin.objects.filter(dy_query).delete()
@@ -292,6 +390,9 @@ def account_delete(request):
 		return JsonResponse({"status": True})
 	elif exists_bjh:
 		models.PlatFormBaiJiaHao.objects.filter(bjh_query).delete()
+		return JsonResponse({"status": True})
+	elif exists_bz:
+		models.PlatFormBilibili.objects.filter(bz_query).delete()
 		return JsonResponse({"status": True})
 
 	return JsonResponse({"status": False})
@@ -368,6 +469,14 @@ def account_data_update(request):
 		nickname = item.nickname
 		dy_param.append({"nickname": nickname, "open_id": open_id, "access_token": access_token})
 
+	bz_param = []
+	bz_queryset = models.PlatFormBilibili.objects.filter(uid=uid)
+	for item in bz_queryset:
+		openid = item.openid
+		access_token = item.access_token
+		nickname = item.nickname
+		bz_param.append({"nickname": nickname, "openid": openid, "access_token": access_token})
+
 	zh_param = []
 	zh_queryset = models.PlatFormZhiHu.objects.filter(uid=uid)
 	for item in zh_queryset:
@@ -390,28 +499,32 @@ def account_data_update(request):
 
 	for param in dy_param:
 		gd.get_douyin_data(
-			param["nickname"], param["open_id"], param["access_token"]
+			param["nickname"], param["open_id"], param["access_token"], uid
+		)
+	for param in bz_param:
+		gd.get_bilibili_data(
+			param["nickname"], param["access_token"], param["openid"], uid
 		)
 	for param in zh_param:
 		gd.get_zhihu_data(
-			param["nickname"], param["z_c0"], param["zh_uid"]
+			param["nickname"], param["z_c0"], param["zh_uid"], uid
 		)
 	for param in bjh_param:
 		gd.get_baijiahao_data(
 			param["nickname"], param["bjhstoken"],
-			param["bduss"], param["token"], param["app_id"]
+			param["bduss"], param["token"], param["app_id"],
+			uid
 		)
 
 	# 创建或更新数据
 	for item in gd.works_list:
-		item["uid_id"] = uid
 		exists = models.PlatFormData.objects.filter(item_id=item["item_id"]).exists()
 		if exists:
 			models.PlatFormData.objects.filter(item_id=item["item_id"]).update(**item)
 		else:
 			models.PlatFormData.objects.create(**item)
 
-	# 判断抖音原始数据有没有删除
+	# 判断原始数据有没有删除
 	sql_item_id_list: list[tuple] = list(
 		models.PlatFormData.objects.values_list("item_id")
 	)  # [("item_id",),("item_id",)]
@@ -423,7 +536,7 @@ def account_data_update(request):
 	source_item_id_set = set(source_item_id_list)
 	difference_id = sql_item_id_set - source_item_id_set
 	for item_id in difference_id:
-		models.DataDouYin.objects.filter(item_id=item_id).delete()
+		models.PlatFormData.objects.filter(item_id=item_id).delete()
 
 	return JsonResponse({"status": True})
 
@@ -433,7 +546,6 @@ def account_auth_refresh(request):
 
 	refresh_id = request.GET.get("refresh_id")
 
-	print(refresh_id)
 	exists_zh = models.PlatFormZhiHu.objects.filter(zh_uid=refresh_id).exists()
 	if exists_zh:
 		data = {
@@ -456,38 +568,78 @@ def account_auth_refresh(request):
 		}
 		return JsonResponse(data)
 
-	row_object = models.PlatFormDouYin.objects.filter(open_id=refresh_id).first()
-
-	rft_data = {
-		"refresh_token": row_object.refresh_token,
-		"client_key": "awpswfd65m22r59e"
-	}
-	rft_response = requests.post('https://open.douyin.com/oauth/renew_refresh_token/', data=rft_data)
-	rft_response_data = rft_response.json().get("data", "")
-	rft_response_message = rft_response.json().get("message", "")
-
-	if rft_response_message == 'success':
-		models.PlatFormDouYin.objects.filter(open_id=refresh_id).update(
-			refresh_token=rft_response_data.get("refresh_token"))
-		act_data = {
-			'client_key': "awpswfd65m22r59e",
-			'grant_type': "refresh_token",
-			'refresh_token': rft_response_data.get("refresh_token"),
+	exists_dy = models.PlatFormDouYin.objects.filter(open_id=refresh_id).exists()
+	if exists_dy:
+		row_object = models.PlatFormDouYin.objects.filter(open_id=refresh_id).first()
+		rft_data = {
+			"refresh_token": row_object.refresh_token,
+			"client_key": "awpswfd65m22r59e"
 		}
-		act_response = requests.post('https://open.douyin.com/oauth/refresh_token/', data=act_data)
-		act_response_data = act_response.json().get("data", "")
-		act_response_message = act_response.json().get("message")
+		rft_response = requests.post('https://open.douyin.com/oauth/renew_refresh_token/', data=rft_data)
+		rft_response_data = rft_response.json().get("data", "")
+		rft_response_message = rft_response.json().get("message", "")
 
-		if act_response_message:
-			access_token = act_response_data["access_token"]
-			expires_in = act_response_data["expires_in"]
-			expires_time = datetime.now() + timedelta(seconds=expires_in)
-			expires_time = datetime.strftime(expires_time, "%Y-%m-%d %H:%M:%S")
+		if rft_response_message == 'success':
+			models.PlatFormDouYin.objects.filter(open_id=refresh_id).update(
+				refresh_token=rft_response_data.get("refresh_token"))
+			act_data = {
+				'client_key': "awpswfd65m22r59e",
+				'grant_type': "refresh_token",
+				'refresh_token': rft_response_data.get("refresh_token"),
+			}
+			act_response = requests.post('https://open.douyin.com/oauth/refresh_token/', data=act_data)
+			act_response_data = act_response.json().get("data", "")
+			act_response_message = act_response.json().get("message")
 
-			models.PlatFormDouYin.objects.filter(open_id=refresh_id).update(access_token=access_token,
-			                                                                expires_in=expires_time)
-			nickname = models.PlatFormDouYin.objects.filter(open_id=refresh_id).first().nickname
-			print(nickname)
+			if act_response_message:
+				access_token = act_response_data["access_token"]
+				expires_in = act_response_data["expires_in"]
+				expires_time = datetime.now() + timedelta(seconds=expires_in)
+				expires_time = datetime.strftime(expires_time, "%Y-%m-%d %H:%M:%S")
+
+				models.PlatFormDouYin.objects.filter(open_id=refresh_id).update(access_token=access_token,
+				                                                                expires_in=expires_time)
+				nickname = models.PlatFormDouYin.objects.filter(open_id=refresh_id).first().nickname
+				print(nickname)
+				data = {
+					"status": True,
+					"data": {
+						"stats": "刷新成功",
+						"tips": f"{nickname}将在{expires_time}后过期"
+					}
+				}
+				return JsonResponse(data)
+
+		data = {
+			"status": False,
+			"data": {
+				"stats": "刷新失败",
+				"tips": "refresh_token过期，请删除授权账号重新授权"
+			}
+		}
+		return JsonResponse(data)
+
+	exists_bz = models.PlatFormBilibili.objects.filter(openid=refresh_id).exists()
+	if exists_bz:
+		row_object = models.PlatFormBilibili.objects.filter(openid=refresh_id).first()
+		rft_data = {
+			"refresh_token": row_object.refresh_token,
+			"client_id": "302763bae0404eee",
+			"client_secret": "aef73864a09a42bcbe1bbec8130ee5ed",
+			"grant_type": "refresh_token"
+		}
+		rft_response = requests.post('https://api.bilibili.com/x/account-oauth2/v1/refresh_token', data=rft_data)
+		rft_response_data = rft_response.json().get("data", "")
+		rft_response_code = rft_response.json().get("code", "")
+
+		if rft_response_code == 0:
+			models.PlatFormBilibili.objects.filter(openid=refresh_id).update(
+				refresh_token=rft_response_data.get("refresh_token"),
+				access_token=rft_response_data.get("access_token"),
+				expires_in=datetime.utcfromtimestamp(rft_response_data.get("expires_in")).strftime("%Y-%m-%d %H:%M:%S")
+			)
+			nickname = models.PlatFormBilibili.objects.filter(openid=refresh_id).first().nickname
+			expires_time = models.PlatFormBilibili.objects.filter(openid=refresh_id).first().expires_in
 			data = {
 				"status": True,
 				"data": {

@@ -22,7 +22,6 @@ class PlatFormDouYin(models.Model):
 	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
 	access_token = models.CharField(verbose_name="client_token 接口调用凭证", max_length=255)
 	refresh_token = models.CharField(verbose_name="refresh_token", max_length=64)
-
 	open_id = models.CharField(verbose_name="open_id", max_length=255, primary_key=True)
 	expires_in = models.DateTimeField(verbose_name="过期时间")
 	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
@@ -31,33 +30,16 @@ class PlatFormDouYin(models.Model):
 	avatar = models.CharField(verbose_name="头像", max_length=255)
 
 
-class DataDouYin(models.Model):
-	"""抖音账号数据表"""
+class PlatFormBilibili(models.Model):
+	"""Bilibili账号授权表"""
+	openid = models.CharField(verbose_name="openid", max_length=255, primary_key=True)
+	access_token = models.CharField(verbose_name="access_token", max_length=255)
+	refresh_token = models.CharField(verbose_name="refresh_token", max_length=255)
+	nickname = models.CharField(verbose_name="用户名", max_length=64)
+	avatar = models.CharField(verbose_name="头像", max_length=255)
 	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
-	open_id = models.ForeignKey(verbose_name="open_id", to=PlatFormDouYin, on_delete=models.CASCADE)
-	item_id = models.CharField(verbose_name="作品ID", max_length=255, primary_key=True)
-	title = models.CharField(verbose_name="作品标题", max_length=255)
-	video_status_choices = (
-		(1, "已发布"),
-		(2, "不适宜公开"),
-		(4, "审核中")
-	)
-	video_status = models.SmallIntegerField(verbose_name="视频状态", choices=video_status_choices, default=1)
-	create_time = models.CharField(verbose_name="创建时间", max_length=64)
-	media_type_choices = (
-		(2, "图集"),
-		(4, "视频")
-	)
-	media_type = models.SmallIntegerField(verbose_name="媒体类型", choices=media_type_choices, default=4)
-	cover = models.CharField(verbose_name="封面", max_length=500)
-	is_top = models.BooleanField(verbose_name="是否置顶", default=False)
-	share_url = models.CharField(verbose_name="分享url", max_length=500)
-	comment_count = models.IntegerField(verbose_name="评论数", default=0)
-	digg_count = models.IntegerField(verbose_name="点赞数", default=0)
-	download_count = models.IntegerField(verbose_name="下载数", default=0)
-	forward_count = models.IntegerField(verbose_name="收藏数", default=0)
-	play_count = models.IntegerField(verbose_name="播放数", default=0)
-	share_count = models.IntegerField(verbose_name="分享数", default=0)
+	expires_in = models.DateTimeField(verbose_name="过期时间")
+	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
 
 
 class PlatFormZhiHu(models.Model):
@@ -69,25 +51,6 @@ class PlatFormZhiHu(models.Model):
 	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
 	zh_uid = models.CharField(verbose_name="知乎用户ID", primary_key=True, max_length=255)
 	z_c0 = models.CharField(verbose_name="授权cookies", max_length=500)
-
-
-class DataZhiHu(models.Model):
-	"""知乎账号数据表"""
-	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
-	zh_uid = models.ForeignKey(verbose_name="知乎用户ID", to=PlatFormZhiHu, on_delete=models.CASCADE)
-	item_id = models.CharField(verbose_name="作品ID", max_length=255, primary_key=True)
-	title = models.CharField(verbose_name="作品标题", max_length=255)
-	like_count = models.IntegerField(verbose_name="点赞数")
-	comment_count = models.IntegerField(verbose_name="评论数")
-	play_count = models.IntegerField(verbose_name="播放数")
-	vote_up_count = models.IntegerField(verbose_name="赞同数")
-	share_url = models.CharField(verbose_name="分享url", max_length=500)
-	create_time = models.CharField(verbose_name="创建时间", max_length=64)
-	type_choices = (
-		(2, "文章"),
-		(4, "视频")
-	)
-	type = models.SmallIntegerField(verbose_name="作品类型", choices=type_choices)
 
 
 class PlatFormBaiJiaHao(models.Model):
@@ -122,3 +85,18 @@ class PlatFormData(models.Model):
 	share_vote_count = models.IntegerField(verbose_name="分享数/赞同数")
 	forward_collect_count = models.IntegerField(verbose_name="转发数/收藏数")
 	nickname = models.CharField(verbose_name="用户昵称", max_length=64)
+
+
+class HistoryDate(models.Model):
+	"""历史数据"""
+	date = models.DateField(verbose_name="时间")
+	nickname = models.CharField(verbose_name="用户名", max_length=64)
+	platform_uid = models.CharField(verbose_name="平台用ID", max_length=500)
+	uid = models.CharField(verbose_name="用户ID", max_length=64)
+	platform = models.CharField(verbose_name="平台", max_length=64)
+	like_sum = models.IntegerField(verbose_name="点赞数")
+	comment_sum = models.IntegerField(verbose_name="评论数")
+	play_sum = models.IntegerField(verbose_name="播放数")
+	download_rec_sum = models.IntegerField(verbose_name="下载数/推荐数")
+	share_vote_sum = models.IntegerField(verbose_name="分享数/赞同数")
+	forward_collect_sum = models.IntegerField(verbose_name="转发数/收藏数")
