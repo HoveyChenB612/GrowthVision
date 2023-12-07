@@ -467,7 +467,8 @@ def account_data_update(request):
 		open_id = item.open_id
 		access_token = item.access_token
 		nickname = item.nickname
-		dy_param.append({"nickname": nickname, "open_id": open_id, "access_token": access_token})
+		uid = item.uid
+		dy_param.append({"nickname": nickname, "open_id": open_id, "access_token": access_token, "uid": uid})
 
 	bz_param = []
 	bz_queryset = models.PlatFormBilibili.objects.filter(uid=uid)
@@ -475,7 +476,8 @@ def account_data_update(request):
 		openid = item.openid
 		access_token = item.access_token
 		nickname = item.nickname
-		bz_param.append({"nickname": nickname, "openid": openid, "access_token": access_token})
+		uid = item.uid
+		bz_param.append({"nickname": nickname, "openid": openid, "access_token": access_token, "uid": uid})
 
 	zh_param = []
 	zh_queryset = models.PlatFormZhiHu.objects.filter(uid=uid)
@@ -483,7 +485,8 @@ def account_data_update(request):
 		z_c0 = item.z_c0
 		zh_uid = item.zh_uid
 		nickname = item.nickname
-		zh_param.append({"nickname": nickname, "z_c0": z_c0, "zh_uid": zh_uid})
+		uid = item.uid
+		zh_param.append({"nickname": nickname, "z_c0": z_c0, "zh_uid": zh_uid, "uid": uid})
 
 	bjh_param = []
 	bjh_queryset = models.PlatFormBaiJiaHao.objects.filter(uid=uid)
@@ -493,27 +496,28 @@ def account_data_update(request):
 		token = item.token
 		app_id = item.app_id
 		nickname = item.nickname
+		uid = item.uid
 		bjh_param.append(
-			{"nickname": nickname, "bjhstoken": bjhstoken, "bduss": bduss, "token": token, "app_id": app_id}
+			{"nickname": nickname, "bjhstoken": bjhstoken, "bduss": bduss, "token": token, "app_id": app_id, "uid": uid}
 		)
 
 	for param in dy_param:
 		gd.get_douyin_data(
-			param["nickname"], param["open_id"], param["access_token"], uid
+			param["nickname"], param["open_id"], param["access_token"], param["uid"]
 		)
 	for param in bz_param:
 		gd.get_bilibili_data(
-			param["nickname"], param["access_token"], param["openid"], uid
+			param["nickname"], param["access_token"], param["openid"], param["uid"]
 		)
 	for param in zh_param:
 		gd.get_zhihu_data(
-			param["nickname"], param["z_c0"], param["zh_uid"], uid
+			param["nickname"], param["z_c0"], param["zh_uid"], param["uid"]
 		)
 	for param in bjh_param:
 		gd.get_baijiahao_data(
 			param["nickname"], param["bjhstoken"],
 			param["bduss"], param["token"], param["app_id"],
-			uid
+			param["uid"]
 		)
 
 	# 创建或更新数据

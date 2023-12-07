@@ -18,8 +18,6 @@ def index(request):
 	# 获取当前用户ID
 	uid = request.session.get("info").get("uid")
 
-	update_time = models.PlatFormData.objects.first().update_time
-
 	fields = [
 		"like_count", "comment_count", "play_count",
 		"download_rec_count", "share_vote_count", "forward_collect_count"
@@ -34,6 +32,11 @@ def index(request):
 		total_count=Sum(F('like_count') + F('comment_count') + F('play_count') + F('download_rec_count') + F(
 			'share_vote_count') + F('forward_collect_count'))
 	).order_by('-total_count')[:10]
+
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
 
 	context = {
 		"active_index": active_index,
@@ -56,10 +59,15 @@ def index(request):
 def index_total_zhihu(request):
 	""" 获取数据总计 """
 
+	# 前端选中标签与头部标签
+	active_index = ""
+	header_label = ""
+	if request.path == "/index/total/zhihu/":
+		active_index = "active"
+		header_label = "首页"
+
 	# 获取当前用户ID
 	uid = request.session.get("info").get("uid")
-
-	update_time = models.PlatFormData.objects.first().update_time
 
 	fields = [
 		"like_count", "comment_count", "play_count",
@@ -76,7 +84,14 @@ def index_total_zhihu(request):
 			'share_vote_count') + F('forward_collect_count'))
 	).order_by('-total_count')[:10]
 
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
+
 	context = {
+		"active_index": active_index,
+		"header_label": header_label,
 		"update_time": update_time,
 		"data": data_dict,
 		"current": "知乎",
@@ -94,10 +109,15 @@ def index_total_zhihu(request):
 def index_total_bilibili(request):
 	""" 获取数据总计 """
 
+	# 前端选中标签与头部标签
+	active_index = ""
+	header_label = ""
+	if request.path == "/index/total/bilibili/":
+		active_index = "active"
+		header_label = "首页"
+
 	# 获取当前用户ID
 	uid = request.session.get("info").get("uid")
-
-	update_time = models.PlatFormData.objects.first().update_time
 
 	fields = [
 		"like_count", "comment_count", "play_count",
@@ -114,7 +134,14 @@ def index_total_bilibili(request):
 			'share_vote_count') + F('forward_collect_count'))
 	).order_by('-total_count')[:10]
 
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
+
 	context = {
+		"active_index": active_index,
+		"header_label": header_label,
 		"update_time": update_time,
 		"data": data_dict,
 		"current": "哔哩哔哩",
@@ -132,10 +159,15 @@ def index_total_bilibili(request):
 def index_total_baijiahao(request):
 	""" 获取数据总计 """
 
+	# 前端选中标签与头部标签
+	active_index = ""
+	header_label = ""
+	if request.path == "/index/total/baijiahao/":
+		active_index = "active"
+		header_label = "首页"
+
 	# 获取当前用户ID
 	uid = request.session.get("info").get("uid")
-
-	update_time = models.PlatFormData.objects.first().update_time
 
 	fields = [
 		"like_count", "comment_count", "play_count",
@@ -152,7 +184,14 @@ def index_total_baijiahao(request):
 			'share_vote_count') + F('forward_collect_count'))
 	).order_by('-total_count')[:10]
 
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
+
 	context = {
+		"active_index": active_index,
+		"header_label": header_label,
 		"update_time": update_time,
 		"data": data_dict,
 		"current": "百家号",
@@ -210,9 +249,5 @@ def index_echarts(request):
 		"categories": [i.strftime('%Y-%m-%d') for i in date_list],
 		"seriesData": series_dict
 	}
-	print(backend_data)
 
 	return JsonResponse({"status": True, "backendData": backend_data})
-
-
-
