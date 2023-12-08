@@ -68,7 +68,7 @@ class PlatFormBaiJiaHao(models.Model):
 
 class PlatFormData(models.Model):
 	"""平台数据表"""
-	platform_choices = ((0, "未知"), (1, "抖音"), (2, "知乎"), (3, "百家号"))
+	platform_choices = ((0, "未知"), (1, "抖音"), (2, "知乎"), (3, "百家号"),(4, "哔哩哔哩"))
 	platform = models.SmallIntegerField(verbose_name="平台名称", choices=platform_choices, default=0)
 	item_id = models.CharField(verbose_name="作品ID", max_length=500, primary_key=True)
 	title = models.CharField(verbose_name="作品标题", max_length=255)
