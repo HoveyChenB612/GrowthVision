@@ -49,5 +49,8 @@ urlpatterns = [
 	path("edit_pwd/", user.edit_pwd),
 
 	# 热词搜索
-	path("hot/list/", hot.hot_list)
+	path("hot/list/", hot.hot_list),
+
+	# 主页
+	path("", index.main)
 ]

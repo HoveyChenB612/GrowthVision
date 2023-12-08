@@ -251,3 +251,8 @@ def index_echarts(request):
 	}
 
 	return JsonResponse({"status": True, "backendData": backend_data})
+
+
+def main(request):
+	"""根目录"""
+	return redirect("/index/")
