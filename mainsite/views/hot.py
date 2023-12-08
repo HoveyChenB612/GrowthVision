@@ -17,6 +17,8 @@ def hot_list(request):
 		"header_label": header_label,
 	}
 
+
+
 	# if request.method == "POST":
 	# 	keywords = request.POST.get("keywords")
 	# 	context["keywords"] = keywords
