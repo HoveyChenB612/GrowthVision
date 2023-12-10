@@ -52,5 +52,8 @@ urlpatterns = [
 	path("hot/list/", hot.hot_list),
 
 	# 主页
-	path("", index.main)
+	path("", index.main),
+
+	# 测试数据定时任务
+	# path("history/data/update/", task.history_data_update)
 ]

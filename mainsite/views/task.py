@@ -68,6 +68,24 @@ def history_data_update():
 		models.HistoryDate.objects.create(**data)
 	print(f"历史数据更新完成-{date}")
 
+	# 删除没有授权的历史纪录
+	current_platform_uid_queryset = models.PlatFormData.objects.all()
+	current_platform_uid_set = set()
+	for item in current_platform_uid_queryset:
+		current_platform_uid_set.add(item.platform_uid)
+
+	sql_platform_uid_queryset = models.HistoryDate.objects.all()
+	sql_platform_uid_set = set()
+	for item in sql_platform_uid_queryset:
+		sql_platform_uid_set.add(item.platform_uid)
+	none_platform_uid_set = sql_platform_uid_set - current_platform_uid_set
+
+	for platform_uid in none_platform_uid_set:
+		models.HistoryDate.objects.filter(platform_uid=platform_uid).delete()
+	print(f"无授权账号历史数据清理完成-{date}")
+
+	return JsonResponse({"status": True})
+
 
 @register_job(scheduler, "interval", minutes=10, id='new_data_update')
 def new_data_update():
@@ -156,7 +174,7 @@ def new_data_update():
 	for item_id in difference_id:
 		models.PlatFormData.objects.filter(item_id=item_id).delete()
 
-	print(f"数据更新完成")
+	print(f"数据更新完成{datetime.now().strftime('%Y-%m-%d %H:%M%:S')}")
 	return JsonResponse({"status": True})
 
 
