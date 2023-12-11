@@ -295,7 +295,7 @@
                     getPrimary = row.open_id
                 } else if (row.app_id) {
                     getPrimary = row.app_id
-                } else if(row.openid){
+                } else if (row.openid) {
                     getPrimary = row.openid
                 }
                 var result = "";
@@ -304,6 +304,8 @@
                 result += "<a class='btn btn-cyan btn-sm' onclick='bindBtnRefreshEvent(this)' id='" + getPrimary + "'>刷新</a>";
                 result += "<span style='padding-right: 10px'></span>";
                 result += "<a class='btn btn-danger btn-sm' onclick='bindBtnDeleteEvent(this)' id='" + getPrimary + "'>删除</a>";
+                result += "<span style='padding-right: 10px'></span>";
+                result += `<a class='btn btn-info btn-sm' href='/account/auth/detail/?platformid=${getPrimary}' >详情</a>`;
                 return result;
             }
         }

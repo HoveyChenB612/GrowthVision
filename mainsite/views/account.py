@@ -7,7 +7,7 @@ import requests
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, Sum
 from asgiref.sync import sync_to_async, async_to_sync
 
 from mainsite import models
@@ -661,3 +661,69 @@ def account_auth_refresh(request):
 		}
 	}
 	return JsonResponse(data)
+
+
+def account_auth_detail(request):
+	"""授权账号详情"""
+
+	# 前端选中标签与头部标签
+	active_account_auth = "active" if request.path == "/account/auth/detail/" else ""
+
+	# 获取当前用户ID与当前平台账号 ID
+	uid = request.session.get("info").get("uid")
+	platform_uid = request.GET.get("platformid", "")
+	fields = [
+		"like_count", "comment_count", "play_count",
+		"download_rec_count", "share_vote_count", "forward_collect_count"
+	]
+	data_dict = {}
+	for field in fields:
+		queryset = models.PlatFormData.objects.filter(uid_id=uid).filter(platform_uid=platform_uid).aggregate(
+			Sum(field))
+		data_dict.update(queryset)
+
+	# 修改头部平台名称+账号昵称
+	platform_info = models.PlatFormData.objects.filter(platform_uid=platform_uid).first()
+	nickname = platform_info.nickname
+	platform = platform_info.platform
+	platform_mapping = {
+		1: "抖音",
+		2: "知乎",
+		3: "百家号",
+		4: "哔哩哔哩",
+	}
+	platform_name = platform_mapping.get(platform, "")
+	header_label = f"{platform_name}-{nickname}"
+
+	context = {
+		"platform_uid": platform_uid,
+		"active_account_auth": active_account_auth,
+		"header_label": header_label,
+		"data": data_dict,
+	}
+
+	return render(request, "account_auth_detail.html", context)
+
+
+def account_auth_detail_echarts(request):
+	"""账号详情图表"""
+	# 获取当前用户ID与当前平台账号 ID
+	uid = request.session.get("info", {}).get("uid")
+	platform_uid = request.GET.get("platform_uid", "")
+
+	# 获取指定平台的历史数据
+	queryset = models.HistoryDate.objects.filter(uid=uid, platform_uid=platform_uid)
+
+	# 提取日期和指标列表
+	date = queryset.values_list("date", flat=True)
+	metrics = ['like_sum', 'comment_sum', 'play_sum', 'download_rec_sum', 'share_vote_sum', 'forward_collect_sum']
+
+	# 初始化空的 series_dict
+	series_dict = {metric: list(queryset.values_list(metric, flat=True)) for metric in metrics}
+
+	backend_data = {
+		"categories": [i.strftime('%Y-%m-%d') for i in date],
+		"seriesData": series_dict
+	}
+
+	return JsonResponse({"status": True, "backendData": backend_data})

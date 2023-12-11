@@ -30,6 +30,7 @@ urlpatterns = [
 
 	# 平台账号
 	path("account/auth/list/", account.account_auth_list),
+	path("account/auth/detail/", account.account_auth_detail),
 	path("account/auth/douyin/", account.account_auth_douyin),
 	path("account/auth/bilibili/", account.account_auth_bilibili),
 	path("account/auth/zhihu/", account.account_auth_zhihu),
@@ -40,6 +41,7 @@ urlpatterns = [
 	path("account/data/get/", account.account_data_get),
 	path("account/data/update/", account.account_data_update),
 	path("account/refresh/", account.account_auth_refresh),
+	path("account/auth/detail/echarts/", account.account_auth_detail_echarts),
 
 	# 用户账号
 	path("login/", user.login),

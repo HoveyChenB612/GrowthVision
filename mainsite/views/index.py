@@ -249,7 +249,6 @@ def index_echarts(request):
 		"categories": [i.strftime('%Y-%m-%d') for i in date_list],
 		"seriesData": series_dict
 	}
-
 	return JsonResponse({"status": True, "backendData": backend_data})
 
 

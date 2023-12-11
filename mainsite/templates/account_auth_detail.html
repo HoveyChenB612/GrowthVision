@@ -3,24 +3,17 @@
 
 {% block content %}
     <!--页面主要内容-->
-    <main class="lyear-layout-content">
+    <main class="lyear-layout-content" id="{{ platform_uid }}">
         <div class="container-fluid">
             <div class="card">
                 <div class="card-toolbar clearfix">
                     <div class="row">
                         <div class="col-sm-6 col-lg-11" style="padding-left: 2px">
-                            <a type="button" class="btn btn-link">数据更新于：{{ update_time }}</a>
-                        </div>
-                        <div class="col-sm-6 col-lg-1" style="text-align: right; padding-right: 2px">
-                            <a type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false" style="padding-bottom: 5px">
-                                {{ current }} <span class="caret"></span>
+                            <a type="button" class="btn btn-link" href="/account/auth/list/">
+                                <i class="mdi mdi-keyboard-backspace">
+                                    返回
+                                </i>
                             </a>
-                            <ul class="dropdown-menu">
-                                {% for foo in dropdown %}
-                                    <li><a href="{{ foo.url }}">{{ foo.platform }}</a></li>
-                                {% endfor %}
-                            </ul>
                         </div>
                     </div>
 
@@ -118,7 +111,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-lg-6">
                     <div class="card">
@@ -161,7 +153,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
@@ -217,7 +208,6 @@
                 </div>
 
             </div>
-
         </div>
     </main>
     <!--End 页面主要内容-->
@@ -227,93 +217,63 @@
     <!--图表插件-->
     <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
     <script type="text/javascript">
-        function chartsShow(chartsId, legend, date, series) {
+        function chartsShow(chartsId, category, data) {
             // 基于准备好的dom，初始化echarts实例
-            let myChart = echarts.init(document.getElementById(chartsId));
+            const myChart = echarts.init(document.getElementById(chartsId));
 
             // 指定图表的配置项和数据
-            let option = {
+            const option = {
+                tooltip: {
+                    trigger: 'axis'
+                },
                 dataZoom: [
                     {
                         id: 'dataZoomX',
                         type: 'slider',
                         xAxisIndex: [0],
-                        filterMode: 'filter',
-                        start:30,
-                        end: 45
+                        filterMode: 'filter', // 设定为 'filter' 从而 X 的窗口变化会影响 Y 的范围。
+                        start: 0,
+                        end: 100
                     },
                 ],
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data: legend
-                },
-                grid: {
-                    left: '3%',
-                    right: '6%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                toolbox: {
-                    feature: {
-                        saveAsImage: {}
-                    }
-                },
                 xAxis: {
                     type: 'category',
-                    boundaryGap: false,
-                    data: date
+                    data: category
                 },
                 yAxis: {
                     type: 'value'
                 },
-                series: Object.entries(series).map(([name, data]) => ({
-                    name,
-                    type: 'line',
-                    data
-                }))
+                series: [
+                    {
+                        data: data,
+                        type: 'line'
+                    }
+                ]
             };
 
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(option);
         }
 
-        let backendData
-
+        const platform_uid = document.querySelector(".lyear-layout-content");
         (function () {
             $.ajax({
-                url: "/index/echarts/",
+                url: "/account/auth/detail/echarts/",
                 type: "get",
+                data: {
+                    platform_uid: platform_uid.id
+                },
                 success: function (res) {
                     if (res) {
-                        backendData = res.backendData
+                        const backendData = res.backendData;
 
-                        let legend = Object.keys(backendData.seriesData["play_sum"].seriesData)
-                        let date = backendData.categories
-                        let series = backendData.seriesData["play_sum"].seriesData
-                        chartsShow("daily_play", legend, date, series)
-
-                        legend = Object.keys(backendData.seriesData["like_sum"].seriesData)
-                        date = backendData.categories
-                        series = backendData.seriesData["like_sum"].seriesData
-                        chartsShow("daily_like", legend, date, series)
-
-                        legend = Object.keys(backendData.seriesData["comment_sum"].seriesData)
-                        date = backendData.categories
-                        series = backendData.seriesData["comment_sum"].seriesData
-                        chartsShow("daily_comment", legend, date, series)
-
-                        legend = Object.keys(backendData.seriesData["download_rec_sum"].seriesData)
-                        date = backendData.categories
-                        series = backendData.seriesData["download_rec_sum"].seriesData
-                        chartsShow("daily_download", legend, date, series)
-
+                        chartsShow("daily_play", backendData.categories, backendData.seriesData.play_sum);
+                        chartsShow("daily_like", backendData.categories, backendData.seriesData.like_sum);
+                        chartsShow("daily_comment", backendData.categories, backendData.seriesData.comment_sum);
+                        chartsShow("daily_download", backendData.categories, backendData.seriesData.download_rec_sum);
                     }
                 }
             })
         })()
-
-
     </script>
 {% endblock %}
