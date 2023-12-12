@@ -46,7 +46,7 @@ urlpatterns = [
 	# 用户账号
 	path("login/", user.login),
 	path("image/code/", user.image_code),
-	path("logout/", user.logout),
+	path("logout/", user.user_logout),
 	path("register/", user.register),
 	path("edit_pwd/", user.edit_pwd),
 

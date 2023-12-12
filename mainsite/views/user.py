@@ -10,6 +10,7 @@ from mainsite.utils.encrypt import md5
 from mainsite.utils.form import LoginForm, RegisterForm, EditPwdForm
 from datetime import datetime
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, logout
 
 
 def login(request):
@@ -64,10 +65,10 @@ def image_code(request):
 	return HttpResponse(stream.getvalue())
 
 
-def logout(request):
+def user_logout(request):
 	"""用户注销"""
-	request.session.clear()
-
+	# request.session.clear()
+	logout(request)
 	return redirect('/login/')
 
 
