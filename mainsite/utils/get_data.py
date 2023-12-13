@@ -29,8 +29,8 @@ class GetData:
 			for item in result["data"]["list"]:
 				media_type = item.get("media_type", "")
 				if not media_type:
-					pass	
-				itme_type = "视频" if item["media_type"] == 4 else "文图"
+					continue	
+				itme_type = "视频" if media_type == 4 else "文图"
 				works_dict = {
 					"platform": 1,
 					"uid": uid,
