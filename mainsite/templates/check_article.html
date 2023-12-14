@@ -93,13 +93,16 @@
                         <div class="card-header">
                             <div style="display: flex; justify-content: space-between;">
                                 <h4>检测后</h4>
-                                <span>
+                                <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top"
+                                        title="" data-original-title="不含重复"><span>
                                     合计: <span class="badge bg-danger">
                                     {% verbatim %}
                                         {{ wordsCount }}
                                     {% endverbatim %}
                                 </span>
                                 </span>
+                                </button>
+
                             </div>
                             <!-- .card-actions -->
                         </div>
@@ -186,7 +189,7 @@
                 isEdit: true,
                 article: "",
                 renderArticle: "",
-                wordsCount:0
+                wordsCount: 0
             },
             mounted() {
                 axios({
