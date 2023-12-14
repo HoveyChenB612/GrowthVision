@@ -9,6 +9,7 @@
     <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.css' %}">
     <link rel='stylesheet' href="{% static 'css/nprogress.css' %}">
+    <link rel="stylesheet" href="{% static 'js/jquery-tags-input/jquery.tagsinput.min.css' %}">
     <title></title>
 </head>
 
@@ -35,6 +36,8 @@
                                 class="mdi mdi-account"></i>授权管理</a></li>
                         <li class="nav-item {{ active_account_data }}"><a href="/account/data/list"><i
                                 class="mdi mdi-table-large"></i>数据展示</a></li>
+                        <li class="nav-item {{ active_check }}"><a href="/check/article/"><i
+                                class="mdi mdi-spellcheck"></i>文章检测</a></li>
                         <li class="nav-item {{ active_hot }}"><a href="/hot/list/"><i
                                 class="mdi mdi-lightbulb-on-outline"></i>搜索排行</a></li>
                     </ul>
@@ -105,5 +108,6 @@
 <script type="text/javascript" src="{% static 'js/bootstrap-table.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/bootstrap-table-zh-CN.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/nprogress.js' %}"></script>
+<script src="{% static 'js/jquery-tags-input/jquery.tagsinput.min.js' %}"></script>
 {% block js %}{% endblock %}
 </html>

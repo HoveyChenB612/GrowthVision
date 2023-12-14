@@ -25,7 +25,6 @@ class GetData:
 			result = response.json()
 			cursor = result["data"]["cursor"]
 			has_more = result["data"]["has_more"]
-			print(result)
 			for item in result["data"]["list"]:
 				media_type = item.get("media_type", "")
 				if not media_type:

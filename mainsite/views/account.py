@@ -62,7 +62,6 @@ def account_auth_zhihu(request):
 			auth_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 			expires_time = (datetime.now() + timedelta(days=180)).strftime("%Y-%m-%d %H:%M:%S")
 			zh_uid = user_info.get("id")
-			print(user_info)
 			user_info_dict = {
 				"uid_id": uid,
 				"nickname": nickname,
@@ -182,7 +181,6 @@ def account_auth_bilibili(request):
 				}
 				access_token_response = requests.post(url=access_token_url, json=access_token_json)
 				access_token_result = access_token_response.json()
-				print(access_token_result)
 				if access_token_result.get("code") == 0:
 					data = access_token_result.get("data")
 					access_token = data.get("access_token", "")
@@ -251,7 +249,6 @@ def account_auth_baijiahao(request):
 		}
 		response = requests.get("https://baijiahao.baidu.com/builder/app/appinfo", cookies=cookies, headers=headers)
 		result = response.json()
-		print(result)
 		errno = result.get("errno")
 		if errno != 0:
 			return HttpResponse("BDUSS 或 token 错误")
@@ -604,7 +601,6 @@ def account_auth_refresh(request):
 				models.PlatFormDouYin.objects.filter(open_id=refresh_id).update(access_token=access_token,
 				                                                                expires_in=expires_time)
 				nickname = models.PlatFormDouYin.objects.filter(open_id=refresh_id).first().nickname
-				print(nickname)
 				data = {
 					"status": True,
 					"data": {

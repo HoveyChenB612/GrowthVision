@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block content %}
+
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h4>敏感词:</h4>
+                </div>
+                <div class="card-body" id="app">
+                    <input type="button" class="btn btn btn-info btn-sm" value="导入" style="margin-bottom: 10px">
+                    <input type="button" class="btn btn btn-warning btn-sm" value="导出" style="margin-bottom: 10px">
+                    <input type="button" class="btn btn-success btn-sm" value="保存" style="margin-bottom: 10px">
+                    <div class="tagsinput" style="min-height: 50px; width: 100%">
+                            <span class="tag" v-for="(item, index) in tagList" :key="item.id">
+                                <span>
+                                    {% verbatim %}
+                                        {{ item.tag }}
+                                    {% endverbatim %}
+                                </span>
+                                <a href="#" @click.prevent="del(item.id)">
+                                    X
+                                </a>
+                            </span>
+                        <input @keyup.enter="addTag()" @keydown.delete="del()" v-model="newTag"
+                               placeholder="请输入标签" :class="{'not_valid': isExist}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                newTag: " ",
+                tagList: [
+                    {id: 1, tag: "光年"},
+                    {id: 2, tag: "系统"}
+                ],
+                isExist: false
+            },
+            methods: {
+                addTag() {
+                    this.newTag = this.newTag.trim()
+                    if (this.newTag === "") {
+                        return
+                    }
+                    for (let i in this.tagList) {
+                        if (this.tagList[i].tag === this.newTag) {
+                            this.isExist = true
+                            return;
+                        }
+                    }
+                    let id = this.tagList.length + 1
+                    let tag = this.newTag
+                    this.tagList.push({id: id, tag: tag})
+                    this.newTag = " "
+                    this.isExist = false
+                },
+                del(id) {
+                    this.isExist = false
+                    if (this.newTag === "") {
+                        this.tagList.pop()
+                        this.newTag = "  "
+                    } else if (id) {
+                        this.tagList = this.tagList.filter(item => item.id !== id)
+                    }
+
+                }
+            },
+        });
+    </script>
+{% endblock %}

@@ -16,7 +16,7 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path
-from mainsite.views import index, account, user, hot, task
+from mainsite.views import index, account, user, hot, task, check
 
 urlpatterns = [
 	# path('admin/', admin.site.urls),
@@ -55,6 +55,9 @@ urlpatterns = [
 
 	# 主页
 	path("", index.main),
+
+	# 敏感词检测
+	path("check/article/", check.check_article),
 
 	# 测试数据定时任务
 	# path("history/data/update/", task.history_data_update)

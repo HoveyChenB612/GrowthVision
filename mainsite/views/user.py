@@ -81,7 +81,6 @@ def register(request):
 		return render(request, "user_register.html", {"form": form})
 
 	form = RegisterForm(data=request.POST)
-	print(request.POST)
 	if form.is_valid():
 		# 生成随机uid
 		date = datetime.now().strftime("%Y%m%d")
