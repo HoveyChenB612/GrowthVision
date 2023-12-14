@@ -58,6 +58,9 @@ urlpatterns = [
 
 	# 敏感词检测
 	path("check/article/", check.check_article),
+	path("check/article/get/words/", check.check_article_get_words),
+	path("check/article/save/words/", check.check_article_save_words),
+	path("check/article/checking/", check.check_article_checking)
 
 	# 测试数据定时任务
 	# path("history/data/update/", task.history_data_update)

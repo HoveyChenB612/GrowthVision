@@ -68,7 +68,7 @@ class PlatFormBaiJiaHao(models.Model):
 
 class PlatFormData(models.Model):
 	"""平台数据表"""
-	platform_choices = ((0, "未知"), (1, "抖音"), (2, "知乎"), (3, "百家号"),(4, "哔哩哔哩"))
+	platform_choices = ((0, "未知"), (1, "抖音"), (2, "知乎"), (3, "百家号"), (4, "哔哩哔哩"))
 	platform = models.SmallIntegerField(verbose_name="平台名称", choices=platform_choices, default=0)
 	item_id = models.CharField(verbose_name="作品ID", max_length=500, primary_key=True)
 	title = models.CharField(verbose_name="作品标题", max_length=255)
@@ -100,3 +100,11 @@ class HistoryDate(models.Model):
 	download_rec_sum = models.IntegerField(verbose_name="下载数/推荐数")
 	share_vote_sum = models.IntegerField(verbose_name="分享数/赞同数")
 	forward_collect_sum = models.IntegerField(verbose_name="转发数/收藏数")
+
+
+class SensitiveWords(models.Model):
+	"""敏感词库"""
+	uid = models.ForeignKey(verbose_name="用户ID",to=User, on_delete=models.CASCADE)
+	group = models.SmallIntegerField(verbose_name="分组")
+	update_time = models.DateTimeField(verbose_name="更新时间")
+	words = models.CharField(verbose_name="敏感词",max_length=2000)
