@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="zh">
+
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/materialdesignicons.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
@@ -111,73 +112,74 @@
 </head>
 
 <body>
-<div class="lyear-login-box">
-    <div class="lyear-login-left" style="background-image: url({% static 'images/background.jpg' %})">
-    </div>
-    <div class="lyear-login-right" style="padding-top: 100px !important;">
-
-        <div class=" text-center" style="padding-bottom: 30px">
-            <img src="{% static 'images/logo.svg' %}" style="height: 60%;width: 60%;padding-bottom: 10px">
-            <h2>登陆</h2>
+    <div class="lyear-login-box">
+        <div class="lyear-login-left" style="background-image: url({% static 'images/background.jpg' %})">
         </div>
-        <form method="post" novalidate>
-            {% csrf_token %}
+        <div class="lyear-login-right" style="padding-top: 100px !important;">
 
-            <div class="form-group">
-                <label>用户名</label>
-                {{ form.username }}
-                <span style="color: red;">{{ form.username.errors.0 }}</span>
+            <div class=" text-center" style="padding-bottom: 30px">
+                <img src="{% static 'images/logo.svg' %}" style="height: 60%;width: 60%;padding-bottom: 10px">
+                <h2>登陆</h2>
             </div>
-            <div class="form-group">
-                <label>密码</label>
-                {{ form.password }}
-                <span style="color: red;">{{ form.password.errors.0 }}</span>
-            </div>
+            <form method="post" novalidate>
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label for="id_code">验证码</label>
-                <div class="row">
-                    <div class="col-xs-8">
-                        {{ form.code }}
-                        <span style="color: red;">{{ form.code.errors.0 }}</span>
-                    </div>
-                    <div class="col-xs-4" style="text-align: right">
-                        <img id="image_code" src="/image/code/" style="width: 200px; height: 38px;"
-                             onclick="refreshCode(this)">
+                <div class="form-group">
+                    <label>用户名</label>
+                    {{ form.username }}
+                    <span style="color: red;">{{ form.username.errors.0 }}</span>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    {{ form.password }}
+                    <span style="color: red;">{{ form.password.errors.0 }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_code">验证码</label>
+                    <div class="row">
+                        <div class="col-xs-8">
+                            {{ form.code }}
+                            <span style="color: red;">{{ form.code.errors.0 }}</span>
+                        </div>
+                        <div class="col-xs-4" style="text-align: right">
+                            <img id="image_code" src="/image/code/" style="width: 200px; height: 38px;"
+                                onclick="refreshCode(this)">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-7" style="">
-                        <label class="lyear-checkbox checkbox-primary m-t-10">
-                            <input type="checkbox" checked=""><span>5天内自动登录</span>
-                        </label>
-                    </div>
-                    <div class="colxs-5" style="text-align: right; margin-right: 10px">
-                        <label class="checkbox-primary m-t-10">
-                            <a href="/register/">
-                                注册
-                            </a>
-                        </label>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-7" style="">
+                            <label class="lyear-checkbox checkbox-primary m-t-10">
+                                <input type="checkbox" checked=""><span>5天内自动登录</span>
+                            </label>
+                        </div>
+                        <div class="colxs-5" style="text-align: right; margin-right: 10px">
+                            <label class="checkbox-primary m-t-10">
+                                <a href="/register/">
+                                    注册
+                                </a>
+                            </label>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <button class="btn btn-block btn-primary" type="submit">立即登录</button>
-            </div>
-        </form>
+                <div class="form-group">
+                    <button class="btn btn-block btn-primary" type="submit">立即登录</button>
+                </div>
+            </form>
 
+        </div>
     </div>
-</div>
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-<script type="text/javascript">
-    function refreshCode(_this) {
-        $(_this).attr("src", "/image/code/?" + Math.random())
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript">
+        function refreshCode(_this) {
+            $(_this).attr("src", "/image/code/?" + Math.random())
 
-    }
-</script>
+        }
+    </script>
 </body>
+
 </html>
