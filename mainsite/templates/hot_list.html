@@ -4,152 +4,154 @@
 {% block content %}
 
 
-    <!--页面主要内容-->
-    <main class="lyear-layout-content">
-        <div class="container-fluid">
-            <div class="card">
-                <div style="text-align: center; padding-top: 50px; padding-bottom: 30px">
-                    <h1>关键词实时排名查询</h1>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <form method="post" onsubmit="return openSearchPage()">
-                            {% csrf_token %}
-                            <div class="col-md-12 offset-md-0">
-                                <div class="input-group">
-                                    <input type="text" class="form-control search clearable "
-                                           placeholder="请输入查询的关键词..." style="height: 50px;"
-                                           name="keywords" value="{{ keywords }}"
-                                           id="keywords">
-                                    <span class="input-group-btn" style="height: 50px">
-                                        <button class="btn btn-primary btn-round" type="submit" style="height: 50px">
-                                            <i class="mdi mdi-search-web"></i>
-                                            搜索
-                                        </button>
-                                    </span>
-                                </div>
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div style="text-align: center; padding-top: 50px; padding-bottom: 30px">
+                <h1>关键词实时排名查询</h1>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <form method="post" onsubmit="return openSearchPage()">
+                        {% csrf_token %}
+                        <div class="col-md-12 offset-md-0">
+                            <div class="input-group">
+                                <input type="text" class="form-control search clearable " placeholder="请输入查询的关键词..."
+                                    style="height: 50px;" name="keywords" value="{{ keywords }}" id="keywords">
+                                <span class="input-group-btn" style="height: 50px">
+                                    <button class="btn btn-primary btn-round" type="submit" style="height: 50px">
+                                        <i class="mdi mdi-search-web"></i>
+                                        搜索
+                                    </button>
+                                </span>
                             </div>
-                        </form>
-                    </div>
-                </div>
-
-
-                <div class="card-toolbar clearfix">
-                    <table id="table"></table>
+                        </div>
+                    </form>
                 </div>
             </div>
+
+
+            <div class="card-toolbar clearfix">
+                <table id="table"></table>
+            </div>
         </div>
-    </main>
+    </div>
+</main>
 
 {% endblock %}
 
 
 {% block js %}
-    <script type="text/javascript">
-        $(function () {
-            load('#');
-        });
+<script type="text/javascript">
+    $(function () {
+        load('#');
+    });
 
 
-        function load(url) {
-            $('#table').bootstrapTable({
-                url: url,  // 请求数据源的路由
-                dataType: "json",
-                method: 'get',
-                pagination: true, //前端处理分页
-                singleSelect: false,//是否只能单选
-                toolbar: '#toolbar', //工具按钮用哪个容器
-                striped: true, //是否显示行间隔色
-                cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-                pageNumber: 1, //初始化加载第10页，默认第一页
-                pageSize: 10, //每页的记录行数（*）
-                pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
-                showColumns: false, //显示内容列下拉框
-                showRefresh: false, //显示刷新按钮
-                minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
-                // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
-                uniqueId: "id", //每一行的唯一标识，一般为主键列
-                showToggle: false, //是否显示详细视图和列表视图的切换按钮
-                cardView: false, //是否显示详细视图
-                sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
-                queryParamsType: "limit",//设置为 ‘limit’ 则会发送符合 RESTFul 格式的参数.
-                // 搜索设置
-                search: false, //******开启搜索框****//
-                searchOnEnterKey: false, //******回车后执行搜索****//
-                strictSearch: true,  //******完全匹配****//
-                trimOnSearch: true, //去除关键词空格//
-                searchAlign: "right",
-                responseHandler: function (res) {
-                    //如果后台返回的json格式不是{rows:[{...},{...}],total:100},可以在这块处理成这样的格式
-                    return res;
+    function load(url) {
+        $('#table').bootstrapTable({
+            url: url,  // 请求数据源的路由
+            dataType: "json",
+            method: 'get',
+            pagination: true, //前端处理分页
+            singleSelect: false,//是否只能单选
+            toolbar: '#toolbar', //工具按钮用哪个容器
+            striped: true, //是否显示行间隔色
+            cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pageNumber: 1, //初始化加载第10页，默认第一页
+            pageSize: 10, //每页的记录行数（*）
+            pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+            showColumns: false, //显示内容列下拉框
+            showRefresh: false, //显示刷新按钮
+            minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
+            // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
+            uniqueId: "id", //每一行的唯一标识，一般为主键列
+            showToggle: false, //是否显示详细视图和列表视图的切换按钮
+            cardView: false, //是否显示详细视图
+            sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+            queryParamsType: "limit",//设置为 ‘limit’ 则会发送符合 RESTFul 格式的参数.
+            // 搜索设置
+            search: false, //******开启搜索框****//
+            searchOnEnterKey: false, //******回车后执行搜索****//
+            strictSearch: true,  //******完全匹配****//
+            trimOnSearch: true, //去除关键词空格//
+            searchAlign: "right",
+            responseHandler: function (res) {
+                //如果后台返回的json格式不是{rows:[{...},{...}],total:100},可以在这块处理成这样的格式
+                return res;
+            },
+            columns: [
+                /*
+                {  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price 跟后端的字段名id  name price是完全一样的.
+                checkbox: true,
+                visible: true
                 },
-                columns: [
-                    /*
-                    {  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price 跟后端的字段名id  name price是完全一样的.
-                    checkbox: true,
-                    visible: true
-                    },
-                    */
-                    {
-                        field: 'id',
-                        title: '排名'
-                    },
-                    {
-                        field: 'avatar',
-                        title: '头像'
-                    }, {
-                        field: 'nickname',
-                        title: '昵称',
-                    }, {
-                        field: 'title',
-                        title: '标题',
-                    }, {
-                        field: 'play_count',
-                        title: '播放数',
-                        sortable: true
-                    }, {
-                        field: 'digg_count',
-                        title: '点赞数',
-                        sortable: true
-                    }, {
-                        field: 'comment_count',
-                        title: '评论数',
-                        sortable: true
-                    }, {
-                        field: 'forward_count',
-                        title: '转发数',
-                        sortable: true
-                    }, {
-                        field: 'share_count',
-                        title: '分享数',
-                        sortable: true
-                    }, {
-                        field: 'download_count',
-                        title: '下载数',
-                        sortable: true
-                    }, {
-                        field: 'create_time',
-                        title: '发布时间',
-                        sortable: true
-                    }, {
-                        field: 'share_url',
-                        title: '查看',
-                        align: 'center',
-                        formatter: function (url) {
-                            return `<a href="${url}">查看</a>`;
-                        }
+                */
+                {
+                    field: 'id',
+                    title: '排名'
+                },
+                {
+                    field: 'avatar',
+                    title: '头像'
+                }, {
+                    field: 'nickname',
+                    title: '昵称',
+                }, {
+                    field: 'title',
+                    title: '标题',
+                }, {
+                    field: 'play_count',
+                    title: '播放数',
+                    sortable: true
+                }, {
+                    field: 'digg_count',
+                    title: '点赞数',
+                    sortable: true
+                }, {
+                    field: 'comment_count',
+                    title: '评论数',
+                    sortable: true
+                }, {
+                    field: 'forward_count',
+                    title: '转发数',
+                    sortable: true
+                }, {
+                    field: 'share_count',
+                    title: '分享数',
+                    sortable: true
+                }, {
+                    field: 'download_count',
+                    title: '下载数',
+                    sortable: true
+                }, {
+                    field: 'create_time',
+                    title: '发布时间',
+                    sortable: true
+                }, {
+                    field: 'share_url',
+                    title: '查看',
+                    align: 'center',
+                    formatter: function (url) {
+                        return `<a href="${url}">查看</a>`;
                     }
-                ],
-            });
-        }
+                }
+            ],
+        });
+    }
 
-        function openSearchPage() {
-            let keywords = document.querySelector("#keywords").value
-            let searchURL = `https://www.douyin.com/search/${keywords}`
+    (function getFocus() {
+        document.querySelector('#keywords').focus()
+    })()
 
-            window.open(searchURL, "_blank")
+    function openSearchPage() {
+        let keywords = document.querySelector("#keywords").value
+        let searchURL = `https://www.douyin.com/search/${keywords}`
 
-            return false
-        }
-    </script>
+        window.open(searchURL, "_blank")
+
+        return false
+    }
+</script>
 {% endblock %}

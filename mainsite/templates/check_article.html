@@ -59,7 +59,7 @@
 						<a href="#" @click.prevent="del(item.id)"> X </a>
 					</span>
 					<input @keyup.enter="addTag()" @keydown.delete="del()" v-model="newTag" placeholder="请输入标签"
-						:class="{'not_valid': isExist}" />
+						:class="{'not_valid': isExist}" id="inp" />
 				</div>
 			</div>
 		</div>
@@ -214,6 +214,10 @@
 					// 在这里处理错误
 					console.error('请求出错', error)
 				})
+		},
+		mounted() {
+			this.newTag = ''
+			document.querySelector('#inp').focus()
 		},
 		methods: {
 			addTag() {
