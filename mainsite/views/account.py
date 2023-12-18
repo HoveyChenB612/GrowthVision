@@ -98,8 +98,9 @@ def account_auth_douyin(request):
         if redict_parse:
             url = parse.urlparse(redict_parse)
             query_dict = parse.parse_qs(url.query)
-            code = query_dict.get("code")[0]
-            if code:
+            code_option = query_dict.get("code")
+            if code_option:
+                code = code_option[0]
                 # 获取(access_token, open_id, refresh_token)
                 access_token_url = "https://open.douyin.com/oauth/access_token/"
                 access_token_json = {
@@ -186,10 +187,9 @@ def account_auth_bilibili(request):
         if return_url:
             url = parse.urlparse(return_url)
             query_dict = parse.parse_qs(url.query)
-            code = query_dict.get("code")[0]
-
-            # 获取access_token，expires_in，refresh_token
-            if code:
+            code_option = query_dict.get("code")
+            if code_option:
+                code = code_option[0]
                 access_token_url = "https://api.bilibili.com/x/account-oauth2/v1/token"
                 access_token_json = {
                     "client_id": "302763bae0404eee",
