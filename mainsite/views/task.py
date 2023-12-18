@@ -22,6 +22,7 @@ def history_data_update():
     date = date.strftime("%Y-%m-%d")
 
     queryset = models.PlatFormData.objects.values_list("platform_uid")
+
     platform_uid_set = set()
     for platform_uid in queryset:
         platform_uid_set.add(platform_uid[0])
@@ -68,6 +69,9 @@ def history_data_update():
             .first()
             .platform
         )
+        uid = (
+            models.PlatFormData.objects.filter(platform_uid=platform_uid).first().uid_id
+        )
         if platform == 1:
             platform = "抖音"
         elif platform == 2:
@@ -76,17 +80,12 @@ def history_data_update():
             platform = "百家号"
         elif platform == 4:
             platform = "哔哩哔哩"
-        uid = (
-            models.PlatFormData.objects.filter(platform_uid=platform_uid)
-            .first()
-            .uid.uid
-        )
 
         data = {
             "date": date,
             "nickname": nickname,
             "platform_uid": platform_uid,
-            "uid": uid,
+            "uid_id": uid,
             "platform": platform,
             "like_sum": like_sum,
             "comment_sum": comment_sum,

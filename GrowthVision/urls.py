@@ -55,5 +55,5 @@ urlpatterns = [
     path("check/article/get/words/", check.check_article_get_words),
     path("check/article/save/words/", check.check_article_save_words),
     # 测试数据定时任务
-    # path("history/data/update/", task.history_data_update)
+    # path("history/data/update/", task.history_data_update),
 ]
