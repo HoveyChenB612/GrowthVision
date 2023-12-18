@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 # Create your models here.
 
@@ -24,7 +24,7 @@ class PlatFormDouYin(models.Model):
 	refresh_token = models.CharField(verbose_name="refresh_token", max_length=64)
 	open_id = models.CharField(verbose_name="open_id", max_length=255, primary_key=True)
 	expires_in = models.DateTimeField(verbose_name="过期时间")
-	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
+	auth_time = models.DateTimeField(verbose_name="授权时间", default=timezone.now)
 	e_account_role = models.CharField(verbose_name="企业号类型", null=True, max_length=255)
 	nickname = models.CharField(verbose_name="昵称", max_length=64)
 	avatar = models.CharField(verbose_name="头像", max_length=255)
@@ -39,7 +39,7 @@ class PlatFormBilibili(models.Model):
 	avatar = models.CharField(verbose_name="头像", max_length=255)
 	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
 	expires_in = models.DateTimeField(verbose_name="过期时间")
-	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
+	auth_time = models.DateTimeField(verbose_name="授权时间", default=timezone.now)
 
 
 class PlatFormZhiHu(models.Model):
@@ -48,7 +48,7 @@ class PlatFormZhiHu(models.Model):
 	nickname = models.CharField(verbose_name="昵称", max_length=26)
 	avatar = models.CharField(verbose_name="头像", max_length=255)
 	expires_time = models.DateTimeField(verbose_name="过期时间")
-	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
+	auth_time = models.DateTimeField(verbose_name="授权时间", default=timezone.now)
 	zh_uid = models.CharField(verbose_name="知乎用户ID", primary_key=True, max_length=255)
 	z_c0 = models.CharField(verbose_name="授权cookies", max_length=500)
 
@@ -59,7 +59,7 @@ class PlatFormBaiJiaHao(models.Model):
 	nickname = models.CharField(verbose_name="昵称", max_length=26)
 	avatar = models.CharField(verbose_name="头像", max_length=255)
 	expires_time = models.DateTimeField(verbose_name="过期时间")
-	auth_time = models.DateTimeField(verbose_name="授权时间", null="1995-12-15 06:15:00")
+	auth_time = models.DateTimeField(verbose_name="授权时间", default=timezone.now)
 	app_id = models.CharField(verbose_name="百家号用户ID", primary_key=True, max_length=255)
 	bduss = models.CharField(verbose_name="授权cookies", max_length=500)
 	token = models.CharField(verbose_name="授权token", max_length=500)
@@ -92,7 +92,7 @@ class HistoryDate(models.Model):
 	date = models.DateField(verbose_name="时间")
 	nickname = models.CharField(verbose_name="用户名", max_length=64)
 	platform_uid = models.CharField(verbose_name="平台用ID", max_length=500)
-	uid = models.CharField(verbose_name="用户ID", max_length=64)
+	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
 	platform = models.CharField(verbose_name="平台", max_length=64)
 	like_sum = models.IntegerField(verbose_name="点赞数")
 	comment_sum = models.IntegerField(verbose_name="评论数")

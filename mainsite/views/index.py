@@ -211,7 +211,7 @@ def index_echarts(request):
 
 	uid = request.session.get("info").get("uid")
 
-	queryset = models.HistoryDate.objects.filter(uid=uid).values_list('date', flat=True).distinct()
+	queryset = models.HistoryDate.objects.filter(uid_id=uid).values_list('date', flat=True).distinct()
 	date_list = sorted(queryset)[-5:]
 
 	data = []
