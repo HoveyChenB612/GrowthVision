@@ -117,7 +117,7 @@ def history_data_update():
 	return JsonResponse({"status": True})
 
 
-@register_job(scheduler, "interval", minutes=1, id="new_data_update")
+@register_job(scheduler, "interval", minutes=30, id="new_data_update")
 def new_data_update():
 	"""10分钟更新数据"""
 
