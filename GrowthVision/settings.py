@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from django.template.context_processors import media
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,6 +26,9 @@ SECRET_KEY = 'django-insecure-)bta7(pi9mu3j)@1@c!h8fyf@vsm(9wwh=3i^cvhko@*tj!=jn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Allow all origins for simplicity (you may want to restrict this in production)
+CORS_ALLOW_ALL_ORIGINS = True
+
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
@@ -35,7 +40,9 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django_apscheduler',
-	'mainsite.apps.MainsiteConfig'
+	'mainsite.apps.MainsiteConfig',
+	'rest_framework',
+	'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -46,7 +53,8 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	'mainsite.middleware.auth.AuthMiddleware'
+	'mainsite.middleware.auth.AuthMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'GrowthVision.urls'
@@ -133,3 +141,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 收集的到static目录
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

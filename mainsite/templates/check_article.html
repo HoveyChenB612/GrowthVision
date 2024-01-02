@@ -1,335 +1,334 @@
 {% extends 'layout.html' %} {% load static %} {% block content %}
-<style>
-	textarea {
-		resize: none;
-		position: relative;
-		width: 100%;
-		height: 300px;
-	}
-</style>
+    <style>
+        textarea {
+            resize: none;
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+    </style>
 
-<!--页面主要内容-->
-<main class="lyear-layout-content">
-	<div class="container-fluid" id="app">
-		<div class="card">
-			<div class="card-header">
-				<h4>敏感词</h4>
-			</div>
-			<div class="card-body">
-				<input type="button" class="btn btn btn-info btn-sm" value="编辑" style="margin-bottom: 10px"
-					@click="showImportModal" />
-				<!-- 敏感词编辑模态框 -->
-				<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
-					id="showImportModal">
-					<div class="modal-dialog modal-xm" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">×</span>
-								</button>
-								<h4 class="modal-title" id="myModalLabel">编辑敏感词</h4>
-							</div>
-							<div class="modal-body">
-								<div style="display: flex; justify-content: space-between">
-									<h5>
-										格式: 敏感词<span style="background: yellow">;</span>敏感词<span
-											style="background: yellow">;</span>敏感词<span
-											style="background: yellow">;</span>
-									</h5>
-									<a href="#" @click.prevent="copyValue(importList)">一键复制</a>
-								</div>
-								<textarea v-model="importList"> </textarea>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">
-									关闭
-								</button>
-								<button type="button" class="btn btn-primary" @click="saveWords">
-									保存
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<input type="submit" class="btn btn-success btn-sm" value="保存" style="margin-bottom: 10px"
-					:disabled="isEdit" @click="save" />
-				<div class="tagsinput" style="min-height: 200px; width: 100%">
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+        <div class="container-fluid" id="app">
+            <div class="card">
+                <div class="card-header">
+                    <h4>敏感词</h4>
+                </div>
+                <div class="card-body">
+                    <input type="button" class="btn btn btn-info btn-sm" value="编辑" style="margin-bottom: 10px"
+                           @click="showImportModal"/>
+                    <!-- 敏感词编辑模态框 -->
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+                         id="showImportModal">
+                        <div class="modal-dialog modal-xm" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">编辑敏感词</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div style="display: flex; justify-content: space-between">
+                                        <h5>
+                                            格式: 敏感词<span style="background: yellow">;</span>敏感词<span
+                                                style="background: yellow">;</span>敏感词<span
+                                                style="background: yellow">;</span>
+                                        </h5>
+                                        <a href="#" @click.prevent="copyValue(importList)">一键复制</a>
+                                    </div>
+                                    <textarea v-model="importList"> </textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                        关闭
+                                    </button>
+                                    <button type="button" class="btn btn-primary" @click="saveWords">
+                                        保存
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" value="保存" style="margin-bottom: 10px"
+                           :disabled="isEdit" @click="save"/>
+                    <div class="tagsinput" style="min-height: 200px; width: 100%">
 					<span class="tag" v-for="(item, index) in tagList" :key="item.id">
 						<span> {% verbatim %} {{ item.tag }} {% endverbatim %} </span>
 						<a href="#" @click.prevent="del(item.id)"> X </a>
 					</span>
-					<input @keyup.enter="addTag()" @keydown.delete="del()" v-model="newTag" placeholder="请输入标签"
-						:class="{'not_valid': isExist}" id="inp" />
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="card">
-					<div class="card-header">
-						<div style="display: flex; justify-content: space-between">
-							<h4>检测前</h4>
-							<a href="#" @click.prevent="copyValue(article)">一键复制</a>
-						</div>
+                        <input @keyup.enter="addTag()" @keydown.delete="del()" v-model="newTag" placeholder="请输入标签"
+                               :class="{'not_valid': isExist}" id="inp"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4>检测前</h4>
+                                <a href="#" @click.prevent="copyValue(article)">一键复制</a>
+                            </div>
 
-						<!-- .card-actions -->
-					</div>
-					<div class="card-body">
-						<textarea v-model="article"></textarea>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<div class="card">
-					<div class="card-header">
-						<div style="display: flex; justify-content: space-between">
-							<h4>检测后</h4>
-							<button type="button" class="btn btn-default btn-sm" data-toggle="tooltip"
-								data-placement="top" title="" data-original-title="不含重复">合计: <span
-									class="badge bg-danger">
+                            <!-- .card-actions -->
+                        </div>
+                        <div class="card-body">
+                            <textarea v-model="article"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4>检测后</h4>
+                                <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip"
+                                        data-placement="top" title="" data-original-title="不含重复">合计: <span
+                                        class="badge bg-danger">
 									{% verbatim %} {{ wordsCount }} {% endverbatim %}
 								</span>
-								</span>
-							</button>
-						</div>
-						<!-- .card-actions -->
-					</div>
-					<div class="card-body">
-						<div style="height: 300px; overflow: auto">
-							<div v-html="renderArticle"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</main>
+                                    </span>
+                                </button>
+                            </div>
+                            <!-- .card-actions -->
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 300px; overflow: auto">
+                                <div v-html="renderArticle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %} {% block js %}
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{% static 'js/vue.js' %}"></script>
+    <script src="{% static 'js/axios.main.js' %}"></script>
 
-<script>
-	const defaultTagList = [
-		{ id: '0', tag: '站大爷' },
-		{ id: '1', tag: '松果云' },
-		{ id: '2', tag: '太阳' },
-		{ id: '3', tag: '芝麻' },
-		{ id: '4', tag: '雷电' },
-		{ id: '5', tag: '精灵' },
-		{ id: '6', tag: '青果' },
-		{ id: '8', tag: '兔子' },
-		{ id: '9', tag: '花生' },
-		{ id: '10', tag: '星空' },
-		{ id: '11', tag: '阿布' },
-		{ id: '12', tag: '西瓜' },
-		{ id: '13', tag: '雷神' },
-		{ id: '14', tag: '犀牛' },
-		{ id: '15', tag: '开心' },
-		{ id: '16', tag: '爱加速' },
-		{ id: '17', tag: '坚果' },
-		{ id: '18', tag: '品易' },
-		{ id: '19', tag: '代理云' },
-		{ id: '20', tag: '云代理' },
-		{ id: '21', tag: '闪臣' },
-		{ id: '22', tag: '神龙' },
-		{ id: '23', tag: '巨量' },
-		{ id: '24', tag: '蝶鸟' },
-		{ id: '25', tag: '小象' },
-		{ id: '26', tag: '蜻蜓' },
-		{ id: '27', tag: '西刺' },
-		{ id: '28', tag: '极光' },
-		{ id: '29', tag: '天启' },
-		{ id: '30', tag: '飞鱼' },
-		{ id: '31', tag: '快代理' },
-		{ id: '32', tag: '豌豆' },
-		{ id: '33', tag: '大象' },
-		{ id: '37', tag: '豆瓣' },
-		{ id: '38', tag: '阿里' },
-		{ id: '39', tag: '飞机' },
-		{ id: '40', tag: '跳转代理' },
-		{ id: '41', tag: '51' },
-		{ id: '42', tag: '阳光' },
-		{ id: '43', tag: '熊猫' },
-		{ id: '44', tag: '讯ip' },
-		{ id: '45', tag: '快鸟' },
-		{ id: '46', tag: '老鹰' },
-		{ id: '47', tag: '贝壳' },
-		{ id: '48', tag: '极速' },
-		{ id: '49', tag: 'uu' },
-		{ id: '50', tag: '黑洞' },
-		{ id: '51', tag: '多贝云' },
-		{ id: '52', tag: '酷鱼' },
-		{ id: '53', tag: '彩虹' },
-		{ id: '54', tag: '光子' },
-		{ id: '55', tag: 'e变' },
-		{ id: '56', tag: 'ip海' },
-		{ id: '57', tag: '宝马' },
-		{ id: '58', tag: '老鱼' },
-		{ id: '59', tag: '品赞' },
-		{ id: '60', tag: '智连' },
-		{ id: '61', tag: '纯真' },
-		{ id: '62', tag: '番茄' },
-		{ id: '63', tag: '鲸鱼' },
-		{ id: '64', tag: '薄荷' },
-		{ id: '68', tag: '豆芽' },
-		{ id: '69', tag: '闪云' },
-		{ id: '70', tag: '极致' },
-		{ id: '71', tag: 'e站' },
-		{ id: '72', tag: '爱快多' },
-		{ id: '73', tag: '华益云' },
-		{ id: '74', tag: '贝塔' },
-	]
-	const app = new Vue({
-		el: '#app',
-		data: {
-			newTag: ' ',
-			tagList: [],
-			isExist: false,
-			importList: '',
-			isEdit: true,
-			article: '',
-			renderArticle: '',
-			wordsCount: 0,
-		},
-		created() {
-			axios({
-				url: '/check/article/get/words/',
-			})
-				.then((response) => {
-					// 在这里处理响应结果
-					let res = response.data // 这里输出响应的数据
-					if (res.status) {
-						if (!res.words) {
-							this.tagList = defaultTagList
-							console.log('111111')
-						} else {
-							let resList = res.words.split(';')
-							for (let i = 0; i < resList.length - 1; i++) {
-								this.tagList.push({ id: i, tag: resList[i] })
-							}
-						}
-					}
-				})
-				.catch((error) => {
-					// 在这里处理错误
-					console.error('请求出错', error)
-				})
-		},
-		mounted() {
-			this.newTag = ''
-			document.querySelector('#inp').focus()
-		},
-		methods: {
-			addTag() {
-				this.newTag = this.newTag.trim()
-				if (this.newTag === '') {
-					return
-				}
-				for (let i in this.tagList) {
-					if (this.tagList[i].tag === this.newTag) {
-						this.isExist = true
-						return
-					}
-				}
-				let id = this.tagList.length + 1
-				let tag = this.newTag
-				this.tagList.push({ id: id, tag: tag })
-				this.newTag = ' '
-				this.isExist = false
-			},
-			del(id) {
-				this.isExist = false
-				if (this.newTag === '') {
-					this.tagList.pop()
-					this.newTag = '  '
-				}
-				this.tagList = this.tagList.filter((item) => item.id !== id)
-			},
-			showImportModal() {
-				this.importList = ''
-				for (let i in this.tagList) {
-					let word = this.tagList[i].tag
-					this.importList += word + ';'
-				}
-				$('#showImportModal').modal('show')
-			},
-			saveWords() {
-				let words = this.importList.split(';')
-				words.pop()
-				let tempList = []
-				this.tagList = []
-				for (let i in words) {
-					if (!tempList.includes(words[i])) {
-						if (!(words[i].trim() === '')) {
-							tempList.push(words[i])
-							let object = { id: i, tag: words[i] }
-							this.tagList.push(object)
-						}
-					}
-				}
-				this.save()
-				$('#showImportModal').modal('hide')
-			},
-			save() {
-				axios({
-					url: '/check/article/save/words/',
-					method: 'post',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					data: {
-						list: JSON.stringify(this.tagList),
-					},
-				})
-					.then((response) => {
-						console.log('保存成功', response.data)
-						this.isEdit = true
-					})
-					.catch((error) => {
-						console.error('保存出错', error)
-					})
-			},
-			copyValue(text) {
-				navigator.clipboard.writeText(text).then(
-					(success) => {
-						alert('复制成功')
-					},
-					(error) => {
-						alert('复制成功,请手动复制(CTRL + C)')
-					}
-				)
-			},
-		},
-		watch: {
-			tagList: {
-				deep: true,
-				//immediate: true,
-				handler() {
-					this.isEdit = false
-				},
-			},
-			article: {
-				handler(newValue) {
-					clearTimeout(this.timer)
-					this.timer = setTimeout(() => {
-						let article = newValue
-						const words = []
-						const checkAfter = []
-						for (let index = 0; index < this.tagList.length; index++) {
-							const word = this.tagList[index].tag
-							if (article.includes(word)) {
-								let textTemplate = `<span class='alert alert-danger' style='padding:0 5px'>${word}</span>`
-								checkAfter.push(textTemplate)
-								article_list = article.split(word)
-								article = article_list.join(textTemplate)
-							}
-						}
-						this.wordsCount = checkAfter.length
-						this.renderArticle = article
-					}, 300)
-				}
-			}
-		},
-	})
-</script>
+    <script>
+        const defaultTagList = [
+            {id: '0', tag: '站大爷'},
+            {id: '1', tag: '松果云'},
+            {id: '2', tag: '太阳'},
+            {id: '3', tag: '芝麻'},
+            {id: '4', tag: '雷电'},
+            {id: '5', tag: '精灵'},
+            {id: '6', tag: '青果'},
+            {id: '8', tag: '兔子'},
+            {id: '9', tag: '花生'},
+            {id: '10', tag: '星空'},
+            {id: '11', tag: '阿布'},
+            {id: '12', tag: '西瓜'},
+            {id: '13', tag: '雷神'},
+            {id: '14', tag: '犀牛'},
+            {id: '15', tag: '开心'},
+            {id: '16', tag: '爱加速'},
+            {id: '17', tag: '坚果'},
+            {id: '18', tag: '品易'},
+            {id: '19', tag: '代理云'},
+            {id: '20', tag: '云代理'},
+            {id: '21', tag: '闪臣'},
+            {id: '22', tag: '神龙'},
+            {id: '23', tag: '巨量'},
+            {id: '24', tag: '蝶鸟'},
+            {id: '25', tag: '小象'},
+            {id: '26', tag: '蜻蜓'},
+            {id: '27', tag: '西刺'},
+            {id: '28', tag: '极光'},
+            {id: '29', tag: '天启'},
+            {id: '30', tag: '飞鱼'},
+            {id: '31', tag: '快代理'},
+            {id: '32', tag: '豌豆'},
+            {id: '33', tag: '大象'},
+            {id: '37', tag: '豆瓣'},
+            {id: '38', tag: '阿里'},
+            {id: '39', tag: '飞机'},
+            {id: '40', tag: '跳转代理'},
+            {id: '41', tag: '51'},
+            {id: '42', tag: '阳光'},
+            {id: '43', tag: '熊猫'},
+            {id: '44', tag: '讯ip'},
+            {id: '45', tag: '快鸟'},
+            {id: '46', tag: '老鹰'},
+            {id: '47', tag: '贝壳'},
+            {id: '48', tag: '极速'},
+            {id: '49', tag: 'uu'},
+            {id: '50', tag: '黑洞'},
+            {id: '51', tag: '多贝云'},
+            {id: '52', tag: '酷鱼'},
+            {id: '53', tag: '彩虹'},
+            {id: '54', tag: '光子'},
+            {id: '55', tag: 'e变'},
+            {id: '56', tag: 'ip海'},
+            {id: '57', tag: '宝马'},
+            {id: '58', tag: '老鱼'},
+            {id: '59', tag: '品赞'},
+            {id: '60', tag: '智连'},
+            {id: '61', tag: '纯真'},
+            {id: '62', tag: '番茄'},
+            {id: '63', tag: '鲸鱼'},
+            {id: '64', tag: '薄荷'},
+            {id: '68', tag: '豆芽'},
+            {id: '69', tag: '闪云'},
+            {id: '70', tag: '极致'},
+            {id: '71', tag: 'e站'},
+            {id: '72', tag: '爱快多'},
+            {id: '73', tag: '华益云'},
+            {id: '74', tag: '贝塔'},
+        ]
+        const app = new Vue({
+            el: '#app',
+            data: {
+                newTag: ' ',
+                tagList: [],
+                isExist: false,
+                importList: '',
+                isEdit: true,
+                article: '',
+                renderArticle: '',
+                wordsCount: 0,
+            },
+            created() {
+                axios({
+                    url: '/check/article/get/words/',
+                })
+                    .then((response) => {
+                        // 在这里处理响应结果
+                        let res = response.data // 这里输出响应的数据
+                        if (res.status) {
+                            if (!res.words) {
+                                this.tagList = defaultTagList
+                            } else {
+                                let resList = res.words.split(';')
+                                for (let i = 0; i < resList.length - 1; i++) {
+                                    this.tagList.push({id: i, tag: resList[i]})
+                                }
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        // 在这里处理错误
+                        console.error('请求出错', error)
+                    })
+            },
+            mounted() {
+                this.newTag = ''
+                document.querySelector('#inp').focus()
+            },
+            methods: {
+                addTag() {
+                    this.newTag = this.newTag.trim()
+                    if (this.newTag === '') {
+                        return
+                    }
+                    for (let i in this.tagList) {
+                        if (this.tagList[i].tag === this.newTag) {
+                            this.isExist = true
+                            return
+                        }
+                    }
+                    let id = this.tagList.length + 1
+                    let tag = this.newTag
+                    this.tagList.push({id: id, tag: tag})
+                    this.newTag = ' '
+                    this.isExist = false
+                },
+                del(id) {
+                    this.isExist = false
+                    if (this.newTag === '') {
+                        this.tagList.pop()
+                        this.newTag = '  '
+                    }
+                    this.tagList = this.tagList.filter((item) => item.id !== id)
+                },
+                showImportModal() {
+                    this.importList = ''
+                    for (let i in this.tagList) {
+                        let word = this.tagList[i].tag
+                        this.importList += word + ';'
+                    }
+                    $('#showImportModal').modal('show')
+                },
+                saveWords() {
+                    let words = this.importList.split(';')
+                    words.pop()
+                    let tempList = []
+                    this.tagList = []
+                    for (let i in words) {
+                        if (!tempList.includes(words[i])) {
+                            if (!(words[i].trim() === '')) {
+                                tempList.push(words[i])
+                                let object = {id: i, tag: words[i]}
+                                this.tagList.push(object)
+                            }
+                        }
+                    }
+                    this.save()
+                    $('#showImportModal').modal('hide')
+                },
+                save() {
+                    axios({
+                        url: '/check/article/save/words/',
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        data: {
+                            list: JSON.stringify(this.tagList),
+                        },
+                    })
+                        .then((response) => {
+                            console.log('保存成功', response.data)
+                            this.isEdit = true
+                        })
+                        .catch((error) => {
+                            console.error('保存出错', error)
+                        })
+                },
+                copyValue(text) {
+                    navigator.clipboard.writeText(text).then(
+                        (success) => {
+                            alert('复制成功')
+                        },
+                        (error) => {
+                            alert('复制成功,请手动复制(CTRL + C)')
+                        }
+                    )
+                },
+            },
+            watch: {
+                tagList: {
+                    deep: true,
+                    //immediate: true,
+                    handler() {
+                        this.isEdit = false
+                    },
+                },
+                article: {
+                    handler(newValue) {
+                        clearTimeout(this.timer)
+                        this.timer = setTimeout(() => {
+                            let article = newValue
+                            const words = []
+                            const checkAfter = []
+                            for (let index = 0; index < this.tagList.length; index++) {
+                                const word = this.tagList[index].tag
+                                if (article.includes(word)) {
+                                    let textTemplate = `<span class='alert alert-danger' style='padding:0 5px'>${word}</span>`
+                                    checkAfter.push(textTemplate)
+                                    article_list = article.split(word)
+                                    article = article_list.join(textTemplate)
+                                }
+                            }
+                            this.wordsCount = checkAfter.length
+                            this.renderArticle = article
+                        }, 300)
+                    }
+                }
+            },
+        })
+    </script>
 {% endblock %}

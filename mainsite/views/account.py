@@ -27,7 +27,7 @@ def account_auth_list(request):
     # 抖音授权
     client_key = "awpswfd65m22r59e"  # 应用唯一标识
     response_type = "code"  # 默认值 code
-    scope = "user_info,data.external.user,video.list.bind,video.data.bind,renew_refresh_token,data.external.item,data.external.billboard_hot_video"  # 应用授权作用域
+    scope = "user_info,data.external.user,video.list.bind,video.data.bind,renew_refresh_token,data.external.item,data.external.billboard_hot_video,video.search"  # 应用授权作用域
     # optionalScope = "user_info,1,data.external.user,1"  # 应用授权可选作用域&optionalScope={optionalScope}
     redirect_uri = "https://www.baidu.com"  # 授权成功后的回调地址
     get_accredit_url = f"https://open.douyin.com/platform/oauth/connect?client_key={client_key}&response_type={response_type}&scope={scope}&redirect_uri={redirect_uri}"
@@ -272,7 +272,8 @@ def account_auth_baijiahao(request):
         bjhstoken = request.POST.get("bjhstoken")
         cookies = {"BDUSS": bduss}
         headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) "
+                          "Version/17.0 Safari/605.1.15",
             "token": token,
         }
         response = requests.get(
@@ -283,7 +284,8 @@ def account_auth_baijiahao(request):
         result = response.json()
         errno = result.get("errno")
         if errno != 0:
-            return HttpResponse("BDUSS 或 token 错误")
+            return JsonResponse("BDUSS 或 token 错误")
+        
         nickname = result["data"]["user"]["name"]
         avatar = result["data"]["user"]["avatar"].replace("//", "https://")
         auth_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

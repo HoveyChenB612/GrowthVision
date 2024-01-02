@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+{% extends 'layout.html' %} {% load static %} {% block content %}
+    <link href="{% static 'css/animate.css' %}">
+    <style>
+        textarea {
+            resize: none;
+            position: relative;
+            width: 100%;
+            min-height: 250px;
+        }
+
+        .gray {
+            color: rgb(128, 128, 128);
+            font-size: x-small;
+        }
+
+        .red {
+            color: red;
+        }
+    </style>
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+
+        <div class="container-fluid" id="app">
+            <div class="card">
+                <div class="card-header">
+                    <h4>新建发布任务</h4>
+                </div>
+                <div class="card-body">
+                    <form action="#!" method="post" class="row">
+                        <div class="form-group col-md-12">
+                            <label for="type">授权账号</label>
+                            <div>
+                                <button class="btn btn-primary btn-block" type="button" @click="showImportModal">
+                                    点击授权
+                                </button>
+                            </div>
+                        </div>
+                        {% verbatim %}
+                        <div class="row show-grid container-fluid">
+                            <div class="col-sm-4" v-if="authObject.length > 0"
+                                 v-for="(item, index) in authObject" :key="item.id || index">
+                                <div class="card">
+                                    <div class="panel panel-cyan">
+                                        <div class="panel-heading" style="display: flex; align-items: center;">
+                                            <h4 class="panel-title" style="margin: 0; flex: 1;">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                   data-parent="#accordion" :href="'#'+ item.id"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapseTwo">
+                                                    {{ item.nickName}}
+                                                </a>
+                                            </h4>
+                                            <div style="margin-left: auto ;">
+                                                <label class="lyear-checkbox checkbox-pink m-t-10 "
+                                                       style="margin-bottom: 0; margin-top: 0 !important;">
+                                                    <input type="checkbox" v-model="item.isChecked"><span></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div :id="item.id">
+                                            <div class="panel-body">
+                                                <div class="row"></div>
+                                                <div class="col-xs-6">
+                                                    <img :src="item.Avatar">
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <div>昵称:</div>
+                                                    <a> {{ item.nickName }} </a>
+
+                                                    <div style="margin-top: 10px">抖音号:</div>
+                                                    <a> {{ item.douyinNid }} </a>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <a class="btn btn-danger btn-block btn-sm"
+                                                       @click="del(item.douyinNid)">
+                                                        删除</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {%endverbatim %}
+                        <!-- cookies导入模态框 -->
+                        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+                             id="showImportModal">
+                            <div class="modal-dialog modal-xm" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel">导入cookies</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div style="display: flex; justify-content: space-between">
+                                            <h5>
+                                                格式: <span>ttcid=f97b8b486f604e1eb43fcb9bc699fc1f40;</span>
+                                            </h5>
+                                        </div>
+                                        <textarea v-model="importCookies"> </textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                            关闭
+                                        </button>
+                                        <button type="button" class="btn btn-primary" @click="save">
+                                            保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="title">标题</label>
+                            <div>
+                                <input type="text" class="form-control" id="title" name="title" value=""
+                                       placeholder="请输入标题"
+                                       v-model="title"/>
+                                <span :class="{'gray':true,'red':title_count_error}">字数限制:{% verbatim %} {{ title_count }}
+								{% endverbatim %}/ 30</span>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="seo_keywords">关键词</label>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <input type="text" class="form-control" v-model="keys.key1"
+                                           placeholder="关键词1"/>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input type="text" class="form-control" v-model="keys.key2"
+                                           placeholder="关键词2"/>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input type="text" class="form-control" v-model="keys.key3"
+                                           placeholder="关键词3"/>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input type="text" class="form-control" v-model="keys.key4"
+                                           placeholder="关键词4"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="seo_description">正文</label>
+                            <textarea class="form-control" v-model="des" placeholder="描述"></textarea>
+                            <span :class="{'gray':true,'red':des_count_error}">字数限制:{% verbatim %} {{ des_count }} {%endverbatim %}/ 900</span>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="seo_description">上传视频</label>
+                            <input type="file" id="example-file-input" name="example-file-input"
+                                   @change="handleFileChange"
+                                   accept="video/*,"/>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label for="seo_keywords">发布时间</label>
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <label class="lyear-radio radio-inline radio-primary">
+                                        <input type="radio" name="status" v-model="publishType"
+                                               value="now"><span>立即发布</span>
+                                    </label>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label class="lyear-radio radio-inline radio-primary">
+                                        <input type="radio" name="status" v-model="publishType"
+                                               value="after"><span>预约发布</span>
+                                    </label>
+                                </div>
+                                <div class="col-xs-4" v-show="publishType === 'after'">
+                                    <div class="calendarWarp">
+                                        <input type="text" name="date" class='form-control' v-model="datetime"
+                                               id="ECalendar_date" placeholder="请选择日期时间" value=""
+                                               minlength="150"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <button type="button" class="btn btn-primary" @click="publish"
+                                    id="example-success-notify">提
+                                交
+                            </button>
+                            <button type="button" class="btn btn-default" @click="clear">清 空
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>任务列表</h4>
+                </div>
+                <div class="card-body">
+                    <table id="table"></table>
+                    <div class="row" id="toolbar">
+                        <button type="button" name="refresh" aria-label="刷新" title="刷新"
+                                class="btn btn-primary" style="margin-left: 12px;">刷新
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+{% endblock %} {% block js %}
+    <script src="{% static 'js/vue.js' %}"></script>
+    <script src="{% static 'js/axios.main.js' %}"></script>
+    <script src="{% static 'js/lightyear.js' %}"></script>
+    <script src="{% static 'js/bootstrap-notify.min.js' %}"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                title: '',
+                title_count: 0,
+                title_count_error: false,
+                keys: {
+                    key1: '',
+                    key2: '',
+                    key3: '',
+                    key4: '',
+                },
+                des: '',
+                des_count: 0,
+                des_count_error: false,
+                publishType: 'now',
+                datetime: "",
+                importCookies: "",
+                authObject: [],
+                file: ""
+            },
+            methods: {
+                async renderUserInfo() {
+                    await axios({
+                        url: '/video/load/user_info/',
+                        method: 'get',
+                    })
+                        .then((response) => {
+                            const data = response.data.data
+                            for (let i in data) {
+                                data[i]["id"] = Date.now() + i.toString()
+                            }
+                            this.authObject = data
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                },
+                showImportModal() {
+                    $('#showImportModal').modal('show')
+                },
+                async save() {
+                    if (this.importCookies.length === 0) {
+                        alert("cookies不能为空")
+                        return
+                    }
+                    await axios({
+                        url: '/video/user_info/',
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        data: {
+                            cookies: this.importCookies,
+                        },
+                    })
+                        .then((response) => {
+                            // 判断逻辑
+                            if (response.data.code === 1) {
+                                lightyear.notify(response.data.mes, 'success', 6000, 'mdi mdi-emoticon-happy', 'top', 'center');
+                            } else {
+                                lightyear.notify(response.data.mes, 'danger', 6000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            lightyear.notify('授权失败: Cookies格式错误', 'danger', 6000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                        });
+                    this.importCookies = ""
+                    $('#showImportModal').modal('hide')
+                    await this.renderUserInfo()
+
+                },
+                async del(douyinNid) {
+                    await axios({
+                        url: '/video/delete/user_info/',
+                        method: 'get',
+                        params: {
+                            douyinNid: douyinNid
+                        }
+                    })
+                        .then((response) => {
+                            if (response.data.status === true) {
+                                lightyear.notify(response.data.mes, 'success', 3000, 'mdi mdi-emoticon-happy', 'top', 'center');
+                            } else {
+                                lightyear.notify(response.data.mes, 'danger', 3000, 'mdi-emoticon-sad', 'top', 'center');
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            lightyear.notify('删除失败: 服务器错误', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                        });
+                    await this.renderUserInfo()
+                },
+                clear() {
+                    this.keys = {}
+                    this.title = ""
+                    this.des = ""
+                    this.publishType = "now"
+                    this.datetime = ""
+                },
+                handleFileChange(event) {
+                    this.file = event.target.files[0];
+                },
+                publish() {
+                    lightyear.loading('show');
+                    if (this.title.length === 0) {
+                        lightyear.loading('hide');
+                        lightyear.notify('标题不能为空', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                        return;
+                    }
+                    if (this.des.length === 0) {
+                        lightyear.loading('hide');
+                        lightyear.notify('描述不能为空', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                        return;
+                    }
+                    if (!this.file) {
+                        lightyear.loading('hide');
+                        lightyear.notify('请上传文件', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                        return;
+                    }
+                    let hasTrueValue = this.authObject.some(item => item.isChecked === true);
+                    if (!hasTrueValue) {
+                        lightyear.loading('hide');
+                        lightyear.notify('必须选择一个账号进行发布', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                        return;
+                    }
+                    // 将非空值的 keys 放入数组中
+                    const keysArray = Object.values(this.keys).filter(value => value.length !== 0);
+
+                    // 创建 FormData 对象
+                    let formData = new FormData();
+                    formData.append('file', this.file);
+                    let authObject = []
+                    for (let i in this.authObject) {
+                        if (this.authObject[i].isChecked) {
+                            authObject.push(this.authObject[i])
+                        }
+                    }
+                    formData.append('data', JSON.stringify({
+                        title: this.title,
+                        keys: keysArray,
+                        des: this.des,
+                        authObject: authObject,
+                        publishType: this.publishType,
+                        datetime: this.datetime,
+                    }));
+
+                    // 设置上传文件的接口URL
+                    let url = '/video/publish_video/';  // 替换为实际的后端接口URL
+
+                    // 配置请求头
+                    let headers = {
+                        headers: {'Content-Type': 'multipart/form-data'}
+                    };
+
+                    // 发送 POST 请求
+                    axios.post(url, formData, headers)
+                        .then(response => {
+                            // 处理后端响应
+                            if (response.data.status === false) {
+                                lightyear.notify(`发布失败: ` + `<br>` + response.data.mes, 'danger', 6000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                                lightyear.loading('hide');
+                                $('#table').bootstrapTable('refresh')
+                                return
+                            }
+                            lightyear.loading('hide');
+                            this.clear()
+                            lightyear.notify(response.data.mes, 'success', 6000, 'mdi mdi-emoticon-happy', 'top', 'center');
+
+                        })
+                        .catch(error => {
+                            lightyear.notify('发布失败: 服务器错误', 'danger', 6000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                            lightyear.loading('hide');
+
+                        });
+                    $('#table').bootstrapTable('refresh')
+                },
+            },
+            async created() {
+                await this.renderUserInfo()
+            },
+            mounted() {
+                $('#table').bootstrapTable({
+                    url: "/video/task/list/",  // 请求数据源的路由
+                    dataType: "json",
+                    method: 'get',
+                    pagination: true, //前端处理分页
+                    singleSelect: false,//是否只能单选
+                    toolbar: '#toolbar', //工具按钮用哪个容器
+                    striped: true, //是否显示行间隔色
+                    cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pageNumber: 1, //初始化加载第10页，默认第一页
+                    pageSize: 10, //每页的记录行数（*）
+                    pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+                    showColumns: false, //显示内容列下拉框
+                    showRefresh: false, //显示刷新按钮
+                    minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
+                    // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
+                    uniqueId: "id", //每一行的唯一标识，一般为主键列
+                    showToggle: false, //是否显示详细视图和列表视图的切换按钮
+                    cardView: false, //是否显示详细视图
+                    sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+                    queryParamsType: "limit",//设置为 ‘limit’ 则会发送符合 RESTFul 格式的参数.
+                    search: false, //******开启搜索框****//
+                    searchOnEnterKey: false, //******回车后执行搜索****//
+                    strictSearch: true,  //******完全匹配****//
+                    trimOnSearch: true, //去除关键词空格//
+                    searchAlign: "right",
+                    responseHandler: function (res) {
+                        //如果后台返回的json格式不是{rows:[{...},{...}],total:100},可以在这块处理成这样的格式
+                        return res;
+                    },
+                    columns: [
+                        /*
+                        {  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price 跟后端的字段名id  name price是完全一样的.
+                        checkbox: true,
+                        visible: true
+                        },
+                        */
+                        {
+                            field: 'id',
+                            title: '序号'
+                        }, {
+                            field: 'title',
+                            title: "标题",
+                            sortable: true,
+                        }, {
+                            field: 'keys',
+                            title: "关键字",
+                            sortable: true,
+                        }, {
+                            field: 'file',
+                            title: "文件名",
+                            sortable: true,
+                        }, {
+                            field: 'publish_time',
+                            title: "发布时间",
+                            sortable: true,
+                        }, {
+                            field: 'status',
+                            title: "状态",
+                            sortable: true,
+                            formatter: function (status) {
+                                switch (status) {
+                                    case 0:
+                                        return '<span class="label label-danger">发布失败</span>'
+                                    case 1:
+                                        return '<span class="label label-success">发布成功</span>'
+                                    case 2:
+                                        return '<span class="label label-warning">等待发布</span>'
+                                }
+                            }
+                        }, {
+                            field: 'option',
+                            title: "操作",
+                            formatter: actionFormatter
+                        },
+                    ],
+                });
+
+                function actionFormatter(value, row) {
+                    let result = "";
+                    result += "<a class='btn btn-xs btn-danger' onclick='btnDeleteTaskEvent(this)' id='" + row.task_id.toString() + "'>删除</a>";
+                    return result
+                }
+            },
+            watch: {
+                title(newValue) {
+                    this.title_count_error = newValue.length > 30;
+                    this.title_count = newValue.length
+                },
+                des(newValue) {
+                    this.des_count_error = newValue.length > 900;
+                    this.des_count = newValue.length
+                },
+            },
+        })
+        $(function () {
+            $("#ECalendar_date").ECalendar({
+                type: "time",   //模式，time: 带时间选择; date: 不带时间选择;
+                stamp: false,   //是否转成时间戳，默认true;
+                offset: [0, 2],   //弹框手动偏移量;
+                format: "yyyy-mm-dd hh:ii",   //时间格式 默认 yyyy-mm-dd hh:ii;
+                skin: 3,   //皮肤颜色，默认随机，可选值：0-8,或者直接标注颜色值;
+                step: 10,   //选择时间分钟的精确度;
+                callback: function (v, e) {
+                    app.datetime = v
+
+                } //回调函数
+            });
+        })
+
+        function btnDeleteTaskEvent(ele) {
+            let deleteId = $(ele).attr("id")
+            axios({
+                url: '/video/task/delete/',
+                method: 'get',
+                params: {
+                    task_id: deleteId
+                }
+            }).then((response) => {
+                if (response.data.status) {
+                    lightyear.notify(response.data.mes, 'success', 3000, 'mdi mdi-emoticon-happy', 'top', 'center');
+                } else {
+                    lightyear.notify(response.data.mes, 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                }
+                $('#table').bootstrapTable('refresh')
+            }).catch((error) => {
+                console.log(error)
+                lightyear.notify('删除失败: 服务器错误', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+
+            })
+
+        }
+    </script>
+{% endblock %}

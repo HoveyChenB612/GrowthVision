@@ -288,7 +288,7 @@
 
             //操作栏的格式化
             function actionFormatter(value, row) {
-                var getPrimary;
+                let getPrimary;
                 if (row.zh_uid) {
                     getPrimary = row.zh_uid
                 } else if (row.open_id) {
@@ -298,7 +298,7 @@
                 } else if (row.openid) {
                     getPrimary = row.openid
                 }
-                var result = "";
+                let result = "";
 
                 // 在按钮字符串中插入 getPrimary 变量到 id 属性
                 result += "<a class='btn btn-cyan btn-sm' onclick='bindBtnRefreshEvent(this)' id='" + getPrimary + "'>刷新</a>";

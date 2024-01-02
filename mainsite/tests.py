@@ -1,40 +1,11 @@
-import requests
+import ast
+import json
+# 字符串包含一个字面值表达式
+string_with_literal = "[1, 2, 3.0 ,'asd', 'wef','qweasd''123']"
 
-cookies = {
-	# 'BAIDUID': '30760FF92511F617EF21615A2BB2166B:FG=1',
-    # 'BAIDUID_BFESS': '30760FF92511F617EF21615A2BB2166B:FG=1',
-    # 'theme': 'bjh',
-    # 'PHPSESSID': 'iu1sq9tavfg5feo3diujabdjo0',
-    'BDUSS': 'VN5Tk40WmtPSkkyZzdWRFhjWnl1ZkhERGdCWDNVWnlnUmlmTUdtNlZ1UHpmb2RsRVFBQUFBJCQAAAAAAAAAAAEAAAD6H8k22K1BY2NvbXBhbnkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPPxX2Xz8V9lZ',
-    # 'BDUSS_BFESS': 'nFLM35-b0lRVjVJUlFzUGE3VXMycVM5WmhuaXJ0WVl0R2V-NXlnWW10WkYtb2RsRUFBQUFBJCQAAAAAAAAAAAEAAAB4Bo2i2LzYvNi82LzYvNOwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEVtYGVFbWBlc',
-    # 'RECENT_LOGIN': '1',
-    # 'gray': '1',
-    # 'canary': '0',
-    # 'Hm_lvt_f7b8c775c6c8b6a716a75df506fb72df': '1700818248',
-    # 'devStoken': 'f7f9401983b8e5986b01a5e65ee17124dea5db323afb969b74a81ebf590825b6',
-    # 'bjhStoken': 'babd8d3795cb1886b9d41922ee0eede4dea5db323afb969b74a81ebf590825b6',
-    # '__bid_n': '18c00aae68c8048560aa5c',
-    # 'ab_sr': '1.0.1_ZjAyZDZkMjBkZmJkMDdjY2ExZjIxYzUzODk1ZTRjMTNkNjc3NzZjNTgyNzZkYTMzMDA0ZTE2ZjcwOWQ0MWUzNDk3NDY3ZDFlZGFhMDFkOTdjNDljMWNjZjM0NTc5YmYwNWZiMzU2ZWQ4ZTRkZDhlMmU3MTQxYTA1MTEzYjNmYmEzZGZhNGFlZjIzOGY3MTViZTFhNzhkZTdjZTI5M2YwMjY3YWRjMjUyNzRhZTU1ZTI2NGNmODBhYmQwZGFhNzg2',
-    # 'Hm_lpvt_f7b8c775c6c8b6a716a75df506fb72df': '1700818278',
-    # 'RT': '"z=1&dm=baidu.com&si=f38c0079-72f4-404e-bce3-007a516e46f2&ss=lpcf01i4&sl=3&tt=5nl&bcn=https%3A%2F%2Ffclog.baidu.com%2Flog%2Fweirwood%3Ftype%3Dperf"',
-}
+# 使用 ast.literal_eval 解析字符串
+parsed_list = ast.literal_eval(string_with_literal)
 
-headers = {
-	# 'Accept': 'application/json, text/plain, */*',
-	# 'Sec-Fetch-Site': 'same-origin',
-	# 'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
-	# # 'Accept-Encoding': 'gzip, deflate, br',
-	# 'Sec-Fetch-Mode': 'cors',
-	# 'Host': 'baijiahao.baidu.com',
-	'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
-	# 'Connection': 'keep-alive',
-	# 'Referer': 'https://baijiahao.baidu.com/',
-	# 'Cookie': 'Hm_lpvt_f7b8c775c6c8b6a716a75df506fb72df=1700818048; Hm_lvt_f7b8c775c6c8b6a716a75df506fb72df=1698820685,1700784707,1700808386,1700812531; canary=0; gray=1; XFCS=BCE2612C0FD7C98359F09EFB9DF61D934F7E53CF6B5615ACBD2A3609852DF35F; XFI=ab225a20-8aab-11ee-8066-ffc17786787d; RT="z=1&dm=baidu.com&si=74ecf64b-3739-41da-af7f-b1bcf183f529&ss=lpcbv79r&sl=18&tt=ma8u&bcn=https%3A%2F%2Ffclog.baidu.com%2Flog%2Fweirwood%3Ftype%3Dperf"; ab_sr=1.0.1_OTlhMTNlYTc5Nzk4YzI3NzRhZWFhZWM5ZTFhYjM4N2YxMThjMmFkYzk4NjE0MTY1YjAwODVjNzc0MDQzNjlkYzI5N2JkNzc3ODI1ZGIzNDM1ZTQ2MTcyZGZkM2MxNGI5ZTJlMDVjMDQ3NDNiZDFiZWQ3ZmM4NWFkMGNiYmQxOTRlNDAyZDNhYjQ1NzlmNzVlMWRjOGRmOTVlNGUwMzAxZTBhMjc2ZjE0NjZmODgyOTc1ZWY4MWY3OTc3NTdmNDE5; XFT=pr8Az8f6uNepSGcK6yXBA+gQTcOAt51LlK/9WcMwrcY=; openTabIndex=tab_top1; __bid_n=18bfeab20bf06883a408b1; bjhStoken=b75d0615954c1f19024fb977d88598f71128f1a5663f6354bd159a0826de5522; devStoken=75caaf9eac0acb21ca7413fc936ceefc1128f1a5663f6354bd159a0826de5522; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598; PHPSESSID=f526as3v2i7moq8ommhgb4ucf7; BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0; H_PS_PSSID=39636_39643_39668_39664_39676_39713_39741_39779_39791_39788_39704_39681_39678_39817; PSINO=7; delPer=0; PSTM=1700793115; BIDUPSID=6E97A356163A0282650ED79BB82DA2F8; BDUSS=VN5Tk40WmtPSkkyZzdWRFhjWnl1ZkhERGdCWDNVWnlnUmlmTUdtNlZ1UHpmb2RsRVFBQUFBJCQAAAAAAAAAAAEAAAD6H8k22K1BY2NvbXBhbnkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPPxX2Xz8V9lZ; theme=bjh; BAIDUID=2918AFEA6AAEDF9030F3D37684F69D98:FG=1',
-	# 'Sec-Fetch-Dest': 'empty',
-	'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYWlqaWFoYW8uYmFpZHUuY29tIiwiYXVkIjoiaHR0cDpcL1wvYmFpamlhaGFvLmJhaWR1LmNvbSIsImlhdCI6MTcwMDg3MjI4OSwibmJmIjoxNzAwODI5MDk0LCJleHAiOjE3MDA5MTU0OTR9.lyN-wGtlejqXsno0ESjS8ThOnObOV1qVcQD_8gA9T_w',
-}
 
-response = requests.get('https://baijiahao.baidu.com/user-ui/cms/settingInfo', cookies=cookies, headers=headers)
-
-result = response.json()
-print(result)
+print(parsed_list)
+print(type(parsed_list))

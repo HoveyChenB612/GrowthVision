@@ -16,44 +16,57 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path
-from mainsite.views import index, account, user, hot, task, check
+from mainsite.views import index, account, user, hot, task, check, video
+
+
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # 主页
-    path("index/", index.index),
-    path("index/total/bilibili/", index.index_total_bilibili),
-    path("index/total/zhihu/", index.index_total_zhihu),
-    path("index/total/baijiahao/", index.index_total_baijiahao),
-    path("index/echarts/", index.index_echarts),
-    # 平台账号
-    path("account/auth/list/", account.account_auth_list),
-    path("account/auth/detail/", account.account_auth_detail),
-    path("account/auth/douyin/", account.account_auth_douyin),
-    path("account/auth/bilibili/", account.account_auth_bilibili),
-    path("account/auth/zhihu/", account.account_auth_zhihu),
-    path("account/auth/baijiahao/", account.account_auth_baijiahao),
-    path("account/auth/get/", account.account_auth_get),
-    path("account/delete/", account.account_delete),
-    path("account/data/list/", account.account_data_list),
-    path("account/data/get/", account.account_data_get),
-    path("account/data/update/", account.account_data_update),
-    path("account/refresh/", account.account_auth_refresh),
-    path("account/auth/detail/echarts/", account.account_auth_detail_echarts),
-    # 用户账号
-    path("login/", user.login),
-    path("image/code/", user.image_code),
-    path("logout/", user.user_logout),
-    path("register/", user.register),
-    path("edit_pwd/", user.edit_pwd),
-    # 热词搜索
-    path("hot/list/", hot.hot_list),
-    # 主页
-    path("", index.main),
-    # 敏感词检测
-    path("check/article/", check.check_article),
-    path("check/article/get/words/", check.check_article_get_words),
-    path("check/article/save/words/", check.check_article_save_words),
-    # 测试数据定时任务
-    # path("history/data/update/", task.history_data_update),
+	# path('admin/', admin.site.urls),
+	# 主页
+	path("index/", index.index),
+	path("index/total/bilibili/", index.index_total_bilibili),
+	path("index/total/zhihu/", index.index_total_zhihu),
+	path("index/total/baijiahao/", index.index_total_baijiahao),
+	path("index/echarts/", index.index_echarts),
+	# 平台账号
+	path("account/auth/list/", account.account_auth_list),
+	path("account/auth/detail/", account.account_auth_detail),
+	path("account/auth/douyin/", account.account_auth_douyin),
+	path("account/auth/bilibili/", account.account_auth_bilibili),
+	path("account/auth/zhihu/", account.account_auth_zhihu),
+	path("account/auth/baijiahao/", account.account_auth_baijiahao),  # type: ignore
+	path("account/auth/get/", account.account_auth_get),
+	path("account/delete/", account.account_delete),
+	path("account/data/list/", account.account_data_list),
+	path("account/data/get/", account.account_data_get),
+	path("account/data/update/", account.account_data_update),
+	path("account/refresh/", account.account_auth_refresh),
+	path("account/auth/detail/echarts/", account.account_auth_detail_echarts),
+	# 用户账号
+	path("login/", user.login),
+	path("image/code/", user.image_code),
+	path("logout/", user.user_logout),
+	path("register/", user.register),
+	path("edit_pwd/", user.edit_pwd),
+	# 热词搜索
+	path("hot/list/", hot.hot_list),
+	# 主页
+	path("", index.main),
+	# 敏感词检测
+	path("check/article/", check.check_article),
+	path("check/article/get/words/", check.check_article_get_words),
+	path("check/article/save/words/", check.check_article_save_words),
+	# 视频发布
+	path("video/", video.video),
+	path("video/user_info/", video.user_info),
+	path("video/delete/user_info/", video.delete_user_info),
+	path("video/load/user_info/",video.load_user_info),
+	path("video/publish_video/", video.publish_video),
+	path("video/task/list/", video.task_list),
+	path("video/task/delete/", video.task_delete),
+	# 测试数据定时任务
+	# path("history/data/update/", task.history_data_update),
 ]
+
+
+

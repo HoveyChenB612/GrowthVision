@@ -1,5 +1,7 @@
+import os
 from django.db import models
 from django.utils import timezone
+
 
 # Create your models here.
 
@@ -104,7 +106,42 @@ class HistoryDate(models.Model):
 
 class SensitiveWords(models.Model):
 	"""敏感词库"""
-	uid = models.ForeignKey(verbose_name="用户ID",to=User, on_delete=models.CASCADE)
+	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
 	group = models.SmallIntegerField(verbose_name="分组")
 	update_time = models.DateTimeField(verbose_name="更新时间")
-	words = models.CharField(verbose_name="敏感词",max_length=2000)
+	words = models.CharField(verbose_name="敏感词", max_length=2000)
+
+
+def upload_path_handler(instance):
+	return os.path.join('videos', instance.user.uid)
+
+
+class PublishVideo(models.Model):
+	uid = models.ForeignKey(verbose_name="用户ID", to=User, on_delete=models.CASCADE)
+	title = models.CharField(verbose_name="标题", max_length=120)
+	keys = models.CharField(verbose_name="关键字", max_length=300)
+	text = models.CharField(verbose_name="正文", max_length=2700)
+	status_choices = (
+		(0, "发布失败"),
+		(1, "发布成功"),
+		(2, "发布等待"),
+	)
+	publish_type_choices = (
+		(0,"now"),
+		(1,"after")
+	)
+	publish_type = models.SmallIntegerField(verbose_name="发布类型", choices=publish_type_choices)
+	status = models.SmallIntegerField(verbose_name="发布状态", choices=status_choices)
+	file = models.FileField(upload_to=upload_path_handler)
+	upload_time = models.DateTimeField(verbose_name="上传时间", default=timezone.now)
+	publish_time = models.DateTimeField(verbose_name="发布时间", default=timezone.now)
+	task_id = models.CharField(verbose_name="任务ID", null=True, max_length=255)
+
+
+class CookieInfo(models.Model):
+	uid = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name="用户ID")
+	avatar = models.CharField(verbose_name="头像地址", max_length=255)
+	pid = models.CharField(verbose_name="用户平台ID", max_length=255)
+	nickname = models.CharField(verbose_name="用户名", max_length=255)
+	isChecked = models.BooleanField(verbose_name="是否选中")
+	cookies = models.JSONField(verbose_name="用户cookies")
