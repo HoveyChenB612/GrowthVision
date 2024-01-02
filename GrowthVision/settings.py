@@ -41,7 +41,6 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'django_apscheduler',
 	'mainsite.apps.MainsiteConfig',
-	'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +52,6 @@ MIDDLEWARE = [
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'mainsite.middleware.auth.AuthMiddleware',
-	'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'GrowthVision.urls'
