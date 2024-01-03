@@ -167,7 +167,7 @@ def publish_video(request):
 					models.PublishVideo.objects.create(**data)
 					return JsonResponse(result, safe=False)
 
-			models.PublishVideo.objects.create(**data)
+				models.PublishVideo.objects.create(**data)
 			return JsonResponse(result, safe=False)
 
 		if publish_type == "after":
@@ -227,6 +227,7 @@ def task_list(request):
 		if item.next_run_time < dt.now():
 			DjangoJob.objects.filter(id=item.id).delete()
 	over_id = publish_queryset_id - job_queryset_id
+
 	for item in over_id:
 		update_data = {
 			"status": 1
