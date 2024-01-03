@@ -106,7 +106,7 @@ def run(
 		"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
 	}
 
-	browser = playwright.chromium.launch(headless=True)
+	browser = playwright.chromium.launch(headless=False)
 	context = browser.new_context()
 	context.set_extra_http_headers(headers=headers)
 	context.add_cookies(cookies)
