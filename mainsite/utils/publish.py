@@ -111,54 +111,54 @@ def run(
 	context.set_extra_http_headers(headers=headers)
 	context.add_cookies(cookies)
 	page = context.new_page()
-	try:
-		page.goto("https://creator.douyin.com/creator-micro/content/upload")
+# try:
+	page.goto("https://creator.douyin.com/creator-micro/content/upload")
 
-		# 上传文件
-		input_ele = page.locator("input[type=file]")
-		input_ele.set_input_files(files=file)
+	# 上传文件
+	input_ele = page.locator("input[type=file]")
+	input_ele.set_input_files(files=file)
 
-		# 等待页面加载完成
-		page.wait_for_selector("#root", timeout=30000, state="visible")
+	# 等待页面加载完成
+	page.wait_for_selector("#root", timeout=30000, state="visible")
 
-		# 填写内容
-		# 1.标题
-		page.get_by_placeholder("好的作品标题可获得更多浏览").click()
-		page.get_by_placeholder("好的作品标题可获得更多浏览").type(title)
-		sleep(random.uniform(1, 2))
+	# 填写内容
+	# 1.标题
+	page.get_by_placeholder("好的作品标题可获得更多浏览").click()
+	page.get_by_placeholder("好的作品标题可获得更多浏览").type(title)
+	sleep(random.uniform(1, 2))
 
-		# 2. 作品简介
-		page.locator(".zone-container").click()
-		type_text = "\n ".join([f"#{item}" for item in target]) + "\n "
-		page.locator(".zone-container").type(type_text + content)
-		sleep(random.uniform(1, 2))
-		# 等待视频上传完成
-		page.wait_for_selector(".text--7Ii7o", timeout=60000, state="visible")
+	# 2. 作品简介
+	page.locator(".zone-container").click()
+	type_text = "\n ".join([f"#{item}" for item in target]) + "\n "
+	page.locator(".zone-container").type(type_text + content)
+	sleep(random.uniform(1, 2))
+	# 等待视频上传完成
+	page.wait_for_selector(".text--7Ii7o", timeout=60000, state="visible")
 
-		# 发布
-		page.get_by_role("button", name="发布", exact=True).click()
-		sleep(random.uniform(1, 2))
-		# 验证视频是否发布成功
-		page.wait_for_selector(".search", timeout=60000, state="visible")
+	# 发布
+	page.get_by_role("button", name="发布", exact=True).click()
+	sleep(random.uniform(1, 2))
+	# 验证视频是否发布成功
+	page.wait_for_selector(".search", timeout=60000, state="visible")
 
-		for _ in range(3):
-			text = page.locator(
-				"xpath=//*[@id='root']/div/div/div[3]/div[2]/div[1]/div[1]/div[2]/div[1]/div"
-			).inner_text(timeout=3000)
+	for _ in range(3):
+		text = page.locator(
+			"xpath=//*[@id='root']/div/div/div[3]/div[2]/div[1]/div[1]/div[2]/div[1]/div"
+		).inner_text(timeout=3000)
 
-			if title in text:
-				return {"status": True, "mes": "发布成功", "code": 1}
-			else:
-				page.reload()
-				sleep(random.uniform(1, 2))
+		if title in text:
+			return {"status": True, "mes": "发布成功", "code": 1}
+		else:
+			page.reload()
+			sleep(random.uniform(1, 2))
 
-	except Exception as e:
-		print(e)
-		return {"status": False, "mes": "cookies 已过期，请重新授权", "code": 0}
+# except Exception as e:
+# 	print(e)
+# 	return {"status": False, "mes": "cookies 已过期，请重新授权", "code": 0}
 
-	finally:
-		context.close()
-		browser.close()
+# finally:
+	context.close()
+	browser.close()
 
 	return {"status": False, "mes": "发布失败", "code": 0}
 
