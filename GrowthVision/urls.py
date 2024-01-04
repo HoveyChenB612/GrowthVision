@@ -64,6 +64,7 @@ urlpatterns = [
 	path("video/publish_video/", video.publish_video),
 	path("video/task/list/", video.task_list),
 	path("video/task/delete/", video.task_delete),
+	path("video/check/user_info/",video.check_user_info)
 	# 测试数据定时任务
 	# path("history/data/update/", task.history_data_update),
 ]

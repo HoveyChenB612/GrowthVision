@@ -127,8 +127,8 @@ class PublishVideo(models.Model):
 		(2, "发布等待"),
 	)
 	publish_type_choices = (
-		(0,"now"),
-		(1,"after")
+		(0, "now"),
+		(1, "after")
 	)
 	publish_type = models.SmallIntegerField(verbose_name="发布类型", choices=publish_type_choices)
 	status = models.SmallIntegerField(verbose_name="发布状态", choices=status_choices)
@@ -136,6 +136,8 @@ class PublishVideo(models.Model):
 	upload_time = models.DateTimeField(verbose_name="上传时间", default=timezone.now)
 	publish_time = models.DateTimeField(verbose_name="发布时间", default=timezone.now)
 	task_id = models.CharField(verbose_name="任务ID", null=True, max_length=255)
+	publish_nickname = models.CharField(verbose_name="发布账号用户名", max_length=255)
+	publish_pid = models.CharField(verbose_name="发布账号平台ID", max_length=255)
 
 
 class CookieInfo(models.Model):
@@ -145,3 +147,8 @@ class CookieInfo(models.Model):
 	nickname = models.CharField(verbose_name="用户名", max_length=255)
 	isChecked = models.BooleanField(verbose_name="是否选中")
 	cookies = models.JSONField(verbose_name="用户cookies")
+	status_choices = (
+		(0, "无效"),
+		(1, "有效")
+	)
+	status = models.SmallIntegerField(verbose_name="状态", choices=status_choices)

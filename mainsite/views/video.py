@@ -54,7 +54,8 @@ def user_info(request):
 			"pid": data["info"]["douyinid"],
 			"nickname": data["info"]["nickname"],
 			"isChecked": True,
-			"cookies": data["info"]["cookies"]
+			"cookies": data["info"]["cookies"],
+			"status": 1
 		}
 		exists = models.CookieInfo.objects.filter(pid=data["info"]["douyinid"]).filter(uid_id=uid).exists()
 		if exists:
@@ -83,7 +84,8 @@ def load_user_info(request):
 			"Cookies": item.cookies,
 			"douyinNid": item.pid,
 			"isChecked": item.isChecked,
-			"nickName": item.nickname
+			"nickName": item.nickname,
+			"status": item.get_status_display()
 		}
 		auth_object.append(auth_dict)
 
@@ -154,12 +156,16 @@ def publish_video(request):
 				"upload_time": timezone.now(),
 				"publish_time": timezone.now(),
 				"uid_id": uid,
-				"task_id": str(time.perf_counter())
+				"task_id": str(time.perf_counter()),
+				"publish_nickname": "",
+				"publish_pid": ""
 			}
 
 			result = {}
 			for item in auth_object:
 				cookies = item["Cookies"]
+				data["publish_nickname"] = item["nickName"]
+				data["publish_pid"] = item["douyinNid"]
 				result = publish(cookies, file_path, title, keys, des)
 
 				if not result["status"]:
@@ -179,6 +185,8 @@ def publish_video(request):
 			scheduler.add_jobstore(DjangoJobStore(), "default")
 			for item in auth_object:
 				cookies = item["Cookies"]
+				publish_nickname = item["nickName"]
+				publish_pid = item["douyinNid"]
 				one_minute = timedelta(minutes=1)
 				dt_object += one_minute
 				task_id = str(time.perf_counter())
@@ -195,7 +203,9 @@ def publish_video(request):
 					"upload_time": timezone.now(),
 					"publish_time": dt_object,
 					"uid_id": uid,
-					"task_id": task_id
+					"task_id": task_id,
+					"publish_nickname": publish_nickname,
+					"publish_pid": publish_pid
 				}
 				models.PublishVideo.objects.create(**data)
 
@@ -245,7 +255,10 @@ def task_list(request):
 			"file": item.file.name.split("/")[-1],
 			"publish_time": item.publish_time.strftime("%Y-%m-%d %H:%M:%S"),
 			"status": item.status,
-			"task_id": item.task_id
+			"task_id": item.task_id,
+			"publish_nickname": item.publish_nickname,
+			"publish_pid": item.publish_pid,
+
 		}
 
 		data["rows"].append(content)
@@ -279,3 +292,20 @@ def task_delete(request):
 	else:
 		models.PublishVideo.objects.filter(task_id=task_id).delete()
 		return JsonResponse(data)
+
+
+def check_user_info(request):
+	"""检查用户状态"""
+	uid = request.session.get("info").get("uid")
+	queryset = models.CookieInfo.objects.filter(uid_id=uid).all()
+	try:
+		for item in queryset:
+			pid = item.pid
+			cookies = json.dumps(item.cookies)
+			data = get_user_info(cookies)
+			if not data["status"]:
+				models.CookieInfo.objects.filter(pid=pid).update(status=0)
+	except Exception as e:
+		return JsonResponse({"status": False, "code": 0, "mes": e})
+
+	return JsonResponse({"status": True, "code": 1, "mes": "检查完成"})

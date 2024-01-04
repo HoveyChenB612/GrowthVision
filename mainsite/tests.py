@@ -9,3 +9,9 @@ parsed_list = ast.literal_eval(string_with_literal)
 
 print(parsed_list)
 print(type(parsed_list))
+
+l1 = [1, 2, 3.0, 'asd', 'wef', 'qweasd123']
+
+parsed_str = json.dumps(l1)
+print(parsed_str)
+print(type(parsed_str))

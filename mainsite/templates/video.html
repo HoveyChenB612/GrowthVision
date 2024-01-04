@@ -48,8 +48,9 @@
                                                 <a class="collapsed" role="button" data-toggle="collapse"
                                                    data-parent="#accordion" :href="'#'+ item.id"
                                                    aria-expanded="false"
-                                                   aria-controls="collapseTwo">
-                                                    {{ item.nickName}}
+                                                   aria-controls="collapseTwo"
+                                                   :class="{'text-danger': item.status == '无效'}">
+                                                    {{ item.nickName}} ({{ item.status }})
                                                 </a>
                                             </h4>
                                             <div style="margin-left: auto ;">
@@ -235,21 +236,21 @@
                 datetime: "",
                 importCookies: "",
                 authObject: [],
-                file: ""
+                file: "",
+                timer: "",
             },
             methods: {
                 async renderUserInfo() {
                     await axios({
                         url: '/video/load/user_info/',
                         method: 'get',
+                    }).then((response) => {
+                        const data = response.data.data
+                        for (let i in data) {
+                            data[i]["id"] = Date.now() + i.toString()
+                        }
+                        this.authObject = data
                     })
-                        .then((response) => {
-                            const data = response.data.data
-                            for (let i in data) {
-                                data[i]["id"] = Date.now() + i.toString()
-                            }
-                            this.authObject = data
-                        })
                         .catch((error) => {
                             console.log(error);
                         });
@@ -343,6 +344,12 @@
                         lightyear.notify('必须选择一个账号进行发布', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
                         return;
                     }
+                    let hasStatus = this.authObject.some(item => item.status === "无效" && item.isChecked === true);
+                    if (hasStatus) {
+                        lightyear.loading('hide');
+                        lightyear.notify('请取消无效的账号，或重新授权', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
+                        return;
+                    }
                     // 将非空值的 keys 放入数组中
                     const keysArray = Object.values(this.keys).filter(value => value.length !== 0);
 
@@ -394,9 +401,16 @@
                         });
                     $('#table').bootstrapTable('refresh')
                 },
+                async checkUserInfo() {
+                    await axios({
+                        url: "/video/check/user_info/",
+                        method: "get",
+                    })
+                }
             },
             async created() {
                 await this.renderUserInfo()
+                await this.checkUserInfo()
             },
             mounted() {
                 $('#table').bootstrapTable({
@@ -440,6 +454,10 @@
                             field: 'id',
                             title: '序号'
                         }, {
+                            field: 'publish_nickname',
+                            title: "账号名",
+                            sortable: true,
+                        }, {
                             field: 'title',
                             title: "标题",
                             sortable: true,
@@ -482,6 +500,9 @@
                     result += "<a class='btn btn-xs btn-danger' onclick='btnDeleteTaskEvent(this)' id='" + row.task_id.toString() + "'>删除</a>";
                     return result
                 }
+
+                // 定时检测授权账号状态
+                // this.timer = setInterval(this.checkUserInfo, 7000)
             },
             watch: {
                 title(newValue) {
@@ -504,7 +525,6 @@
                 step: 10,   //选择时间分钟的精确度;
                 callback: function (v, e) {
                     app.datetime = v
-
                 } //回调函数
             });
         })
@@ -527,7 +547,6 @@
             }).catch((error) => {
                 console.log(error)
                 lightyear.notify('删除失败: 服务器错误', 'danger', 3000, 'mdi mdi-emoticon-sad', 'top', 'center');
-
             })
 
         }

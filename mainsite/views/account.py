@@ -7,7 +7,7 @@ import requests
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
 from django.utils import timezone
-from django.db.models import Q, Sum
+from django.db.models import Q, Sum, F
 from asgiref.sync import sync_to_async, async_to_sync
 
 from mainsite import models
@@ -759,11 +759,28 @@ def account_auth_detail(request):
     platform_name = platform_mapping.get(platform, "")
     header_label = f"{platform_name}-{nickname}"
 
+    # 排名前十的作品
+    top_10 = (
+        models.PlatFormData.objects.filter(uid_id=uid).filter(platform_uid=platform_uid)
+        .annotate(
+            total_count=Sum(
+                F("like_count")
+                + F("comment_count")
+                + F("play_count")
+                + F("download_rec_count")
+                + F("share_vote_count")
+                + F("forward_collect_count")
+            )
+        )
+        .order_by("-total_count")[:10]
+    )
+
     context = {
         "platform_uid": platform_uid,
         "active_account_auth": active_account_auth,
         "header_label": header_label,
         "data": data_dict,
+        "top_10":top_10,
     }
 
     return render(request, "account_auth_detail.html", context)
