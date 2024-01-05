@@ -135,6 +135,7 @@ def run(
 	# 等待视频上传完成
 	page.wait_for_selector(".text--7Ii7o", timeout=60000, state="visible")
 
+	sleep(random.uniform(1, 2))
 	# 发布
 	page.get_by_role("button", name="发布", exact=True).click()
 	sleep(random.uniform(1, 2))
