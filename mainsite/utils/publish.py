@@ -139,7 +139,7 @@ def run(
 	page.get_by_role("button", name="发布", exact=True).click()
 	sleep(random.uniform(1, 2))
 	# 验证视频是否发布成功
-	page.wait_for_selector(".search", timeout=60000, state="visible")
+	# page.wait_for_selector(".search", timeout=60000, state="visible")
 
 	for _ in range(3):
 		text = page.locator(
