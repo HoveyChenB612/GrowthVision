@@ -186,34 +186,36 @@ def new_data_update():
 			}
 		)
 	dy_nickname = ""
-	try:
-		for param in dy_param:
+
+	for param in dy_param:
+		try:
 			dy_nickname = param["nickname"]
 			gd.get_douyin_data(
 				param["nickname"], param["open_id"], param["access_token"], param["uid"]
 			)
-	except Exception as e:
-		print(e)
-		models.PlatFormDouYin.objects.filter(nickname=dy_nickname).update(expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-		print(f"抖音-{dy_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+		except Exception as e:
+			print(e)
+			models.PlatFormDouYin.objects.filter(nickname=dy_nickname).update(
+				expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			print(f"抖音-{dy_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-	try:
-		for param in bz_param:
+	for param in bz_param:
+		try:
 			gd.get_bilibili_data(
 				param["nickname"], param["access_token"], param["openid"], param["uid"]
 			)
-	except Exception as e:
-		print(e)
-		print(f"Bilibili数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+		except Exception as e:
+			print(e)
+			print(f"Bilibili数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-	try:
-		for param in zh_param:
+	for param in zh_param:
+		try:
 			gd.get_zhihu_data(
 				param["nickname"], param["z_c0"], param["zh_uid"], param["uid"]
 			)
-	except Exception as e:
-		print(e)
-		print(f"知乎数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+		except Exception as e:
+			print(e)
+			print(f"知乎数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	try:
 		for param in bjh_param:
@@ -228,7 +230,6 @@ def new_data_update():
 	except Exception as e:
 		print(e)
 		print(f"百家号数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
 
 	# 创建或更新数据
 	for item in gd.works_list:
