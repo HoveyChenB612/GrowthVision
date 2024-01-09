@@ -1,17 +1,16 @@
-import ast
-import json
-# 字符串包含一个字面值表达式
-string_with_literal = "[1, 2, 3.0 ,'asd', 'wef','qweasd''123']"
+from playwright.sync_api import sync_playwright
+from time import sleep
 
-# 使用 ast.literal_eval 解析字符串
-parsed_list = ast.literal_eval(string_with_literal)
+def main(playwright):
+	browser = playwright.chromium.launch(headless=True)
+	context = browser.new_context()
+	page = context.new_page()
+	page.goto("https://www.baidu.com")
+	sleep(120)
+	page.close()
+	context.close()
+	browser.close()
 
 
-print(parsed_list)
-print(type(parsed_list))
-
-l1 = [1, 2, 3.0, 'asd', 'wef', 'qweasd123']
-
-parsed_str = json.dumps(l1)
-print(parsed_str)
-print(type(parsed_str))
+with sync_playwright() as playwright:
+	main(playwright)
