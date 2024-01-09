@@ -117,7 +117,7 @@ def history_data_update():
 	return JsonResponse({"status": True})
 
 
-@register_job(scheduler, "interval", minutes=30, id="new_data_update")
+@register_job(scheduler, "interval", minutes=2, id="new_data_update")
 def new_data_update():
 	"""10分钟更新数据"""
 
@@ -193,9 +193,10 @@ def new_data_update():
 				param["nickname"], param["open_id"], param["access_token"], param["uid"]
 			)
 	except Exception as e:
-		models.PlatFormDouYin.objects.filter(nickname=dy_nickname).update(expires_in=datetime.now())
-		print(f"抖音数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-		return
+		print(e)
+		models.PlatFormDouYin.objects.filter(nickname=dy_nickname).update(expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+		print(f"抖音-{dy_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
 	try:
 		for param in bz_param:
 			gd.get_bilibili_data(
@@ -204,7 +205,7 @@ def new_data_update():
 	except Exception as e:
 		print(e)
 		print(f"Bilibili数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-		return
+
 	try:
 		for param in zh_param:
 			gd.get_zhihu_data(
@@ -213,7 +214,7 @@ def new_data_update():
 	except Exception as e:
 		print(e)
 		print(f"知乎数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-		return
+
 	try:
 		for param in bjh_param:
 			gd.get_baijiahao_data(
@@ -227,7 +228,7 @@ def new_data_update():
 	except Exception as e:
 		print(e)
 		print(f"百家号数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-		return
+
 
 	# 创建或更新数据
 	for item in gd.works_list:
