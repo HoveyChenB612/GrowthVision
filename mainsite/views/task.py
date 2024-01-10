@@ -72,7 +72,7 @@ def history_data_update():
 			.first()
 			.platform
 		)
-		uid = models.PlatFormData.objects.filter(platform_uid=platform_uid).first().uid
+		uid = models.PlatFormData.objects.filter(platform_uid=platform_uid).first().uid_id
 		if platform == 1:
 			platform = "抖音"
 		elif platform == 2:
@@ -117,7 +117,7 @@ def history_data_update():
 	return JsonResponse({"status": True})
 
 
-@register_job(scheduler, "interval", minutes=2, id="new_data_update")
+@register_job(scheduler, "interval", minutes=30, id="new_data_update")
 def new_data_update():
 	"""10分钟更新数据"""
 
