@@ -188,6 +188,7 @@ def account_auth_bilibili(request):
             url = parse.urlparse(return_url)
             query_dict = parse.parse_qs(url.query)
             code_option = query_dict.get("code")
+
             if code_option:
                 code = code_option[0]
                 access_token_url = "https://api.bilibili.com/x/account-oauth2/v1/token"
@@ -197,8 +198,13 @@ def account_auth_bilibili(request):
                     "grant_type": "authorization_code",
                     "code": code,
                 }
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Accept": "application/json"
+                }
                 access_token_response = requests.post(
-                    url=access_token_url, json=access_token_json
+                    url=access_token_url, data=access_token_json, headers=headers
                 )
                 access_token_result = access_token_response.json()
                 if access_token_result.get("code") == 0:
