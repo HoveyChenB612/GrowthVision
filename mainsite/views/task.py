@@ -113,7 +113,6 @@ def history_data_update():
 	for platform_uid in none_platform_uid_set:
 		models.HistoryDate.objects.filter(platform_uid=platform_uid).delete()
 	print(f"无授权账号历史数据清理完成-{date}")
-
 	return JsonResponse({"status": True})
 
 
