@@ -30,6 +30,7 @@
             bindBtnUpdateEvent();
 
         });
+
         function load(url) {
             $('#table').bootstrapTable({
                 url: url,  // 请求数据源的路由
@@ -82,7 +83,7 @@
                                 return "知乎"
                             } else if (platform === 3) {
                                 return "百家号"
-                            }else if (platform === 4) {
+                            } else if (platform === 4) {
                                 return "哔哩哔哩"
                             }
                         }
@@ -96,18 +97,24 @@
                     }, {
                         field: 'title',
                         title: '标题',
-                        sortable: true
+                        sortable: true,
+                        // 超长隐藏
+                        cellStyle: formatTableUnit,
+                        // 鼠标放上显示
+                        formatter: paramsMatter
                     }, {
                         field: 'create_time',
                         title: '创建时间',
                         sortable: true,
+                        visible: false,
                         formatter: function (time) {
                             return time.replace("T", " ")
                         }
                     }, {
                         field: 'update_time',
                         title: '更新时间',
-                        sortable: true,
+                        visible: false,
+                        sortable: false,
                         formatter: function (time) {
                             return time.replace("T", " ")
                         }
@@ -146,6 +153,27 @@
                 ],
             });
         }
+
+        // 表格超出宽度鼠标悬停显示td内容
+        function paramsMatter(value, row, index) {
+            var span = document.createElement("span");
+            span.setAttribute("title", value);
+            span.innerHTML = value;
+            return span.outerHTML;
+        }
+
+        // td宽度以及内容超过宽度隐藏
+        function formatTableUnit(value, row, index) {
+            return {
+                css: {
+                    "white-space": "nowrap",
+                    "text-overflow": "ellipsis",
+                    "overflow": "hidden",
+                    "max-width": "150px"
+                }
+            }
+        }
+
         // 更新数据
         function bindBtnUpdateEvent() {
             $("#btnUpdate").click(function () {

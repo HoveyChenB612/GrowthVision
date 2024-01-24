@@ -327,11 +327,22 @@ def account_auth_get(request):
 
 	# 获取当前登陆的用户uid
 	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
 
 	row_id = 0
 	data = {"total": 0, "rows": []}
 
-	queryset_dy = models.PlatFormDouYin.objects.filter(uid=uid)
+	if role:
+		queryset_dy = models.PlatFormDouYin.objects.all()
+		queryset_bz = models.PlatFormBilibili.objects.all()
+		queryset_zh = models.PlatFormZhiHu.objects.all()
+		queryset_bjh = models.PlatFormBaiJiaHao.objects.all()
+	else:
+		queryset_dy = models.PlatFormDouYin.objects.filter(uid=uid)
+		queryset_bz = models.PlatFormBilibili.objects.filter(uid=uid)
+		queryset_zh = models.PlatFormZhiHu.objects.filter(uid=uid)
+		queryset_bjh = models.PlatFormBaiJiaHao.objects.filter(uid=uid)
+
 	for index, item in enumerate(queryset_dy):
 		data["total"] += index
 		row_id += 1
@@ -347,8 +358,6 @@ def account_auth_get(request):
 		}
 
 		data["rows"].append(content)
-
-	queryset_bz = models.PlatFormBilibili.objects.filter(uid=uid)
 	for index, item in enumerate(queryset_bz):
 		data["total"] += index
 		row_id += 1
@@ -364,8 +373,6 @@ def account_auth_get(request):
 		}
 
 		data["rows"].append(content)
-
-	queryset_zh = models.PlatFormZhiHu.objects.filter(uid=uid)
 	for index, item in enumerate(queryset_zh):
 		data["total"] += index
 		row_id += 1
@@ -382,8 +389,6 @@ def account_auth_get(request):
 		}
 
 		data["rows"].append(content)
-
-	queryset_bjh = models.PlatFormBaiJiaHao.objects.filter(uid=uid)
 	for index, item in enumerate(queryset_bjh):
 		data["total"] += index
 		row_id += 1
@@ -455,12 +460,15 @@ def account_data_get(request):
 
 	# 获取当前登陆的用户uid
 	uid = request.session.get("info").get("uid")
-
+	role = request.session.get("info").get("role")
 	row_id = 0
 	data = {"total": 0, "rows": []}
 
-	# 抖音数据发送到前端
-	queryset = models.PlatFormData.objects.filter(uid=uid)
+	# 数据发送到前端
+	if role:
+		queryset = models.PlatFormData.objects.all()
+	else:
+		queryset = models.PlatFormData.objects.filter(uid=uid)
 	for index, item in enumerate(queryset):
 		row_id += 1
 		data["total"] += index
@@ -490,11 +498,24 @@ def account_data_update(request):
 
 	# 获取当前用户ID
 	uid = request.session.get("info").get("uid")
-
+	role = request.session.get("info").get("role")
 	gd = GetData()
 
 	dy_param = []
-	dy_queryset = models.PlatFormDouYin.objects.filter(uid=uid)
+	bz_param = []
+	zh_param = []
+	bjh_param = []
+	if role:
+		dy_queryset = models.PlatFormDouYin.objects.all()
+		bz_queryset = models.PlatFormBilibili.objects.all()
+		zh_queryset = models.PlatFormZhiHu.objects.all()
+		bjh_queryset = models.PlatFormBaiJiaHao.objects.all()
+	else:
+		dy_queryset = models.PlatFormDouYin.objects.filter(uid=uid)
+		bz_queryset = models.PlatFormBilibili.objects.filter(uid=uid)
+		zh_queryset = models.PlatFormZhiHu.objects.filter(uid=uid)
+		bjh_queryset = models.PlatFormBaiJiaHao.objects.filter(uid=uid)
+
 	for item in dy_queryset:
 		open_id = item.open_id
 		access_token = item.access_token
@@ -508,9 +529,6 @@ def account_data_update(request):
 				"uid": uid,
 			}
 		)
-
-	bz_param = []
-	bz_queryset = models.PlatFormBilibili.objects.filter(uid=uid)
 	for item in bz_queryset:
 		openid = item.openid
 		access_token = item.access_token
@@ -524,9 +542,6 @@ def account_data_update(request):
 				"uid": uid,
 			}
 		)
-
-	zh_param = []
-	zh_queryset = models.PlatFormZhiHu.objects.filter(uid=uid)
 	for item in zh_queryset:
 		z_c0 = item.z_c0
 		zh_uid = item.zh_uid
@@ -535,9 +550,6 @@ def account_data_update(request):
 		zh_param.append(
 			{"nickname": nickname, "z_c0": z_c0, "zh_uid": zh_uid, "uid": uid}
 		)
-
-	bjh_param = []
-	bjh_queryset = models.PlatFormBaiJiaHao.objects.filter(uid=uid)
 	for item in bjh_queryset:
 		bjhstoken = item.bjhstoken
 		bduss = item.bduss
@@ -732,7 +744,10 @@ def account_auth_detail(request):
 
 	# 获取当前用户ID与当前平台账号 ID
 	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
+
 	platform_uid = request.GET.get("platformid", "")
+
 	fields = [
 		"like_count",
 		"comment_count",
@@ -743,17 +758,34 @@ def account_auth_detail(request):
 	]
 	data_dict = {}
 	for field in fields:
-		queryset = (
-			models.PlatFormData.objects.filter(uid_id=uid)
-			.filter(platform_uid=platform_uid)
-			.aggregate(Sum(field))
-		)
+		if role:
+			queryset = (
+				models.PlatFormData.objects.all()
+				.filter(platform_uid=platform_uid)
+				.aggregate(Sum(field))
+			)
+		else:
+			queryset = (
+				models.PlatFormData.objects.filter(uid_id=uid)
+				.filter(platform_uid=platform_uid)
+				.aggregate(Sum(field))
+			)
 		data_dict.update(queryset)
 
 	# 修改头部平台名称+账号昵称
 	platform_info = models.PlatFormData.objects.filter(
 		platform_uid=platform_uid
 	).first()
+	if platform_info is None:
+		context = {
+			"platform_uid": platform_uid,
+			"active_account_auth": active_account_auth,
+			"header_label": "无数据展示",
+			"data": {},
+			"top_10": {},
+		}
+
+		return render(request, "account_auth_detail.html", context)
 	nickname = platform_info.nickname
 	platform = platform_info.platform
 	platform_mapping = {
@@ -766,20 +798,36 @@ def account_auth_detail(request):
 	header_label = f"{platform_name}-{nickname}"
 
 	# 排名前十的作品
-	top_10 = (
-		models.PlatFormData.objects.filter(uid_id=uid).filter(platform_uid=platform_uid)
-		.annotate(
-			total_count=Sum(
-				F("like_count")
-				+ F("comment_count")
-				+ F("play_count")
-				+ F("download_rec_count")
-				+ F("share_vote_count")
-				+ F("forward_collect_count")
+	if role:
+		top_10 = (
+			models.PlatFormData.objects.all().filter(platform_uid=platform_uid)
+			.annotate(
+				total_count=Sum(
+					F("like_count")
+					+ F("comment_count")
+					+ F("play_count")
+					+ F("download_rec_count")
+					+ F("share_vote_count")
+					+ F("forward_collect_count")
+				)
 			)
+			.order_by("-total_count")[:10]
 		)
-		.order_by("-total_count")[:10]
-	)
+	else:
+		top_10 = (
+			models.PlatFormData.objects.filter(uid_id=uid).filter(platform_uid=platform_uid)
+			.annotate(
+				total_count=Sum(
+					F("like_count")
+					+ F("comment_count")
+					+ F("play_count")
+					+ F("download_rec_count")
+					+ F("share_vote_count")
+					+ F("forward_collect_count")
+				)
+			)
+			.order_by("-total_count")[:10]
+		)
 
 	context = {
 		"platform_uid": platform_uid,
@@ -796,10 +844,14 @@ def account_auth_detail_echarts(request):
 	"""账号详情图表"""
 	# 获取当前用户ID与当前平台账号 ID
 	uid = request.session.get("info", {}).get("uid")
+	role = request.session.get("info", {}).get("role")
 	platform_uid = request.GET.get("platform_uid", "")
 
 	# 获取指定平台的历史数据
-	queryset = models.HistoryDate.objects.filter(uid=uid, platform_uid=platform_uid)
+	if role:
+		queryset = models.HistoryDate.objects.all().filter(platform_uid=platform_uid)
+	else:
+		queryset = models.HistoryDate.objects.filter(uid=uid, platform_uid=platform_uid)
 
 	# 提取日期和指标列表
 	date = queryset.values_list("date", flat=True)

@@ -13,8 +13,12 @@ class User(models.Model):
 	status_choices = (
 		(0, "禁用"),
 		(1, "正常"))
-
 	status = models.SmallIntegerField(verbose_name="状态", choices=status_choices, default=1)
+	role_choices = (
+		(0, "普通用户"),
+		(1, "管理员")
+	)
+	role = models.SmallIntegerField(verbose_name="角色", choices=role_choices, default=0)
 	register_time = models.DateTimeField(verbose_name="注册时间", auto_now_add=True)
 	last_login_time = models.DateTimeField(verbose_name="上次登陆时间", auto_now=True)
 

@@ -6,335 +6,453 @@ from datetime import datetime, timedelta
 
 
 def index(request):
-    """获取数据总计"""
+	"""获取数据总计"""
 
-    # 前端选中标签与头部标签
-    active_index = ""
-    header_label = ""
-    if request.path == "/index/":
-        active_index = "active"
-        header_label = "首页"
+	# 前端选中标签与头部标签
+	active_index = ""
+	header_label = ""
+	if request.path == "/index/":
+		active_index = "active"
+		header_label = "首页"
 
-    # 获取当前用户ID
-    uid = request.session.get("info").get("uid")
+	# 获取当前用户ID
+	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
 
-    fields = [
-        "like_count",
-        "comment_count",
-        "play_count",
-        "download_rec_count",
-        "share_vote_count",
-        "forward_collect_count",
-    ]
-    data_dict = {}
-    for field in fields:
-        queryset = (
-            models.PlatFormData.objects.filter(uid_id=uid)
-            .filter(platform=1)
-            .aggregate(Sum(field))
-        )
-        data_dict.update(queryset)
+	fields = [
+		"like_count",
+		"comment_count",
+		"play_count",
+		"download_rec_count",
+		"share_vote_count",
+		"forward_collect_count",
+	]
+	data_dict = {}
+	top_10_douyin = {}
+	for field in fields:
+		if role:
+			queryset = (
+				models.PlatFormData.objects.all()
+				.filter(platform=1)
+				.aggregate(Sum(field))
+			)
 
-    # 排名前十的作品
-    top_10 = (
-        models.PlatFormData.objects.filter(uid_id=uid)
-        .annotate(
-            total_count=Sum(
-                F("like_count")
-                + F("comment_count")
-                + F("play_count")
-                + F("download_rec_count")
-                + F("share_vote_count")
-                + F("forward_collect_count")
-            )
-        )
-        .order_by("-total_count")[:10]
-    )
+			# 排名前十的作品
+			top_10_douyin = (
+				models.PlatFormData.objects.all().filter(platform=1)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
+		else:
+			queryset = (
+				models.PlatFormData.objects.filter(uid_id=uid)
+				.filter(platform=1)
+				.aggregate(Sum(field))
+			)
 
-    update_time = "none"
-    null_object = models.PlatFormData.objects.first()
-    if null_object:
-        update_time = null_object.update_time
+			# 排名前十的作品
+			top_10_douyin = (
+				models.PlatFormData.objects.filter(uid_id=uid).filter(platform=1)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
+		data_dict.update(queryset)
 
-    context = {
-        "active_index": active_index,
-        "header_label": header_label,
-        "update_time": update_time,
-        "data": data_dict,
-        "current": "抖音",
-        "dropdown": [
-            {"platform": "知乎", "url": "/index/total/zhihu/"},
-            {"platform": "百家号", "url": "/index/total/baijiahao/"},
-            {"platform": "哔哩哔哩", "url": "/index/total/bilibili/"},
-        ],
-        "top_10": top_10,
-    }
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
 
-    return render(request, "index.html", context)
+	context = {
+		"active_index": active_index,
+		"header_label": header_label,
+		"update_time": update_time,
+		"data": data_dict,
+		"current": "抖音",
+		"dropdown": [
+			{"platform": "知乎", "url": "/index/total/zhihu/"},
+			{"platform": "百家号", "url": "/index/total/baijiahao/"},
+			{"platform": "哔哩哔哩", "url": "/index/total/bilibili/"},
+		],
+		"top_10": top_10_douyin,
+	}
+
+	return render(request, "index.html", context)
 
 
 def index_total_zhihu(request):
-    """获取数据总计"""
+	"""获取数据总计"""
 
-    # 前端选中标签与头部标签
-    active_index = ""
-    header_label = ""
-    if request.path == "/index/total/zhihu/":
-        active_index = "active"
-        header_label = "首页"
+	# 前端选中标签与头部标签
+	active_index = ""
+	header_label = ""
+	if request.path == "/index/total/zhihu/":
+		active_index = "active"
+		header_label = "首页"
 
-    # 获取当前用户ID
-    uid = request.session.get("info").get("uid")
+	# 获取当前用户ID
+	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
 
-    fields = [
-        "like_count",
-        "comment_count",
-        "play_count",
-        "download_rec_count",
-        "share_vote_count",
-        "forward_collect_count",
-    ]
-    data_dict = {}
-    for field in fields:
-        queryset = (
-            models.PlatFormData.objects.filter(uid_id=uid)
-            .filter(platform=2)
-            .aggregate(Sum(field))
-        )
-        data_dict.update(queryset)
+	fields = [
+		"like_count",
+		"comment_count",
+		"play_count",
+		"download_rec_count",
+		"share_vote_count",
+		"forward_collect_count",
+	]
+	data_dict = {}
+	top10_zhihu = {}
+	for field in fields:
+		if role:
+			queryset = (
+				models.PlatFormData.objects.all()
+				.filter(platform=2)
+				.aggregate(Sum(field))
+			)
+			data_dict.update(queryset)
 
-    # 排名前十的作品
-    top_10 = (
-        models.PlatFormData.objects.filter(uid_id=uid)
-        .annotate(
-            total_count=Sum(
-                F("like_count")
-                + F("comment_count")
-                + F("play_count")
-                + F("download_rec_count")
-                + F("share_vote_count")
-                + F("forward_collect_count")
-            )
-        )
-        .order_by("-total_count")[:10]
-    )
+			# 排名前十的作品
+			top10_zhihu = (
+				models.PlatFormData.objects.all().filter(platform=2)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
+		else:
+			queryset = (
+				models.PlatFormData.objects.filter(uid_id=uid)
+				.filter(platform=2)
+				.aggregate(Sum(field))
+			)
+			data_dict.update(queryset)
 
-    update_time = "none"
-    null_object = models.PlatFormData.objects.first()
-    if null_object:
-        update_time = null_object.update_time
+			# 排名前十的作品
+			top10_zhihu = (
+				models.PlatFormData.objects.filter(uid_id=uid).filter(platform=2)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
 
-    context = {
-        "active_index": active_index,
-        "header_label": header_label,
-        "update_time": update_time,
-        "data": data_dict,
-        "current": "知乎",
-        "dropdown": [
-            {"platform": "抖音", "url": "/index/"},
-            {"platform": "百家号", "url": "/index/total/baijiahao/"},
-            {"platform": "哔哩哔哩", "url": "/index/total/bilibili/"},
-        ],
-        "top_10": top_10,
-    }
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
 
-    return render(request, "index.html", context)
+	context = {
+		"active_index": active_index,
+		"header_label": header_label,
+		"update_time": update_time,
+		"data": data_dict,
+		"current": "知乎",
+		"dropdown": [
+			{"platform": "抖音", "url": "/index/"},
+			{"platform": "百家号", "url": "/index/total/baijiahao/"},
+			{"platform": "哔哩哔哩", "url": "/index/total/bilibili/"},
+		],
+		"top_10": top10_zhihu,
+	}
+
+	return render(request, "index.html", context)
 
 
 def index_total_bilibili(request):
-    """获取数据总计"""
+	"""获取数据总计"""
 
-    # 前端选中标签与头部标签
-    active_index = ""
-    header_label = ""
-    if request.path == "/index/total/bilibili/":
-        active_index = "active"
-        header_label = "首页"
+	# 前端选中标签与头部标签
+	active_index = ""
+	header_label = ""
+	if request.path == "/index/total/bilibili/":
+		active_index = "active"
+		header_label = "首页"
 
-    # 获取当前用户ID
-    uid = request.session.get("info").get("uid")
+	# 获取当前用户ID
+	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
 
-    fields = [
-        "like_count",
-        "comment_count",
-        "play_count",
-        "download_rec_count",
-        "share_vote_count",
-        "forward_collect_count",
-    ]
-    data_dict = {}
-    for field in fields:
-        queryset = (
-            models.PlatFormData.objects.filter(uid_id=uid)
-            .filter(platform=4)
-            .aggregate(Sum(field))
-        )
-        data_dict.update(queryset)
+	fields = [
+		"like_count",
+		"comment_count",
+		"play_count",
+		"download_rec_count",
+		"share_vote_count",
+		"forward_collect_count",
+	]
+	data_dict = {}
+	top_10_bilibili = []
+	for field in fields:
+		if role:
+			queryset = (
+				models.PlatFormData.objects.all()
+				.filter(platform=4)
+				.aggregate(Sum(field))
+			)
+			data_dict.update(queryset)
 
-    # 排名前十的作品
-    top_10 = (
-        models.PlatFormData.objects.filter(uid_id=uid)
-        .annotate(
-            total_count=Sum(
-                F("like_count")
-                + F("comment_count")
-                + F("play_count")
-                + F("download_rec_count")
-                + F("share_vote_count")
-                + F("forward_collect_count")
-            )
-        )
-        .order_by("-total_count")[:10]
-    )
+			# 排名前十的作品
+			top_10_bilibili = (
+				models.PlatFormData.objects.all().filter(platform=4)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
+		else:
+			queryset = (
+				models.PlatFormData.objects.filter(uid_id=uid)
+				.filter(platform=4)
+				.aggregate(Sum(field))
+			)
+			data_dict.update(queryset)
 
-    update_time = "none"
-    null_object = models.PlatFormData.objects.first()
-    if null_object:
-        update_time = null_object.update_time
+			top_10_bilibili = (
+				models.PlatFormData.objects.filter(uid_id=uid).filter(platform=4)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
 
-    context = {
-        "active_index": active_index,
-        "header_label": header_label,
-        "update_time": update_time,
-        "data": data_dict,
-        "current": "哔哩哔哩",
-        "dropdown": [
-            {"platform": "抖音", "url": "/index/"},
-            {"platform": "百家号", "url": "/index/total/baijiahao/"},
-            {"platform": "知乎", "url": "/index/total/zhihu/"},
-        ],
-        "top_10": top_10,
-    }
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
 
-    return render(request, "index.html", context)
+	context = {
+		"active_index": active_index,
+		"header_label": header_label,
+		"update_time": update_time,
+		"data": data_dict,
+		"current": "哔哩哔哩",
+		"dropdown": [
+			{"platform": "抖音", "url": "/index/"},
+			{"platform": "百家号", "url": "/index/total/baijiahao/"},
+			{"platform": "知乎", "url": "/index/total/zhihu/"},
+		],
+		"top_10": top_10_bilibili,
+	}
+
+	return render(request, "index.html", context)
 
 
 def index_total_baijiahao(request):
-    """获取数据总计"""
+	"""获取数据总计"""
 
-    # 前端选中标签与头部标签
-    active_index = ""
-    header_label = ""
-    if request.path == "/index/total/baijiahao/":
-        active_index = "active"
-        header_label = "首页"
+	# 前端选中标签与头部标签
+	active_index = ""
+	header_label = ""
+	if request.path == "/index/total/baijiahao/":
+		active_index = "active"
+		header_label = "首页"
 
-    # 获取当前用户ID
-    uid = request.session.get("info").get("uid")
+	# 获取当前用户ID
+	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
 
-    fields = [
-        "like_count",
-        "comment_count",
-        "play_count",
-        "download_rec_count",
-        "share_vote_count",
-        "forward_collect_count",
-    ]
-    data_dict = {}
-    for field in fields:
-        queryset = (
-            models.PlatFormData.objects.filter(uid_id=uid)
-            .filter(platform=3)
-            .aggregate(Sum(field))
-        )
-        data_dict.update(queryset)
+	fields = [
+		"like_count",
+		"comment_count",
+		"play_count",
+		"download_rec_count",
+		"share_vote_count",
+		"forward_collect_count",
+	]
+	data_dict = {}
+	top_10_baijiahao = {}
+	for field in fields:
+		if role:
+			queryset = (
+				models.PlatFormData.objects.all()
+				.filter(platform=3)
+				.aggregate(Sum(field))
+			)
+			data_dict.update(queryset)
 
-    # 排名前十的作品
-    top_10 = (
-        models.PlatFormData.objects.filter(uid_id=uid)
-        .annotate(
-            total_count=Sum(
-                F("like_count")
-                + F("comment_count")
-                + F("play_count")
-                + F("download_rec_count")
-                + F("share_vote_count")
-                + F("forward_collect_count")
-            )
-        )
-        .order_by("-total_count")[:10]
-    )
+			# 排名前十的作品
+			top_10_baijiahao = (
+				models.PlatFormData.objects.all().filter(platform=3)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
+		else:
 
-    update_time = "none"
-    null_object = models.PlatFormData.objects.first()
-    if null_object:
-        update_time = null_object.update_time
+			queryset = (
+				models.PlatFormData.objects.filter(uid_id=uid)
+				.filter(platform=3)
+				.aggregate(Sum(field))
+			)
+			data_dict.update(queryset)
 
-    context = {
-        "active_index": active_index,
-        "header_label": header_label,
-        "update_time": update_time,
-        "data": data_dict,
-        "current": "百家号",
-        "dropdown": [
-            {"platform": "知乎", "url": "/index/total/zhihu/"},
-            {"platform": "抖音", "url": "/index/"},
-            {"platform": "哔哩哔哩", "url": "/index/total/bilibili/"},
-        ],
-        "top_10": top_10,
-    }
+			# 排名前十的作品
+			top_10_baijiahao = (
+				models.PlatFormData.objects.filter(uid_id=uid).filter(platform=3)
+				.annotate(
+					total_count=Sum(
+						F("like_count")
+						+ F("comment_count")
+						+ F("play_count")
+						+ F("download_rec_count")
+						+ F("share_vote_count")
+						+ F("forward_collect_count")
+					)
+				)
+				.order_by("-total_count")[:10]
+			)
 
-    return render(request, "index.html", context)
+	update_time = "none"
+	null_object = models.PlatFormData.objects.first()
+	if null_object:
+		update_time = null_object.update_time
+
+	context = {
+		"active_index": active_index,
+		"header_label": header_label,
+		"update_time": update_time,
+		"data": data_dict,
+		"current": "百家号",
+		"dropdown": [
+			{"platform": "知乎", "url": "/index/total/zhihu/"},
+			{"platform": "抖音", "url": "/index/"},
+			{"platform": "哔哩哔哩", "url": "/index/total/bilibili/"},
+		],
+		"top_10": top_10_baijiahao,
+	}
+
+	return render(request, "index.html", context)
 
 
 def index_echarts(request) -> JsonResponse:
-    """图表数据"""
+	"""图表数据"""
 
-    uid = request.session.get("info").get("uid")
-    queryset = (
-        models.HistoryDate.objects.filter(uid_id=uid)
-        .values_list("date", flat=True)
-        .distinct()
-    )
-    date_list = sorted(queryset)[-5:]
+	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
 
-    data = []
-    for date in date_list:
-        queryset = (
-            models.HistoryDate.objects.filter(uid_id=uid).filter(date=date).values()
-        )
-        data.append(queryset)
+	if role:
+		queryset = (
+			models.HistoryDate.objects.all()
+			.values_list("date", flat=True)
+			.distinct()
+		)
+	else:
+		queryset = (
+			models.HistoryDate.objects.filter(uid_id=uid)
+			.values_list("date", flat=True)
+			.distinct()
+		)
+	date_list = sorted(queryset)[-5:]
 
-    # 初始化空的 series_dict
-    series_dict = {}
+	data = []
+	for date in date_list:
+		if role:
+			queryset = (
+				models.HistoryDate.objects.all().filter(date=date).values()
+			)
+		else:
+			queryset = (
+				models.HistoryDate.objects.filter(uid_id=uid).filter(date=date).values()
+			)
 
-    # 定义指标列表
-    metrics = [
-        "like_sum",
-        "comment_sum",
-        "play_sum",
-        "download_rec_sum",
-        "share_vote_sum",
-        "forward_collect_sum",
-    ]
+		data.append(queryset)
 
-    # 遍历每个 QuerySet
-    for queryset in data:
-        # 遍历每个数据项
-        for item in queryset:
-            # 生成标识符，例如 "抖音-四叶天代理IP001"
-            identifier = f"{item['platform']}-{item['nickname']}"
+	# 初始化空的 series_dict
+	series_dict = {}
 
-            # 遍历每个指标
-            for metric in metrics:
-                # 初始化字典结构
-                if metric not in series_dict:
-                    series_dict[metric] = {"seriesData": {}}
+	# 定义指标列表
+	metrics = [
+		"like_sum",
+		"comment_sum",
+		"play_sum",
+		"download_rec_sum",
+		"share_vote_sum",
+		"forward_collect_sum",
+	]
 
-                # 初始化平台-昵称键，如果不存在就创建一个空列表
-                if identifier not in series_dict[metric]["seriesData"]:
-                    series_dict[metric]["seriesData"][identifier] = []
+	# 遍历每个 QuerySet
+	for queryset in data:
+		# 遍历每个数据项
+		for item in queryset:
+			# 生成标识符，例如 "抖音-四叶天代理IP001"
+			identifier = f"{item['platform']}-{item['nickname']}"
 
-                # 添加值到对应的列表中
-                series_dict[metric]["seriesData"][identifier].append(item[metric])
+			# 遍历每个指标
+			for metric in metrics:
+				# 初始化字典结构
+				if metric not in series_dict:
+					series_dict[metric] = {"seriesData": {}}
 
-    backend_data = {
-        "categories": [i.strftime("%Y-%m-%d") for i in date_list],
-        "seriesData": series_dict,
-    }
-    return JsonResponse({"status": True, "backendData": backend_data})
+				# 初始化平台-昵称键，如果不存在就创建一个空列表
+				if identifier not in series_dict[metric]["seriesData"]:
+					series_dict[metric]["seriesData"][identifier] = []
+
+				# 添加值到对应的列表中
+				series_dict[metric]["seriesData"][identifier].append(item[metric])
+
+	backend_data = {
+		"categories": [i.strftime("%Y-%m-%d") for i in date_list],
+		"seriesData": series_dict,
+	}
+	return JsonResponse({"status": True, "backendData": backend_data})
 
 
 def main(request):
-    """根目录"""
-    return redirect("/index/")
+	"""根目录"""
+	return redirect("/index/")

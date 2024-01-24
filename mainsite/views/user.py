@@ -37,8 +37,8 @@ def login(request):
 			return render(request, 'user_login.html', {'form': form})
 
 		# 用户名和密码正确
-		# 网站生成随机字符串; 写到用户浏览器的cookie中；在写入到session中；
-		request.session["info"] = {'uid': admin_object.uid, 'username': admin_object.username}
+		# 网站生成随机字符串; 写到用户浏览器的cookie中；在写入到session中；(新增用户角色)
+		request.session["info"] = {'uid': admin_object.uid, 'username': admin_object.username, 'role': admin_object.role}
 		# session可以保存5天
 		request.session.set_expiry(60 * 60 * 24 * 5)
 
