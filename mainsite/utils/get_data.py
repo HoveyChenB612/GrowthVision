@@ -29,7 +29,7 @@ class GetData:
 			for item in result["data"]["list"]:
 				media_type = item.get("media_type", "")
 				if not media_type:
-					continue	
+					continue
 				itme_type = "视频" if media_type == 4 else "文图"
 				works_dict = {
 					"platform": 1,
@@ -134,6 +134,7 @@ class GetData:
 		response = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
 		                        headers=headers)
 		result = response.json()
+		print(result)
 		totalPage = result["data"]["page"]["totalPage"]
 		for i in range(totalPage):
 			params = {
@@ -149,6 +150,7 @@ class GetData:
 			result = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
 			                      headers=headers).json()
 			data_list = result["data"]["list"]
+			print(data_list)
 			for item in data_list:
 				works_dict = {
 					"platform": 3,
@@ -158,7 +160,7 @@ class GetData:
 					"item_id": item["id"],
 					"title": item["title"],
 					"type": item["type"],
-					"create_time": item["publish_time"],
+					"create_time": item["create_time"],
 					"update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
 					"share_url": item["url"],
 					"like_count": item["like_amount"],
@@ -256,5 +258,14 @@ if __name__ == '__main__':
 	#
 	# 	f.write(json.dumps(gd.works_list, ensure_ascii=False))
 
-	gd.get_bilibili_data("四叶天ip代理", "4a001d049fae724300e3278281aa5dc1", "9aa6e1e9fc0f47f6b2999d0e333e9291")
+	# gd.get_bilibili_data("四叶天ip代理", "4a001d049fae724300e3278281aa5dc1", "9aa6e1e9fc0f47f6b2999d0e333e9291")
+	# print(gd.works_list)
+
+	gd.get_baijiahao_data("静态IP中屹",
+	                      "b29b3898333835610e3b8b8cceff255799980547a41698a3c01703dd86df6cdd",
+	                      "WpsRHBDTmJVejdTQWVMMGJ6cmRjaHM5aUlOUmJjejFXSG1qMm9ITnNrd0gtZFpsRUFBQUFBJCQAAAAAAQAAAAEAAAB0QoYEwsDQobGmc2VvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdsr2UHbK9le",
+	                      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYWlqaWFoYW8uYmFpZHUuY29tIiwiYXVkIjoiaHR0cDpcL1wvYmFpamlhaGFvLmJhaWR1LmNvbSIsImlhdCI6MTcwNTk5NTMwMywibmJmIjoxNzA1OTUyMTA4LCJleHAiOjE3MDYwMzg1MDh9.APO_ZNmp4gyPKHqGloNAL-xM-QqJ6KnZFFW1kWbyI7w",
+	                      "1724990340332265",
+	                      202312097807)
+
 	print(gd.works_list)
