@@ -118,7 +118,7 @@ def history_data_update():
 
 @register_job(scheduler, "interval", minutes=30, id="new_data_update")
 def new_data_update():
-	"""10分钟更新数据"""
+	"""30分钟更新数据"""
 
 	gd = GetData()
 
@@ -199,25 +199,34 @@ def new_data_update():
 			print(f"抖音-{dy_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	for param in bz_param:
+		bz_nickname = param["nickname"]
 		try:
 			gd.get_bilibili_data(
 				param["nickname"], param["access_token"], param["openid"], param["uid"]
 			)
 		except Exception as e:
 			print(e)
-			print(f"Bilibili数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+			models.PlatFormBilibili.objects.filter(nickname=bz_nickname).update(
+				expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+			)
+			print(f"Bilibili-{bz_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	for param in zh_param:
+		zh_nickname = param["nickname"]
 		try:
 			gd.get_zhihu_data(
 				param["nickname"], param["z_c0"], param["zh_uid"], param["uid"]
 			)
 		except Exception as e:
 			print(e)
-			print(f"知乎数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+			models.PlatFormZhiHu.objects.filter(nickname=zh_nickname).update(
+				expires_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+			)
+			print(f"知乎-{zh_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-	try:
-		for param in bjh_param:
+	for param in bjh_param:
+		bjh_nickname = param["nickname"]
+		try:
 			gd.get_baijiahao_data(
 				param["nickname"],
 				param["bjhstoken"],
@@ -226,9 +235,12 @@ def new_data_update():
 				param["app_id"],
 				param["uid"],
 			)
-	except Exception as e:
-		print(e)
-		print(f"百家号数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+		except Exception as e:
+			print(e)
+			models.PlatFormBaiJiaHao.objects.filter(nickname=bjh_nickname).update(
+				expires_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+			)
+			print(f"百家号-{bjh_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	# 创建或更新数据
 	for item in gd.works_list:
