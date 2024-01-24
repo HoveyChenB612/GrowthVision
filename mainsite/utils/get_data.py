@@ -134,7 +134,6 @@ class GetData:
 		response = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
 		                        headers=headers)
 		result = response.json()
-		print(result)
 		totalPage = result["data"]["page"]["totalPage"]
 		for i in range(totalPage):
 			params = {
@@ -150,7 +149,6 @@ class GetData:
 			result = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
 			                      headers=headers).json()
 			data_list = result["data"]["list"]
-			print(data_list)
 			for item in data_list:
 				works_dict = {
 					"platform": 3,
