@@ -149,6 +149,7 @@ class GetData:
 			result = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
 			                      headers=headers).json()
 			data_list = result["data"]["list"]
+			print(data_list)
 			for item in data_list:
 				works_dict = {
 					"platform": 3,
@@ -160,7 +161,7 @@ class GetData:
 					"type": item["type"],
 					"create_time": item["create_time"],
 					"update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-					"share_url": item["url"],
+					"share_url": item["share_url"],
 					"like_count": item["like_amount"],
 					"comment_count": item["comment_amount"],
 					"play_count": item["read_amount"],

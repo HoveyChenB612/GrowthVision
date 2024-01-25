@@ -116,7 +116,7 @@ def history_data_update():
 	return JsonResponse({"status": True})
 
 
-@register_job(scheduler, "interval", minutes=5, id="new_data_update")
+@register_job(scheduler, "interval", minutes=30, id="new_data_update")
 def new_data_update():
 	"""30分钟更新数据"""
 
@@ -194,8 +194,8 @@ def new_data_update():
 			)
 		except Exception as e:
 			print(e)
-			models.PlatFormDouYin.objects.filter(nickname=dy_nickname).update(
-				expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			# models.PlatFormDouYin.objects.filter(nickname=dy_nickname).update(
+			# 	expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 			print(f"抖音-{dy_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	for param in bz_param:
@@ -206,9 +206,9 @@ def new_data_update():
 			)
 		except Exception as e:
 			print(e)
-			models.PlatFormBilibili.objects.filter(nickname=bz_nickname).update(
-				expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			)
+			# models.PlatFormBilibili.objects.filter(nickname=bz_nickname).update(
+			# 	expires_in=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+			# )
 			print(f"Bilibili-{bz_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	for param in zh_param:
@@ -219,9 +219,9 @@ def new_data_update():
 			)
 		except Exception as e:
 			print(e)
-			models.PlatFormZhiHu.objects.filter(nickname=zh_nickname).update(
-				expires_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			)
+			# models.PlatFormZhiHu.objects.filter(nickname=zh_nickname).update(
+			# 	expires_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+			# )
 			print(f"知乎-{zh_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	for param in bjh_param:
@@ -237,9 +237,9 @@ def new_data_update():
 			)
 		except Exception as e:
 			print(e)
-			models.PlatFormBaiJiaHao.objects.filter(nickname=bjh_nickname).update(
-				expires_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-			)
+			# models.PlatFormBaiJiaHao.objects.filter(nickname=bjh_nickname).update(
+			# 	expires_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+			# )
 			print(f"百家号-{bjh_nickname}-数据更新失败{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 	# 创建或更新数据
