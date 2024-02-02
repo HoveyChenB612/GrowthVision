@@ -50,6 +50,7 @@ urlpatterns = [
 	path("edit_pwd/", user.edit_pwd),
 	# 热词搜索
 	path("hot/list/", hot.hot_list),
+	path("hot/list/get/", hot.hot_list_get),
 	# 主页
 	path("", index.main),
 	# 敏感词检测

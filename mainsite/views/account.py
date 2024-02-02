@@ -591,7 +591,9 @@ def account_data_update(request):
 		)
 
 	# 创建或更新数据
+	temp_data = []
 	for item in gd.works_list:
+		temp_data.append(item)
 		exists = models.PlatFormData.objects.filter(item_id=item["item_id"]).exists()
 		if exists:
 			models.PlatFormData.objects.filter(item_id=item["item_id"]).update(**item)

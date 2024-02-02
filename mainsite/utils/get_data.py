@@ -149,8 +149,10 @@ class GetData:
 			result = requests.get('https://baijiahao.baidu.com/pcui/article/lists', params=params, cookies=cookies,
 			                      headers=headers).json()
 			data_list = result["data"]["list"]
-			print(data_list)
+			# print(data_list)
 			for item in data_list:
+				if item["type"] == "image_text":
+					continue
 				works_dict = {
 					"platform": 3,
 					'uid': uid,
@@ -159,15 +161,15 @@ class GetData:
 					"item_id": item["id"],
 					"title": item["title"],
 					"type": item["type"],
-					"create_time": item["create_time"],
+					"create_time": item.get("publish_time", "2022-12-14 14:08:58"),
 					"update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-					"share_url": item["share_url"],
-					"like_count": item["like_amount"],
-					"comment_count": item["comment_amount"],
-					"play_count": item["read_amount"],
+					"share_url": item.get("share_url", ""),
+					"like_count": item.get("like_amount", 0),
+					"comment_count": item.get("comment_amount", 0),
+					"play_count": item.get("read_amount", 0),
 					"download_rec_count": item.get("rec_amount", 0),
-					"share_vote_count": item["share_amount"],
-					"forward_collect_count": item["collection_amount"],
+					"share_vote_count": item.get("share_amount", 0),
+					"forward_collect_count": item.get("collection_amount", 0),
 				}
 
 				self.works_list.append(works_dict)
