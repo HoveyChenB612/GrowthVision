@@ -27,6 +27,7 @@ def searchDyRank(keyword: str) -> Optional[list[dict[str, Union[str, Any]]]]:
 	}
 	res = requests.get(url=url, headers=headers)
 	res_data = res.json().get("data")
+
 	if not res_data:
 		return None
 	with open("temp.json", "w", encoding="utf-8") as f:

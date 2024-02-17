@@ -23,7 +23,7 @@ class GetData:
 			response = requests.get('https://open.douyin.com/api/douyin/v1/video/video_list/', params=params,
 			                        headers=headers)
 			result = response.json()
-
+			print(result)
 			cursor = result["data"]["cursor"]
 			has_more = result["data"]["has_more"]
 			for item in result["data"]["list"]:
