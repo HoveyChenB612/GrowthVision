@@ -26,7 +26,7 @@ class GetData:
 			result = response.json()
 			error_code = result["data"]["error_code"]
 
-			if not error_code:
+			if error_code != 0:
 				models.PlatFormDouYin.objects.filter(open_id=open_id).update(expires_in=timezone.now())
 				return
 
