@@ -2,7 +2,7 @@ import asyncio
 import time
 from datetime import datetime, timedelta
 from urllib import parse
-
+from django.forms.models import model_to_dict
 import requests
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
@@ -12,6 +12,7 @@ from asgiref.sync import sync_to_async, async_to_sync
 
 from mainsite import models
 from mainsite.utils.get_data import GetData
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 def account_auth_list(request):
@@ -461,36 +462,27 @@ def account_data_get(request):
 	# 获取当前登陆的用户uid
 	uid = request.session.get("info").get("uid")
 	role = request.session.get("info").get("role")
-	row_id = 0
-	data = {"total": 0, "rows": []}
+
+	# 分页数据
+	page_num = request.GET.get('page', 1)
+	size = request.GET.get('size', 10)
 
 	# 数据发送到前端
 	if role:
 		queryset = models.PlatFormData.objects.all()
+		paginator = Paginator(queryset, size)
+		page_object = paginator.page(page_num)
 	else:
 		queryset = models.PlatFormData.objects.filter(uid=uid)
-	for index, item in enumerate(queryset):
-		row_id += 1
-		data["total"] += index
-		content = {
-			"id": row_id,
-			"platform": item.platform,
-			"nickname": item.nickname,
-			"type": item.type,
-			"create_time": item.create_time,
-			"title": item.title,
-			"update_time": item.update_time,
-			"like_count": item.like_count,
-			"comment_count": item.comment_count,
-			"play_count": item.play_count,
-			"download_rec_count": item.download_rec_count,
-			"share_vote_count": item.share_vote_count,
-			"forward_collect_count": item.forward_collect_count,
-			"share_url": item.share_url,
-		}
-		data["rows"].append(content)
+		paginator = Paginator(queryset, size)
+		page_object = paginator.page(page_num)
 
-	return JsonResponse(data)
+	# 总数
+	total = queryset.count()
+	# 查询list of dict
+	rows = [model_to_dict(item) for item in page_object]
+
+	return JsonResponse({'total': total, 'rows': rows})
 
 
 def account_data_update(request):
