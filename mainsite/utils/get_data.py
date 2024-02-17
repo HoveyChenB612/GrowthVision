@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
-
+from mainsite import models
+from django.utils import timezone
 
 class GetData:
 	works_list = []
@@ -23,7 +24,12 @@ class GetData:
 			response = requests.get('https://open.douyin.com/api/douyin/v1/video/video_list/', params=params,
 			                        headers=headers)
 			result = response.json()
-			print(result)
+			error_code = result["data"]["error_code"]
+
+			if not error_code:
+				models.PlatFormDouYin.objects.filter(open_id=open_id).update(expires_in=timezone.now())
+				return
+
 			cursor = result["data"]["cursor"]
 			has_more = result["data"]["has_more"]
 			for item in result["data"]["list"]:
