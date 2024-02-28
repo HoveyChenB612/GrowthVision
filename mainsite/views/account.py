@@ -467,13 +467,26 @@ def account_data_get(request):
 	page_num = request.GET.get('page', 1)
 	size = request.GET.get('size', 10)
 
-	# 数据发送到前端
+	# search数据
+	search_kw = request.GET.get('search_kw', "")
+	print(search_kw)
+
+	# 读取分页数据
 	if role:
-		queryset = models.PlatFormData.objects.all()
-		paginator = Paginator(queryset, size)
-		page_object = paginator.page(page_num)
+		if search_kw:
+			# 标题和用户名包含关键字
+			queryset = models.PlatFormData.objects.filter(
+				Q(title__icontains=search_kw) | Q(nickname__icontains=search_kw)).order_by("-create_time")
+		else:
+			queryset = models.PlatFormData.objects.all().order_by("-create_time")
+		paginator = Paginator(queryset, size)  # 实例化分页器对象
+		page_object = paginator.page(page_num)  # 获取当前页码的记录
 	else:
-		queryset = models.PlatFormData.objects.filter(uid=uid)
+		if search_kw:
+			queryset = models.PlatFormData.objects.filter(uid=uid).filter(
+				Q(title__icontains=search_kw) | Q(nickname__icontains=search_kw)).order_by("-create_time")
+		else:
+			queryset = models.PlatFormData.objects.filter(uid=uid).order_by("-create_time")
 		paginator = Paginator(queryset, size)
 		page_object = paginator.page(page_num)
 
@@ -492,7 +505,6 @@ def account_data_update(request):
 	uid = request.session.get("info").get("uid")
 	role = request.session.get("info").get("role")
 	gd = GetData()
-
 	dy_param = []
 	bz_param = []
 	zh_param = []
@@ -604,7 +616,7 @@ def account_data_update(request):
 	source_item_id_set = set(source_item_id_list)
 	difference_id = sql_item_id_set - source_item_id_set
 	for item_id in difference_id:
-		models.PlatFormData.objects.filter(item_id=item_id).delete()
+		models.PlatFormData.objects.filter(item_id=item_id, uid=uid).delete()
 
 	return JsonResponse({"status": True})
 

@@ -23,7 +23,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-sm-6 col-lg-2">
                             <div class="card bg-primary">
@@ -116,107 +115,122 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>平台播放总量</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="echartsPlatformPlayCount" style="height:500px; width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>每日播放</h4>
-                        </div>
-                        <div class="card-body">
-                            <div id="daily_play" style="height:400px;"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>每日点赞</h4>
-                        </div>
-                        <div class="card-body">
-                            <div id="daily_like" style="height:400px;"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>每日评论</h4>
-                        </div>
-                        <div class="card-body">
-                            <div id="daily_comment" style="height:400px;"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>每日下载/推荐</h4>
-                        </div>
-                        <div class="card-body">
-                            <div id="daily_download" style="height:400px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>TOP10</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>平台</th>
-                                        <th>类型</th>
-                                        <th>标题</th>
-                                        <th>创建时间</th>
-                                        <th>点赞数</th>
-                                        <th>评论数</th>
-                                        <th>播放数</th>
-                                        <th>下载/推荐</th>
-                                        <th>分享/赞同</th>
-                                        <th>转发/收藏</th>
-                                        <th>查看</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for item in top_10 %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{ item.get_platform_display }}</td>
-                                            <td>{{ item.type }}</td>
-                                            <td>{{ item.title }}</td>
-                                            <td>{{ item.create_time }}</td>
-                                            <td>{{ item.like_count }}</td>
-                                            <td>{{ item.comment_count }}</td>
-                                            <td>{{ item.play_count }}</td>
-                                            <td>{{ item.download_rec_count }}</td>
-                                            <td>{{ item.share_vote_count }}</td>
-                                            <td>{{ item.forward_collect_count }}</td>
-                                            <td>
-                                                <a href="{{ item.share_url }}" target="_blank">
-                                                    查看
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-
-                                    </tbody>
-                                </table>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>平台互动总量</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="echartsPlatformInteractionCount" style="height:500px;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>账号播放总量</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="echartsAccountPlayCount" style="height:500px; width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>账号互动总量</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="echartsAccountInteractionCount" style="height:500px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>词云图</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="echartsTitleWordCloud" style="height: 400px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>TOP10</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>平台</th>
+                                                <th>类型</th>
+                                                <th>标题</th>
+                                                <th>创建时间</th>
+                                                <th>点赞数</th>
+                                                <th>评论数</th>
+                                                <th>播放数</th>
+                                                <th>下载/推荐</th>
+                                                <th>分享/赞同</th>
+                                                <th>转发/收藏</th>
+                                                <th>查看</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for item in top_10 %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ item.get_platform_display }}</td>
+                                                    <td>{{ item.type }}</td>
+                                                    <td>{{ item.title }}</td>
+                                                    <td>{{ item.create_time }}</td>
+                                                    <td>{{ item.like_count }}</td>
+                                                    <td>{{ item.comment_count }}</td>
+                                                    <td>{{ item.play_count }}</td>
+                                                    <td>{{ item.download_rec_count }}</td>
+                                                    <td>{{ item.share_vote_count }}</td>
+                                                    <td>{{ item.forward_collect_count }}</td>
+                                                    <td>
+                                                        <a href="{{ item.share_url }}" target="_blank">
+                                                            查看
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
+
 
         </div>
     </main>
@@ -225,91 +239,334 @@
 
 {% block js %}
     <!--图表插件-->
+    <!--图表插件-->
     <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/echarts-wordcloud.min.js' %}"></script>
+    <script src="{% static 'js/lightyear.js' %}"></script>
+    <script src="{% static 'js/bootstrap-notify.min.js' %}"></script>
     <script type="text/javascript">
-        function chartsShow(chartsId, legend, date, series) {
-            // 基于准备好的dom，初始化echarts实例
-            let myChart = echarts.init(document.getElementById(chartsId));
-
-            // 指定图表的配置项和数据
-            let option = {
-                dataZoom: [
-                    {
-                        id: 'dataZoomX',
-                        type: 'slider',
-                        xAxisIndex: [0],
-                        filterMode: 'filter', // 设定为 'filter' 从而 X 的窗口变化会影响 Y 的范围。
-                        start: 0,
-                        end: 100
-                    },
-                ],
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data: legend
-                },
-                grid: {
-                    containLabel: true
-                },
-                toolbox: {
-                    feature: {
-                        saveAsImage: {}
-                    }
-                },
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: date
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: Object.entries(series).map(([name, data]) => ({
-                    name,
-                    type: 'line',
-                    data
-                }))
-            };
-
-            // 使用刚指定的配置项和数据显示图表。
-            myChart.setOption(option);
-        }
-
-        let backendData
-
-        (function () {
+        $(function () {
+            let platformPlayData = [
+                ['演示平台1', 2414366],
+                ["演示平台2", 406213],
+                ['演示平台3', 1320661],
+                ['演示平台4', 3030291]
+            ]
+            let platformInteractionData = [
+                ['演示平台1', 32],
+                ["演示平台2", 21],
+                ['演示平台3', 11],
+                ['演示平台4', 31]
+            ]
+            let accountPlayData = [
+                ['演示账号1', 235041],
+                ['演示账号2', 169098],
+                ['演示账号3', 28216],
+                ['演示账号4', 1015352],
+                ['演示账号5', 307582],
+                ['演示账号6', 471297],
+            ]
+            let accountInteractionData = [
+                ['演示账号1', 11],
+                ['演示账号2', 9.3],
+                ['演示账号3', 2.1],
+                ['演示账号4', 4.5],
+                ['演示账号5', 14.2],
+                ['演示账号6', 10.22]
+            ]
+            let wordsCloudData = [
+                {'演示词1': 11},
+                {'演示词2': 9.3},
+                {'演示词3': 2.1},
+                {'演示词4': 4.5},
+                {'演示词5': 14.2},
+                {'演示词6': 10.22}]
+            // 图标请求
             $.ajax({
-                url: "/index/echarts/",
+                url: "/data/screen/get/",
                 type: "get",
                 success: function (res) {
-                    if (res) {
-                        backendData = res.backendData
+                    if (res.status) {
+                        // console.log(res.data)
+                        platformPlayData = res.data.platform_play_count
+                        platformInteractionData = res.data.platform_interaction_count
+                        accountPlayData = res.data.account_play_count
+                        accountInteractionData = res.data.account_interaction_count
 
-                        let legend = Object.keys(backendData.seriesData["play_sum"].seriesData)
-                        let date = backendData.categories
-                        let series = backendData.seriesData["play_sum"].seriesData
-                        chartsShow("daily_play", legend, date, series)
+                        renderPlatformEcharts('echartsPlatformPlayCount', platformPlayData);
+                        renderPlatformEcharts('echartsPlatformInteractionCount', platformInteractionData);
+                        renderAccountEcharts('echartsAccountPlayCount', accountPlayData);
+                        renderAccountEcharts('echartsAccountInteractionCount', accountInteractionData);
 
-                        legend = Object.keys(backendData.seriesData["like_sum"].seriesData)
-                        date = backendData.categories
-                        series = backendData.seriesData["like_sum"].seriesData
-                        chartsShow("daily_like", legend, date, series)
-
-                        legend = Object.keys(backendData.seriesData["comment_sum"].seriesData)
-                        date = backendData.categories
-                        series = backendData.seriesData["comment_sum"].seriesData
-                        chartsShow("daily_comment", legend, date, series)
-
-                        legend = Object.keys(backendData.seriesData["download_rec_sum"].seriesData)
-                        date = backendData.categories
-                        series = backendData.seriesData["download_rec_sum"].seriesData
-                        chartsShow("daily_download", legend, date, series)
-
+                    } else {
+                        lightyear.notify(res.message, 'danger', 5000, 'mdi mdi-emoticon-dead', 'top', 'center')
+                        renderPlatformEcharts('echartsPlatformPlayCount', platformPlayData);
+                        renderPlatformEcharts('echartsPlatformInteractionCount', platformInteractionData);
+                        renderAccountEcharts('echartsAccountPlayCount', accountPlayData);
+                        renderAccountEcharts('echartsAccountInteractionCount', accountInteractionData);
                     }
                 }
             })
-        })()
+
+            // 词云请求
+
+            $.ajax({
+                url: "/data/screen/get/wordsCloud/",
+                type: 'get',
+                success: function (res) {
+                    if (res.status) {
+                        wordsCloudData = res.data
+                        renderTitleWordCloud(wordsCloudData)
+                    } else {
+                        lightyear.notify(res.message, 'danger', 5000, 'mdi mdi-emoticon-dead', 'top', 'center')
+                        renderTitleWordCloud(wordsCloudData)
+                    }
+                }
+            })
+        })
+
+        //  渲染平台数据图表
+        function renderPlatformEcharts(EchartsID, data) {
+            if (data.length <= 0) {
+                document.getElementById(EchartsID).innerHTML = '<h3>暂无数据<h3><a href="/account/data/list/">请先更新数据<a>';
+            } else {
+                // 实例化Echarts对象
+                let myChart = echarts.init(document.getElementById(EchartsID))
+                // 配置图表，判断是哪个表
+                let scaleName = EchartsID.includes("Interaction") ? "互动量" : "播放量"
+                // Echarts配置项
+                let option = {
+                    // 悬停工具提示
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    // 图例
+                    legend: {
+                        orient: 'horizontal', // 方向
+                        left: 'left' // 位置
+                    },
+                    // 数据集
+                    dataset: {
+                        source: data
+                    },
+                    //右上角的功能小按钮
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: {type: ['line', 'bar']}, // 切换图标
+                            restore: {}, // 刷新
+                            saveAsImage: {} // 保存
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        name: '平台',
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: scaleName,
+                    },
+                    // 条形图网格
+                    grid: [
+                        {bottom: '1%', top: '50%', left: '0%', containLabel: true} // 位置布局
+                    ],
+                    series: [
+                        {
+                            name: scaleName,
+                            type: 'pie',
+                            radius: '30%',
+                            // 设置饼图的起始角度，默认为0，表示从正上方开始，配合startAngle可以实现饼图的自定义排序
+                            minAngle: 15,//最小角度
+                            startAngle: 360, //起始角度
+                            encode: {itemName: 0, value: 1},
+                            center: ['50%', '25%'],
+                            label: {        //展示文本设置
+                                normal: {
+                                    show: true, //展示
+                                    formatter: '{b} | ({d}%)'
+                                },
+                            },
+                            labelLine: { // 引导线展示
+                                normal: {
+                                    length2: 20,
+                                    lineStyle: {
+                                        width: 1,
+                                    },
+                                },
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        },
+                        {
+                            type: 'bar',
+                            encode: {x: 0, y: 1},
+                            label: {
+                                show: true,
+                                position: 'top'
+                            },
+                            markLine: {
+                                data: [
+                                    {type: 'average', name: '平均播放量', lineStyle: {color: "#faa64b"}},
+                                ]
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#33cabb'
+                                }
+                            },
+
+                        }
+                    ]
+                }
+                myChart.setOption(option)
+                // 监听窗口大小变化事件
+                window.onresize = function () {
+                    // 重新设置图表的宽度和高度
+                    myChart.resize();
+                }
+            }
+        }
+
+        //  渲染账号数据图表
+        function renderAccountEcharts(EchartsID, data) {
+            if (data.length <= 0) {
+                document.getElementById(EchartsID).innerHTML = '<h3>暂无数据<h3><a href="/account/data/list/">请先更新数据<a>';
+            } else {
+                // 实例化Echarts对象
+                let myChart = echarts.init(document.getElementById(EchartsID))
+                // 配置图表，判断是哪个表
+                let scaleName = EchartsID.includes("Interaction") ? "互动量" : "播放量"
+                let option = {
+                    // 悬停工具提示
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    // 数据集
+                    dataset: {
+                        source: data
+                    },
+                    //右上角的功能小按钮
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: {type: ['line', 'bar']}, // 切换图标
+                            restore: {}, // 刷新
+                            saveAsImage: {} // 保存
+                        }
+                    },
+                    yAxis: {
+                        type: 'category',
+                        name: '账号'
+                    },
+                    xAxis: {
+                        type: 'value',
+                        name: scaleName,
+                        // interval:300000// 设置x轴的间隔
+                        scale: true
+                    },
+                    // 条形图网格
+                    grid: [
+                        {bottom: '1%', top: '50%', left: '0%', containLabel: true} // 位置布局
+                    ],
+                    series: [
+                        {
+                            name: scaleName,
+                            type: 'pie',
+                            radius: '30%',
+                            // 设置饼图的起始角度，默认为0，表示从正上方开始，配合startAngle可以实现饼图的自定义排序
+                            minAngle: 15, //最小角度
+                            startAngle: 360, //起始角度
+                            encode: {itemName: 0, value: 1},
+                            center: ['50%', '25%'],
+                            labelLine: {
+                                // 引导线展示
+                                normal: {
+                                    length2: 20,
+                                    lineStyle: {
+                                        width: 1
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        },
+                        {
+                            type: 'bar',
+                            encode: {y: 0, x: 1},
+                            markLine: {
+                                data: [
+                                    {type: 'average', name: '平均播放量', lineStyle: {color: '#faa64b'}},
+                                ]
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#33cabb'
+                                }
+                            }
+                        }
+                    ]
+                };
+                myChart.setOption(option)
+                // 监听窗口大小变化事件
+                window.onresize = function () {
+                    // 重新设置图表的宽度和高度
+                    myChart.resize();
+                }
+            }
+        }
+
+        // 渲染标题词云图
+        function renderTitleWordCloud(data) {
+            let myChart = echarts.init(document.getElementById('echartsTitleWordCloud'))
+            let option = {
+                tooltip: {},
+                series: [{
+                    type: 'wordCloud',
+                    gridSize: 1,
+                    sizeRange: [20, 100],
+                    rotationRange: [-90, 90],
+                    shape: 'square',
+                    left: 'center',
+                    top: 'center',
+                    width: '100%',
+                    height: '100%',
+                    drawOutOfBound: true,
+                    textStyle: {
+                        color: function () {
+                            return 'rgb(' + [
+                                Math.round(Math.random() * 160),
+                                Math.round(Math.random() * 160),
+                                Math.round(Math.random() * 160)
+                            ].join(',') + ')';
+                        }
+                    },
+                    emphasis: {
+                        textStyle: {
+                            shadowBlur: 10,
+                            shadowColor: '#333'
+                        }
+                    },
+                    data: data
+                }]
+            }
+
+            myChart.setOption(option)
+            // 监听窗口大小变化事件
+            window.onresize = function () {
+                // 重新设置图表的宽度和高度
+                myChart.resize()
+            }
+        }
 
 
     </script>

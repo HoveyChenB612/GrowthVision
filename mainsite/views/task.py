@@ -264,7 +264,6 @@ def new_data_update():
 	for item_id in difference_id:
 		models.PlatFormData.objects.filter(item_id=item_id).delete()
 
-	print(f"数据更新完成{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 	return JsonResponse({"status": True})
 
 

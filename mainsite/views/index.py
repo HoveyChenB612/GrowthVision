@@ -1,8 +1,13 @@
-from django.shortcuts import redirect, render, HttpResponse
-from django.http import JsonResponse
-from mainsite import models
+import os
+import pandas as pd
 from django.db.models import Sum, F
-from datetime import datetime, timedelta
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+
+from GrowthVision.settings import STATIC_ROOT
+from mainsite import models
+from mainsite.utils.statistics import statistics
+from mainsite.utils.render_words_cloud import render_words_cloud
 
 
 def index(request):
@@ -379,80 +384,58 @@ def index_total_baijiahao(request):
 
 	return render(request, "index.html", context)
 
-
-def index_echarts(request) -> JsonResponse:
-	"""图表数据"""
-
-	uid = request.session.get("info").get("uid")
-	role = request.session.get("info").get("role")
-
-	if role:
-		queryset = (
-			models.HistoryDate.objects.all()
-			.values_list("date", flat=True)
-			.distinct()
-		)
-	else:
-		queryset = (
-			models.HistoryDate.objects.filter(uid_id=uid)
-			.values_list("date", flat=True)
-			.distinct()
-		)
-	date_list = sorted(queryset)[-5:]
-
-	data = []
-	for date in date_list:
-		if role:
-			queryset = (
-				models.HistoryDate.objects.all().filter(date=date).values()
-			)
-		else:
-			queryset = (
-				models.HistoryDate.objects.filter(uid_id=uid).filter(date=date).values()
-			)
-
-		data.append(queryset)
-
-	# 初始化空的 series_dict
-	series_dict = {}
-
-	# 定义指标列表
-	metrics = [
-		"like_sum",
-		"comment_sum",
-		"play_sum",
-		"download_rec_sum",
-		"share_vote_sum",
-		"forward_collect_sum",
-	]
-
-	# 遍历每个 QuerySet
-	for queryset in data:
-		# 遍历每个数据项
-		for item in queryset:
-			# 生成标识符，例如 "抖音-四叶天代理IP001"
-			identifier = f"{item['platform']}-{item['nickname']}"
-
-			# 遍历每个指标
-			for metric in metrics:
-				# 初始化字典结构
-				if metric not in series_dict:
-					series_dict[metric] = {"seriesData": {}}
-
-				# 初始化平台-昵称键，如果不存在就创建一个空列表
-				if identifier not in series_dict[metric]["seriesData"]:
-					series_dict[metric]["seriesData"][identifier] = []
-
-				# 添加值到对应的列表中
-				series_dict[metric]["seriesData"][identifier].append(item[metric])
-
-	backend_data = {
-		"categories": [i.strftime("%Y-%m-%d") for i in date_list],
-		"seriesData": series_dict,
-	}
-	return JsonResponse({"status": True, "backendData": backend_data})
-
-
 def main(request):
 	"""根目录"""
 	return redirect("/index/")
+
+def data_screen_get(request):
+	"""数据大屏接口"""
+
+	# 获取当前用户ID
+	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
+	platform_name_dict = {key: value for key, value in models.PlatFormData.platform_choices}
+	if role:
+		queryset = models.PlatFormData.objects.all().values("platform", "like_count", "comment_count",
+		                                                    "play_count", "download_rec_count",
+		                                                    "share_vote_count", "forward_collect_count", "nickname")
+	else:
+		queryset = models.PlatFormData.objects.filter(uid=uid).values("platform", "like_count", "comment_count",
+		                                                              "play_count", "download_rec_count",
+		                                                              "share_vote_count", "forward_collect_count",
+		                                                              "nickname")
+	if not queryset.exists():
+		return JsonResponse(
+			{"status": False, "data": [], "message": "暂无数据，请前往<a href='/account/auth/list'>账号授权</a>页面"})
+
+	platform_play_count = statistics(queryset, is_play_data=True, is_platform_data=True,
+	                                 platform_name=platform_name_dict)
+	platform_interaction_count = statistics(queryset, is_play_data=False, is_platform_data=True,
+	                                        platform_name=platform_name_dict)
+	account_play_count = statistics(queryset, is_play_data=True, is_platform_data=False,
+	                                platform_name=platform_name_dict)
+	account_interaction_count = statistics(queryset, is_play_data=False, is_platform_data=False,
+	                                       platform_name=platform_name_dict)
+
+	data = {
+		"platform_play_count": platform_play_count,
+		"platform_interaction_count": platform_interaction_count,
+		"account_play_count": account_play_count,
+		"account_interaction_count": account_interaction_count,
+	}
+	return JsonResponse({"status": True, "data": data, "mes": "数据获取成功"})
+
+
+def data_screen_get_words_cloud(request):
+	"""数据词云"""
+
+	# 获取当前用户ID
+	uid = request.session.get("info").get("uid")
+	role = request.session.get("info").get("role")
+
+	words_cloud_dir = os.path.join(STATIC_ROOT, "word_cloud_data/")
+	user_list = [i.split(".")[0] for i in os.listdir(words_cloud_dir)]
+
+	data = render_words_cloud(role, user_list, uid, words_cloud_dir)
+
+	return JsonResponse(data)

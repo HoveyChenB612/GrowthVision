@@ -18,8 +18,6 @@ Including another URLconf
 from django.urls import path
 from mainsite.views import index, account, user, hot, task, check, video
 
-
-
 urlpatterns = [
 	# path('admin/', admin.site.urls),
 	# 主页
@@ -27,7 +25,9 @@ urlpatterns = [
 	path("index/total/bilibili/", index.index_total_bilibili),
 	path("index/total/zhihu/", index.index_total_zhihu),
 	path("index/total/baijiahao/", index.index_total_baijiahao),
-	path("index/echarts/", index.index_echarts),
+	path("", index.main),
+	path("data/screen/get/", index.data_screen_get),
+	path("data/screen/get/wordsCloud/", index.data_screen_get_words_cloud),
 	# 平台账号
 	path("account/auth/list/", account.account_auth_list),
 	path("account/auth/detail/", account.account_auth_detail),
@@ -51,8 +51,6 @@ urlpatterns = [
 	# 热词搜索
 	path("hot/list/", hot.hot_list),
 	path("hot/list/get/", hot.hot_list_get),
-	# 主页
-	path("", index.main),
 	# 敏感词检测
 	path("check/article/", check.check_article),
 	path("check/article/get/words/", check.check_article_get_words),
@@ -61,14 +59,11 @@ urlpatterns = [
 	path("video/", video.video),
 	path("video/user_info/", video.user_info),
 	path("video/delete/user_info/", video.delete_user_info),
-	path("video/load/user_info/",video.load_user_info),
+	path("video/load/user_info/", video.load_user_info),
 	path("video/publish_video/", video.publish_video),
 	path("video/task/list/", video.task_list),
 	path("video/task/delete/", video.task_delete),
-	path("video/check/user_info/",video.check_user_info)
+	path("video/check/user_info/", video.check_user_info)
 	# 测试数据定时任务
 	# path("history/data/update/", task.history_data_update),
 ]
-
-
-
