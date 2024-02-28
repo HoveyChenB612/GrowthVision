@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+
 pd.options.mode.chained_assignment = None  # default='warn'
+
 
 def process_data(df, is_play_data, is_platform_data, platform_name):
 	"""处理数据"""
@@ -27,7 +29,6 @@ def statistics(queryset, is_play_data, is_platform_data, platform_name):
 	"""统计数据"""
 	df = pd.DataFrame(queryset)
 	processed_df = process_data(df, is_play_data, is_platform_data, platform_name)
-
 	categories = processed_df["platform" if is_platform_data else "nickname"]
 	values = processed_df["play_count" if is_play_data else "interaction"]
 

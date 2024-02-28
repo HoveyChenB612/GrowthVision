@@ -16,7 +16,7 @@ def process_word_cloud(user_path):
             word_count = [[item, play_count]]
             new_word_df = pd.DataFrame(word_count, columns=["word", "play_count"])
             word_df = pd.concat([word_df, new_word_df], axis=0)
-    result = word_df.groupby("word").sum().sort_values("play_count", ascending=False).iloc[0:200, :]
+    result = word_df.groupby("word").sum().sort_values("play_count", ascending=False).iloc[0:100, :]
     return result
 
 
@@ -24,12 +24,16 @@ def render_words_cloud(role, user_list, uid, words_cloud_dir):
     data = []
 
     if role:
+        result = pd.DataFrame()
         for user in user_list:
             user_path = os.path.join(words_cloud_dir, str(user) + ".csv")
-            result = process_word_cloud(user_path)
+            user_result = process_word_cloud(user_path)
+            result = pd.concat([result, user_result], axis=0)
             # 遍历 DataFrame 中的每一行
-            for index, row in result.iterrows():
-                data.append({"name": index, "value": row.play_count})
+
+        result = result.groupby("word").sum().sort_values("play_count", ascending=False).iloc[0:300, :]
+        for index, row in result.iterrows():
+            data.append({"name": index, "value": row.play_count})
     else:
         user_path = os.path.join(words_cloud_dir, str(uid) + ".csv")
         if not os.path.exists(user_path):
