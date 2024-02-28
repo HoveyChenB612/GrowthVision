@@ -86,9 +86,6 @@ def index(request):
 	if null_object:
 		update_time = null_object.update_time
 
-	# 将数据转换成千分制
-	data_dict = {k: v / 1000 for k, v in data_dict.items()}
-
 	context = {
 		"active_index": active_index,
 		"header_label": header_label,
@@ -183,9 +180,6 @@ def index_total_zhihu(request):
 	if null_object:
 		update_time = null_object.update_time
 
-	# 将数据转换成千分制
-	data_dict = {k: v / 1000 for k, v in data_dict.items()}
-
 	context = {
 		"active_index": active_index,
 		"header_label": header_label,
@@ -278,9 +272,6 @@ def index_total_bilibili(request):
 	null_object = models.PlatFormData.objects.first()
 	if null_object:
 		update_time = null_object.update_time
-
-	# 将数据转换成千分制
-	data_dict = {k: v / 1000 for k, v in data_dict.items()}
 
 	context = {
 		"active_index": active_index,
@@ -376,9 +367,6 @@ def index_total_baijiahao(request):
 	null_object = models.PlatFormData.objects.first()
 	if null_object:
 		update_time = null_object.update_time
-
-	# 将数据转换成千分制
-	data_dict = {k: v / 1000 for k, v in data_dict.items()}
 
 	context = {
 		"active_index": active_index,
