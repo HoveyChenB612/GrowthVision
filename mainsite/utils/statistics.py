@@ -10,8 +10,8 @@ def process_data(df, is_play_data, is_platform_data, platform_name):
 	if is_play_data:
 		group_by_cols = ["platform"] if is_platform_data else ["nickname", "platform"]
 		data_df = df[["play_count"] + group_by_cols].groupby(group_by_cols).sum().reset_index()
-		if not is_platform_data:
-			data_df["nickname"] = data_df["platform"].astype(str) + "-" + data_df["nickname"].astype(str)
+		# if not is_platform_data:
+		# 	data_df["nickname"] = data_df["platform"].astype(str) + "-" + data_df["nickname"].astype(str)
 	else:
 		group_by_cols = ["platform"] if is_platform_data else ["nickname", "platform"]
 		numeric_columns = ["like_count", "comment_count", "download_rec_count", "share_vote_count",
@@ -21,7 +21,6 @@ def process_data(df, is_play_data, is_platform_data, platform_name):
 		data_df[numeric_columns] = scaler.fit_transform(data_df[numeric_columns])
 		data_df = data_df.groupby(group_by_cols).sum().reset_index()
 		data_df['interaction'] = data_df[numeric_columns].sum(axis=1)
-
 	return data_df
 
 
@@ -33,5 +32,4 @@ def statistics(queryset, is_play_data, is_platform_data, platform_name):
 	values = processed_df["play_count" if is_play_data else "interaction"]
 
 	data = [[category, round(value, 2)] for category, value in zip(categories, values)]
-
 	return data
